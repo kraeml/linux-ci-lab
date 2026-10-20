@@ -59,3 +59,9 @@ Fehler, Verbesserungsvorschläge und zusätzliche Übungen sind willkommen. Besc
 - **Beispielcode:** MIT
 
 Bei einer Weiterverwendung der Materialien bitte den Urheber nennen und Änderungen kenntlich machen. Die vollständigen Lizenzbedingungen stehen in den Lizenzdateien im Repository.
+
+## Urheberrecht
+
+© 2026 Michael Schaar
+
+Lernmaterialien stehen unter CC BY 4.0. Beispielcode steht unter MIT.
