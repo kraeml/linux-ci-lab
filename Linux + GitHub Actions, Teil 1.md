@@ -8,7 +8,7 @@ Die Workflow-Dateien liegen unter `.github/workflows/` und enden auf `.yml`. Sie
 
 **So startest und prüfst du einen Workflow:** Öffne den Tab **Actions**, wähle links den genannten Workflow und klicke **Run workflow**. Wähle bei Bedarf den Branch aus und starte den Lauf. Öffne den Lauf und danach den Job; in den Schritten siehst du Befehle und Ausgaben. Prüfe das Ergebnis anhand der in der Lektion genannten Kontrollpunkte.
 
-Die Workflows verwenden `ubuntu-latest`, also einen von GitHub bereitgestellten Ubuntu-Runner. Die genaue Ubuntu-Version kann sich ändern. Bei den Workflows 2 bis 4 lädt `actions/checkout@v4` die Dateien des ausgewählten Branches in den Arbeitsbereich des Jobs.
+Die Workflows verwenden `ubuntu-latest`, also einen von GitHub bereitgestellten Ubuntu-Runner. Die genaue Ubuntu-Version kann sich ändern. Bei den Workflows 2 bis 4 lädt `actions/checkout@v7` die Dateien des ausgewählten Branches in den Arbeitsbereich des Jobs. Version 7 verwendet Node.js 24; siehe die [offizielle Action-Dokumentation](https://github.com/actions/checkout) (Stand: 20.10.2026).
 
 > Die gezeigten Fehlerproben sind beabsichtigt. Wo nötig, sind sie so eingerichtet, dass ein Fehler gezeigt wird, ohne den gesamten Übungslauf abzubrechen.
 
@@ -86,7 +86,7 @@ jobs:
 
 ## Lektion 2: Dateien und Ordner
 
-**Lernziele:** Du kannst Dateien im Runner-Verzeichnis auflisten und lesen, Dateien und Ordner anlegen, kopieren, umbenennen und löschen. Du verstehst, warum der Workflow `checkout` benötigt.
+**Lernziele:** Du kannst Dateien im Runner-Verzeichnis auflisten und lesen, Dateien und Ordner anlegen, kopieren, umbenennen und löschen. Du verstehst, warum der Workflow `checkout` benötigt. Er nutzt `actions/checkout@v7` mit Node.js 24.
 
 **Beispieldatei:** `daten/einkauf.txt` ist im Repository vorhanden. Zwei Kommentarzeilen nennen Herkunft und Lizenz; die Einkaufsliste enthält fünf Einträge:
 
@@ -113,7 +113,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Repo auschecken
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Was liegt im Repo?
         run: ls -la
@@ -153,7 +153,7 @@ jobs:
 
 **Warum `checkout`?**
 
-Jeder Job läuft auf einer eigenen Runner-Umgebung. Damit die Dateien deines Repositorys dort bereitliegen, lädt `actions/checkout@v4` sie in den Arbeitsbereich. Die Schritte **innerhalb desselben Jobs** verwenden denselben Arbeitsbereich: Was ein Schritt anlegt, ist im nächsten Schritt noch da. Bei GitHub-gehosteten Runnern stellt GitHub für jeden Job eine eigene Umgebung bereit.
+Jeder Job läuft auf einer eigenen Runner-Umgebung. Damit die Dateien deines Repositorys dort bereitliegen, lädt `actions/checkout@v7` sie in den Arbeitsbereich. Die Schritte **innerhalb desselben Jobs** verwenden denselben Arbeitsbereich: Was ein Schritt anlegt, ist im nächsten Schritt noch da. Bei GitHub-gehosteten Runnern stellt GitHub für jeden Job eine eigene Umgebung bereit.
 
 `uses:` ruft eine fertige Action auf; `run:` führt Befehle in der Shell aus. Der Test mit doppeltem `mkdir` ist ein eigener Schritt. `continue-on-error: true` lässt den Workflow nach dem erwarteten Fehler fortsetzen; der Schritt kann als fehlgeschlagen angezeigt werden, ohne den gesamten Job fehlschlagen zu lassen.
 
@@ -228,7 +228,7 @@ jobs:
   logs:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Anfang und Ende
         run: |
@@ -359,7 +359,7 @@ jobs:
   skript:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Variablen anzeigen
         run: |

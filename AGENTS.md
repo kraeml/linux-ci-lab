@@ -21,7 +21,8 @@ Dieses Repository enthält einen Einsteigerkurs zu Linux, Git und CI. Schreibe f
 - Erkläre, wo Befehle ausgeführt werden und was sie bewirken.
 - Weise bei riskanten Befehlen auf mögliche Folgen hin. Dazu zählen insbesondere `rm`, `git reset --hard`, `git push --force` und Befehle, die Dateien dauerhaft überschreiben oder löschen.
 - Behaupte nicht, etwas getestet zu haben, wenn es nicht getestet wurde.
-- Kennzeichne plattform- und versionsabhängige Angaben. Gib bei GitHub Actions die Action-Version an (z. B. `actions/checkout@v4`) und nenne den verwendeten Runner-Typ (z. B. `ubuntu-latest`).
+- Kennzeichne plattform- und versionsabhängige Angaben. Gib bei GitHub Actions die verwendete Action-Version an und nenne den Runner-Typ (z. B. `ubuntu-latest`).
+- Prüfe vor dem Erstellen oder Aktualisieren von Actions deren aktuelle stabile Version und Laufzeit in der offiziellen Quelle. Aktualisiere veraltete Versionen und berücksichtige Deprecation-Warnungen; nenne in Lernmaterialien den Versionsstand, wenn er relevant ist.
 
 ## Git- und CI-Plattformen
 
