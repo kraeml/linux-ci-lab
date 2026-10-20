@@ -1,0 +1,23 @@
+Linux CI — Lizenzbereich für Beispielcode
+
+Geltungsbereich: Diese Datei gilt für Beispielcode im Projekt Linux CI,
+soweit an der jeweiligen Datei nichts Abweichendes angegeben ist. Lerntexte
+und sonstige Materialien fallen nicht unter diese Datei; dafür gilt
+LICENSE-CONTENT.txt.
+
+Lizenz: MIT License
+Offizielle Quelle: https://opensource.org/license/mit/
+Hinweis: Der offizielle MIT-Text verwendet unten die Platzhalter 2026 und
+Michael Schaar. Diese sind vor einer Veröffentlichung des jeweiligen
+Codebestands durch die zutreffenden Angaben zu ersetzen; sie wurden nicht
+erfunden oder durch unbekannte Rechteinhaber ersetzt.
+
+--- BEGIN OFFICIAL LICENSE TEXT ---
+Copyright 2026 Michael Schaar
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+--- END OFFICIAL LICENSE TEXT ---
