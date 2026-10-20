@@ -73,17 +73,18 @@ Butter
 Lokal gegen eine nachgebaute Einkaufsliste verifiziert; GitHub-Job-Kontext **ungetestet**.
 
 #### Aufgabe 3
-Der verlangte Testblock lautet:
+Der Workflow enthält den isolierten Test bereits:
 
 ```yaml
-      - name: mkdir ohne -p testen
+      - name: Wiederholtes mkdir ohne -p testen
+        continue-on-error: true
         run: |
-          mkdir arbeit
-          mkdir arbeit
-          echo "Dieser Befehl läuft nicht mehr"
+          mkdir testordner
+          mkdir testordner
+          echo "Dieser Befehl wird nach dem Fehler nicht ausgeführt"
 ```
 
-**Erwartete Ausgabe:** Beim zweiten Aufruf etwa `mkdir: cannot create directory 'arbeit': File exists`; der `echo` wird wegen des nicht erfolgreichen Befehls nicht ausgeführt. `mkdir -p arbeit` behandelt einen bereits vorhandenen Ordner dagegen als gültigen Zustand und liefert keinen Fehler. Voraussetzung: Der Ordner darf nicht vorher im selben Testblock erzeugt sein, sonst scheitert schon der erste Aufruf.
+**Erwartete Ausgabe:** Der zweite Aufruf meldet, dass `testordner` bereits existiert; die `echo`-Zeile wird wegen des fehlgeschlagenen Befehls nicht ausgeführt. Der Workflow setzt sich wegen `continue-on-error: true` fort. Ersetzt man beide Aufrufe durch `mkdir -p testordner-p`, funktionieren beide. Lokales Shell-Verhalten ist geprüft; die genaue GitHub-Anzeige des tolerierten Schritts ist **ungetestet**.
 
 ### Lektion 3: Texte durchsuchen und auswerten
 
@@ -130,17 +131,13 @@ Lokal verifiziert.
 
 #### Aufgabe 4
 
+Beim manuellen Start des Workflows `03 - Texte auswerten` die Eingabe `fehlerfall` auf `true` setzen. Der optionale Schritt führt aus:
+
 ```bash
 grep -c "FATAL" daten/server.log
 ```
 
-**Ausgabe:** `0`, aber `grep` liefert Exit-Code `1`, weil kein Treffer gefunden wurde. In einem GitHub-`run:`-Schritt wird der Schritt deshalb rot bzw. fehlgeschlagen. **GitHub-Schrittstatus ungetestet**, Shell-Verhalten lokal bestätigt. Wenn kein Treffer ein gültiges Ergebnis ist:
-
-```bash
-grep -c "FATAL" daten/server.log || true
-```
-
-Damit wird der Status abgefangen; echte Dateifehler würden aber ebenfalls verdeckt.
+**Ausgabe:** `0`, aber `grep` liefert Exit-Code `1`, weil kein Treffer gefunden wurde. `continue-on-error: true` macht den Fehler tolerierbar, sodass der Workflow weiterläuft. Der genaue Status, den GitHub in der Oberfläche anzeigt, ist **ungetestet**. Wenn kein Treffer ein gültiges Ergebnis ist, kann `|| true` den Status abfangen; echte Dateifehler würden dadurch aber ebenfalls verdeckt.
 
 #### Aufgabe 5
 
@@ -209,14 +206,7 @@ echo "Uhrzeit: $(date +%H:%M)"
 Die Ausgabe hat das Format `Uhrzeit: HH:MM`; der konkrete Wert ist zeitabhängig.
 
 #### Aufgabe 4
-Ohne diesen Schritt:
-
-```yaml
-      - name: Skript ausführbar machen
-        run: chmod +x skripte/begruessung.sh
-```
-
-schlägt `./skripte/begruessung.sh "$NAME"` bei einer nicht ausführbaren Browser-Datei typischerweise mit `Permission denied` fehl. **GitHub-Runner-Verhalten ungetestet.** Alternative `bash skripte/begruessung.sh "$NAME"` braucht kein Ausführungsbit.
+Beim manuellen Start von `04-skript.yml` die Eingabe `fehlerfall` auf `true` setzen. Der Workflow führt `chmod -x skripte/begruessung.sh` aus und versucht danach `./skripte/begruessung.sh "$NAME"` direkt zu starten. Dadurch wird unabhängig vom gespeicherten Git-Dateimodus typischerweise `Permission denied` erwartet. `continue-on-error: true` lässt den Job fortsetzen. Das genaue Verhalten und die Anzeige auf GitHub sind **ungetestet**. Alternative `bash skripte/begruessung.sh "$NAME"` braucht kein Ausführungsbit.
 
 ## Teil 2
 
@@ -694,6 +684,8 @@ Mit `if: ${{ !cancelled() }}` soll `zusammenfassen` nach einem Abbruch nicht meh
 ### Lokal verifiziert
 
 - `grep -c "ERROR" daten/server.log` ergibt `3`.
+- `wc -l daten/einkauf.txt` ergibt `5`; `daten/server.log` enthält `9` Logzeilen.
+- `bash -n skripte/begruessung.sh` und `shellcheck skripte/begruessung.sh` laufen für die eingecheckte Skriptfassung ohne Meldungen.
 - `INFO` ergibt `5`, `WARNING` ergibt `1`.
 - `grep 'anna'` liefert zwei Zeilen.
 - `grep -E "WARNING|ERROR"` liefert vier Zeilen.
@@ -708,7 +700,7 @@ Mit `if: ${{ !cancelled() }}` soll `zusammenfassen` nach einem Abbruch nicht meh
 ### Unstimmigkeiten / Fehler im Kurstext
 
 1. **Teil 1, Lektion 1, Aufgabe 2:** Als Beispiel steht `2026-10-19`, während der aktuelle Ausführungstag laut Arbeitskontext **2026-10-20** ist. Das Beispiel ist ausdrücklich nur ein Beispiel; `date` liefert den tatsächlichen Tag.
-2. **Teil 1, Lektion 2, Aufgabe 3:** Der Test „`mkdir arbeit` zweimal“ funktioniert nur, wenn `arbeit` vor dem Testblock noch nicht existiert. Nach dem ursprünglichen Workflow existiert der Ordner bereits; für einen isolierten Test muss man einen neuen Namen verwenden oder den Ordner vorher entfernen.
+2. **Teil 1, Lektion 2:** Der doppelte `mkdir`-Fehlertest läuft in einem eigenen Schritt unter `testordner`; `continue-on-error: true` verhindert, dass der absichtliche Fehler den gesamten Workflow fehlschlagen lässt.
 3. **Teil 2, Lektion 6:** In der Musterzählung für Personen ist die Reihenfolge bei Gleichstand nicht fachlich eindeutig: `ben` und `clara` haben beide `3`. `sort -nr` kann bei gleicher Zahl eine Reihenfolge liefern, auf die man sich nicht als fachliche Rangfolge verlassen sollte.
 4. **Teil 2, Lektion 7:** `|| true` beim `grep` fängt wie beschrieben nicht nur „keine Treffer“, sondern auch echte Dateifehler ab. Das ist als Kursvereinfachung markiert, sollte in produktiven Workflows aber nicht unverändert verwendet werden.
 5. **Teil 3, Lektion 9, Aufgabe 3:** Die zweidimensionale Matrix mit `stufe` und `datei` erzeugt technisch auch sinnlose Kombinationen (`INFO`/`WARNING`/`ERROR` gegen `daten/zugriffe.log`). Das ist keine Rechenfehler, aber eine fachliche Unstimmigkeit, die der Kurs selbst erwähnt.

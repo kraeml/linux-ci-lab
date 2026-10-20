@@ -1,0 +1,45 @@
+# Linux CI — Beispielcode
+# Lizenz: MIT (siehe LICENSE-CODE.txt)
+name: 03 - Texte auswerten
+
+on:
+  workflow_dispatch:
+    inputs:
+      fehlerfall:
+        description: "FATAL-Suche ohne Treffer ausführen"
+        required: true
+        type: boolean
+        default: false
+
+jobs:
+  logs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Anfang und Ende
+        run: |
+          echo "--- erste 3 Zeilen ---"
+          head -n 3 daten/server.log
+          echo "--- letzte 2 Zeilen ---"
+          tail -n 2 daten/server.log
+
+      - name: Zeilen zählen
+        run: wc -l daten/server.log
+
+      - name: Alle Fehler finden
+        run: grep "ERROR" daten/server.log
+
+      - name: Fehler zählen
+        run: grep -c "ERROR" daten/server.log
+
+      - name: Pipe - Fehler sortieren
+        run: grep "ERROR" daten/server.log | sort
+
+      - name: Pipe - Nur die Meldungen der Fehler
+        run: grep "ERROR" daten/server.log | cut -d' ' -f4-
+
+      - name: FATAL-Suche ohne Treffer (absichtlicher Fehler)
+        if: ${{ inputs.fehlerfall }}
+        continue-on-error: true
+        run: grep -c "FATAL" daten/server.log

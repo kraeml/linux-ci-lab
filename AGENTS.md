@@ -21,19 +21,23 @@ Dieses Repository enthält einen Einsteigerkurs zu Linux, Git und CI. Schreibe f
 - Erkläre, wo Befehle ausgeführt werden und was sie bewirken.
 - Weise bei riskanten Befehlen auf mögliche Folgen hin. Dazu zählen insbesondere `rm`, `git reset --hard`, `git push --force` und Befehle, die Dateien dauerhaft überschreiben oder löschen.
 - Behaupte nicht, etwas getestet zu haben, wenn es nicht getestet wurde.
-- Kennzeichne plattform- und versionsabhängige Angaben. Gib bei GitHub Actions die Action-Version an (z. B. `actions/checkout@v4`) und nenne den verwendeten Runner-Typ (z. B. `ubuntu-latest`).
+- Kennzeichne plattform- und versionsabhängige Angaben. Gib bei GitHub Actions die verwendete Action-Version an und nenne den Runner-Typ (z. B. `ubuntu-latest`).
+- Prüfe vor dem Erstellen oder Aktualisieren von Actions deren aktuelle stabile Version und Laufzeit in der offiziellen Quelle. Aktualisiere veraltete Versionen und berücksichtige Deprecation-Warnungen; nenne in Lernmaterialien den Versionsstand, wenn er relevant ist.
 
 ## Git- und CI-Plattformen
 
 - Verwende Git Flow.
   - Lege für jede Änderung zuerst einen eigenen Feature-Branch an, ausgehend von `develop`, mit dem Namensschema `feature/<kurzbeschreibung>` (z. B. `feature/lektion-03-grep`).
-  - Führe Feature-Branches nur nach `develop` zusammen, per Pull Request bzw. Merge Request.
-  - Schließe einen gemergten Feature-Branch anschließend mit `git flow feature finish <kurzbeschreibung>` ab. Führe den Befehl erst nach dem PR-/MR-Merge aus; prüfe bei Squash- oder Rebase-Merges den Verlauf, bevor du ihn lokal abschließt.
+  - Integriere Feature-Branches nach erfolgreicher Prüfung ausschließlich in `develop`. Das kann per Pull Request bzw. Merge Request oder lokal mit `git flow feature finish <kurzbeschreibung>` erfolgen.
+  - Nach einem PR-/MR-Merge wird der lokale Feature-Branch mit `git flow feature finish <kurzbeschreibung>` abgeschlossen. Bei Squash- oder Rebase-Merges ist vor dem lokalen Abschluss der Verlauf zu prüfen. Ohne PR/MR darf `git flow feature finish` nach erfolgreicher Prüfung direkt lokal ausgeführt werden.
   - Arbeite nicht direkt auf `main` oder `develop`.
 - Halte Linux-Befehle möglichst plattformneutral (POSIX-Shell). Wo GNU- und BSD-Varianten abweichen (z. B. bei `sed` oder `date`), weise darauf hin.
 - Der aktuelle Kurs behandelt GitHub Actions. Codeberg/Forgejo Actions und GitLab CI/CD sind mögliche spätere Erweiterungen.
+- Kurs-Workflows sind ausführbare Lernbeispiele und werden standardmäßig ausschließlich manuell über `workflow_dispatch` gestartet. Füge keine zusätzlichen Trigger wie `push` oder eine separate CI zur Prüfung der Kursmaterialien hinzu, sofern dies nicht ausdrücklich beauftragt wurde.
+- Halte ausführbare Kurs-Workflows klar von einer separaten CI zur Validierung der Kursmaterialien unterscheidbar, falls eine solche CI ausdrücklich ergänzt wird.
 - Behaupte nicht, dass Konfigurationen unverändert zwischen Plattformen funktionieren. Wenn Inhalte für weitere Plattformen ergänzt werden, erkläre sie getrennt und stelle Unterschiede sachlich dar.
 - Nenne erforderliche Runner oder andere Voraussetzungen, wenn sie für eine Übung relevant sind.
+- Beachte: Ein Workflow mit `workflow_dispatch` kann auf GitHub nur manuell gestartet werden, wenn seine Workflow-Datei auf dem Standardbranch vorhanden ist. Plane Tests entsprechend, ohne den manuellen Trigger stillschweigend durch einen anderen Trigger zu ersetzen.
 
 ## Releases
 

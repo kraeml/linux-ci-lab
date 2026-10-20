@@ -1,0 +1,7 @@
+# Linux CI — Beispieldaten
+# Lizenz: CC BY 4.0 (siehe LICENSE-CONTENT.txt)
+Brot
+Milch
+Käse
+Äpfel
+Kaffee
