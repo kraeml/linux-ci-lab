@@ -10,7 +10,7 @@ Dieses Repository enthält einen Einsteigerkurs zu Linux, Git und CI. Schreibe f
 - Erkläre Fachbegriffe bei der ersten Verwendung.
 - Gib jeder Lektion ein konkretes Lernziel.
 - Führe Lernende schrittweise durch Aufgabe, Ausführung und Ergebniskontrolle.
-- Trenne Musterlösungen von den Aufgaben. Markiere Musterlösungen als *ungetestet*, solange sie nicht ausgeführt wurden.
+- Trenne Musterlösungen von den Aufgaben. Bewahre sie unter `lehrkraft/` auf und erwähne oder verlinke sie nicht in Einstiegen für Lernende. Markiere Musterlösungen als *ungetestet*, solange sie nicht ausgeführt wurden.
 - Kennzeichne Beispieldaten und erwartete Ausgaben.
 - Nutze Fehler, um zu zeigen, wie Lernende ihre Arbeit prüfen und verbessern können.
 
@@ -30,11 +30,9 @@ Dieses Repository enthält einen Einsteigerkurs zu Linux, Git und CI. Schreibe f
   - Führe Feature-Branches nur nach `develop` zusammen, per Pull Request bzw. Merge Request.
   - Arbeite nicht direkt auf `main` oder `develop`.
 - Halte Linux-Befehle möglichst plattformneutral (POSIX-Shell). Wo GNU- und BSD-Varianten abweichen (z. B. bei `sed` oder `date`), weise darauf hin.
-- Erkläre GitHub Actions, Codeberg/Forgejo Actions und GitLab CI/CD getrennt.
-- Behaupte nicht, dass Konfigurationen unverändert zwischen Plattformen funktionieren.
+- Der aktuelle Kurs behandelt GitHub Actions. Codeberg/Forgejo Actions und GitLab CI/CD sind mögliche spätere Erweiterungen.
+- Behaupte nicht, dass Konfigurationen unverändert zwischen Plattformen funktionieren. Wenn Inhalte für weitere Plattformen ergänzt werden, erkläre sie getrennt und stelle Unterschiede sachlich dar.
 - Nenne erforderliche Runner oder andere Voraussetzungen, wenn sie für eine Übung relevant sind.
-- Stelle Plattformunterschiede sachlich dar.
-- Hinweis zum Stand: Der Kurs behandelt bisher überwiegend GitHub Actions. Die Trennung nach Plattformen gilt für alle Lektionen, die CI behandeln; wo noch keine Vergleichsinhalte bestehen, sage das ausdrücklich.
 
 ## Releases
 
