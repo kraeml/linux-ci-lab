@@ -1,0 +1,25 @@
+# Linux CI — Beispielcode
+# Lizenz: MIT (siehe LICENSE-CODE.txt)
+name: 01 - Hallo Linux
+
+on:
+  workflow_dispatch:
+
+jobs:
+  erkunden:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Begrüßung
+        run: echo "Hallo aus dem Linux-Runner!"
+
+      - name: Wer bin ich?
+        run: whoami
+
+      - name: Wo bin ich?
+        run: pwd
+
+      - name: Welches Datum ist heute?
+        run: date
+
+      - name: Welches System läuft hier?
+        run: uname -a
