@@ -32,8 +32,11 @@ Dieses Repository enthält einen Einsteigerkurs zu Linux, Git und CI. Schreibe f
   - Arbeite nicht direkt auf `main` oder `develop`.
 - Halte Linux-Befehle möglichst plattformneutral (POSIX-Shell). Wo GNU- und BSD-Varianten abweichen (z. B. bei `sed` oder `date`), weise darauf hin.
 - Der aktuelle Kurs behandelt GitHub Actions. Codeberg/Forgejo Actions und GitLab CI/CD sind mögliche spätere Erweiterungen.
+- Kurs-Workflows sind ausführbare Lernbeispiele und werden standardmäßig ausschließlich manuell über `workflow_dispatch` gestartet. Füge keine zusätzlichen Trigger wie `push` oder eine separate CI zur Prüfung der Kursmaterialien hinzu, sofern dies nicht ausdrücklich beauftragt wurde.
+- Halte ausführbare Kurs-Workflows klar von einer separaten CI zur Validierung der Kursmaterialien unterscheidbar, falls eine solche CI ausdrücklich ergänzt wird.
 - Behaupte nicht, dass Konfigurationen unverändert zwischen Plattformen funktionieren. Wenn Inhalte für weitere Plattformen ergänzt werden, erkläre sie getrennt und stelle Unterschiede sachlich dar.
 - Nenne erforderliche Runner oder andere Voraussetzungen, wenn sie für eine Übung relevant sind.
+- Beachte: Ein Workflow mit `workflow_dispatch` kann auf GitHub nur manuell gestartet werden, wenn seine Workflow-Datei auf dem Standardbranch vorhanden ist. Plane Tests entsprechend, ohne den manuellen Trigger stillschweigend durch einen anderen Trigger zu ersetzen.
 
 ## Releases
 

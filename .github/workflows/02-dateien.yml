@@ -1,0 +1,48 @@
+# Linux CI — Beispielcode
+# Lizenz: MIT (siehe LICENSE-CODE.txt)
+name: 02 - Dateien und Ordner
+
+on:
+  workflow_dispatch:
+
+jobs:
+  dateien:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Repo auschecken
+        uses: actions/checkout@v4
+
+      - name: Was liegt im Repo?
+        run: ls -la
+
+      - name: Inhalt von daten/ anzeigen
+        run: ls -l daten
+
+      - name: Einkaufsliste lesen
+        run: cat daten/einkauf.txt
+
+      - name: Ordner und Dateien anlegen
+        run: |
+          mkdir -p arbeit
+          touch arbeit/notizen.txt
+          echo "Erste Notiz" > arbeit/notizen.txt
+          ls -l arbeit
+
+      - name: Kopieren und umbenennen
+        run: |
+          cp daten/einkauf.txt arbeit/kopie.txt
+          mv arbeit/kopie.txt arbeit/liste.txt
+          ls arbeit
+
+      - name: Temporäre Datei löschen
+        run: |
+          rm arbeit/notizen.txt
+          echo "--- nach dem Löschen ---"
+          ls arbeit
+
+      - name: Wiederholtes mkdir ohne -p testen
+        continue-on-error: true
+        run: |
+          mkdir testordner
+          mkdir testordner
+          echo "Dieser Befehl wird nach dem Fehler nicht ausgeführt"

@@ -1,0 +1,60 @@
+# Linux CI — Beispielcode
+# Lizenz: MIT (siehe LICENSE-CODE.txt)
+name: 04 - Mein erstes Skript
+
+on:
+  workflow_dispatch:
+    inputs:
+      name:
+        description: "Wie heißt du?"
+        required: true
+        default: "Welt"
+        type: string
+      fehlerfall:
+        description: "Fehlendes Ausführungsrecht testen"
+        required: true
+        type: boolean
+        default: false
+
+env:
+  KURS: "Linux lernen"
+
+jobs:
+  skript:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Variablen anzeigen
+        run: |
+          echo "Kurs: $KURS"
+          echo "Gestartet von: $GITHUB_ACTOR"
+          echo "Repository: $GITHUB_REPOSITORY"
+
+      - name: Rechte ansehen
+        run: ls -l skripte/begruessung.sh
+
+      - name: Skript ausführbar machen
+        if: ${{ !inputs.fehlerfall }}
+        run: chmod +x skripte/begruessung.sh
+
+      - name: Rechte erneut ansehen
+        if: ${{ !inputs.fehlerfall }}
+        run: ls -l skripte/begruessung.sh
+
+      - name: Ausführungsrecht für Fehlerprobe entfernen
+        if: ${{ inputs.fehlerfall }}
+        run: chmod -x skripte/begruessung.sh
+
+      - name: Fehlendes Ausführungsrecht testen (absichtlicher Fehler)
+        if: ${{ inputs.fehlerfall }}
+        continue-on-error: true
+        env:
+          NAME: ${{ inputs.name }}
+        run: ./skripte/begruessung.sh "$NAME"
+
+      - name: Skript ausführen
+        if: ${{ !inputs.fehlerfall }}
+        env:
+          NAME: ${{ inputs.name }}
+        run: ./skripte/begruessung.sh "$NAME"
