@@ -22,7 +22,7 @@ Dieses Repository enthält einen Einsteigerkurs zu Linux, Git und CI. Schreibe f
 - Weise bei riskanten Befehlen auf mögliche Folgen hin. Dazu zählen insbesondere `rm`, `git reset --hard`, `git push --force` und Befehle, die Dateien dauerhaft überschreiben oder löschen.
 - Behaupte nicht, etwas getestet zu haben, wenn es nicht getestet wurde.
 - Kennzeichne plattform- und versionsabhängige Angaben. Gib bei GitHub Actions die verwendete Action-Version an und nenne den Runner-Typ (z. B. `ubuntu-latest`).
-- Prüfe vor dem Erstellen oder Aktualisieren von Actions deren aktuelle stabile Version und Laufzeit in der offiziellen Quelle. Aktualisiere veraltete Versionen und berücksichtige Deprecation-Warnungen; nenne in Lernmaterialien den Versionsstand, wenn er relevant ist.
+- Prüfe vor dem Erstellen oder Aktualisieren von Actions deren aktuelle stabile Version und Laufzeit in der offiziellen Quelle. Aktualisiere veraltete Versionen und berücksichtige Deprecation-Warnungen; nenne in Lernmaterialien den Versionsstand, wenn er relevant ist. Kennzeichne bei Major-Tags (z. B. `@v7`) deutlich, dass sie der jeweils aktuellen Patch-Version folgen und keine exakte Patch-Version pinnen.
 
 ## Git- und CI-Plattformen
 
@@ -33,11 +33,11 @@ Dieses Repository enthält einen Einsteigerkurs zu Linux, Git und CI. Schreibe f
   - Arbeite nicht direkt auf `main` oder `develop`.
 - Halte Linux-Befehle möglichst plattformneutral (POSIX-Shell). Wo GNU- und BSD-Varianten abweichen (z. B. bei `sed` oder `date`), weise darauf hin.
 - Der aktuelle Kurs behandelt GitHub Actions. Codeberg/Forgejo Actions und GitLab CI/CD sind mögliche spätere Erweiterungen.
-- Kurs-Workflows sind ausführbare Lernbeispiele und werden standardmäßig ausschließlich manuell über `workflow_dispatch` gestartet. Füge keine zusätzlichen Trigger wie `push` oder eine separate CI zur Prüfung der Kursmaterialien hinzu, sofern dies nicht ausdrücklich beauftragt wurde.
+- Kurs-Workflows sind ausführbare Lernbeispiele und werden standardmäßig ausschließlich manuell über `workflow_dispatch` gestartet. Füge keine zusätzlichen Trigger wie `push` oder eine separate CI zur Prüfung der Kursmaterialien hinzu, sofern dies nicht ausdrücklich beauftragt wurde. Dokumentiere ausdrücklich beauftragte Trigger-Ausnahmen im jeweiligen Lernmaterial.
 - Halte ausführbare Kurs-Workflows klar von einer separaten CI zur Validierung der Kursmaterialien unterscheidbar, falls eine solche CI ausdrücklich ergänzt wird.
 - Behaupte nicht, dass Konfigurationen unverändert zwischen Plattformen funktionieren. Wenn Inhalte für weitere Plattformen ergänzt werden, erkläre sie getrennt und stelle Unterschiede sachlich dar.
 - Nenne erforderliche Runner oder andere Voraussetzungen, wenn sie für eine Übung relevant sind.
-- Beachte: Ein Workflow mit `workflow_dispatch` kann auf GitHub nur manuell gestartet werden, wenn seine Workflow-Datei auf dem Standardbranch vorhanden ist. Plane Tests entsprechend, ohne den manuellen Trigger stillschweigend durch einen anderen Trigger zu ersetzen.
+- Beachte: Ein Workflow mit `workflow_dispatch` kann auf GitHub nur manuell gestartet werden, wenn seine Workflow-Datei auf dem Standardbranch vorhanden ist. Plane Tests entsprechend, ohne den manuellen Trigger stillschweigend durch einen anderen Trigger zu ersetzen. Ein manuelles `workflow_dispatch` startet den Workflow nur für den ausgewählten Branch; es ist kein Test für `schedule` und ersetzt nicht die Voraussetzung, dass die Schedule-Datei auf dem Standardbranch liegt.
 
 ## Releases
 

@@ -1,0 +1,43 @@
+# Linux CI — Beispielcode
+# Lizenz: MIT (siehe LICENSE-CODE.txt)
+name: 07 - Artefakte
+
+on:
+  workflow_dispatch:
+
+jobs:
+  bericht:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Bericht erzeugen
+        run: |
+          mkdir -p ergebnis
+          {
+            echo "Auswertung vom $(date +%Y-%m-%d)"
+            echo "Fehler im Server-Log: $(grep -c ' ERROR ' daten/server.log || true)"
+            echo "Datensätze im Zugriffslog: $(grep -vc '^#' daten/zugriffe.log)"
+            echo "Beliebteste Seite:"
+            grep -v '^#' daten/zugriffe.log | cut -d' ' -f2 | sort | uniq -c | sort -nr | head -n 1
+          } | tee ergebnis/bericht.txt
+
+      - name: Ergebnis hochladen
+        uses: actions/upload-artifact@v7
+        with:
+          name: auswertung
+          path: ergebnis/
+          if-no-files-found: error
+
+  weiterverarbeiten:
+    runs-on: ubuntu-latest
+    needs: bericht
+    steps:
+      - name: Artefakt für den nächsten Job herunterladen
+        uses: actions/download-artifact@v8
+        with:
+          name: auswertung
+          path: weitergabe/
+
+      - name: Bericht im nächsten Job prüfen
+        run: cat weitergabe/bericht.txt

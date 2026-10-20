@@ -1,6 +1,6 @@
 # Kurs: Linux + GitHub Actions, Teil 3 (v5)
 
-Teil 3 baut auf Teil 1 und 2 auf. Du brauchst die Repo-Struktur aus Teil 1 und 2, insbesondere `daten/server.log` und `daten/zugriffe.log`. Es gibt **4 Lektionen** (9 bis 12) und ein Abschlussprojekt.
+Teil 3 baut auf Teil 1 und 2 auf. Du brauchst die Repo-Struktur aus Teil 1 und 2, insbesondere `daten/server.log` und `daten/zugriffe.log`. Die Aktionen `checkout@v7`, `upload-artifact@v7` und `download-artifact@v8` verwenden Node.js 24 (Stand 20.10.2026). Die Major-Tags folgen jeweils dem neuesten Patch ihrer Hauptversion und pinnen keine exakte Patch-Version. Es gibt **4 Lektionen** (9 bis 12) und ein Abschlussprojekt.
 
 > Wie in Teil 2 gilt: Befehlsausgaben in den Erklärungen sind Beispiele. Prüfe sie gegen dein echtes Log im Actions-Tab.
 
@@ -15,6 +15,8 @@ Für Lektion 10 brauchst du einen Eintrag unter **Settings → Secrets and varia
 ## Lektion 9: Matrix-Builds
 
 **Lernziele:** `strategy.matrix`, mehrere Läufe aus einer Job-Definition, `fail-fast`, `include`
+
+**Action-Versionen:** Die Workflows in diesem Kursteil verwenden `actions/checkout@v7` (Node.js 24), `actions/upload-artifact@v7` (Node.js 24) und `actions/download-artifact@v8` (Node.js 24). Stand 20.10.2026: neueste Veröffentlichungen v7.0.1, v7.0.2 bzw. v8.0.2; die Tags `@v7`/`@v8` folgen jeweils dem neuesten Patch innerhalb ihrer Hauptversion und pinnen keine feste Patch-Version. Bei selbst betriebenen Runnern ist für Node.js 24 mindestens Runner-Version 2.327.1 erforderlich.
 
 **Datei:** `.github/workflows/10-matrix.yml`
 
@@ -32,7 +34,7 @@ jobs:
       matrix:
         stufe: [INFO, WARNING, ERROR]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Einträge zählen
         env:
@@ -190,7 +192,7 @@ jobs:
     outputs:
       anzahl: ${{ steps.suche.outputs.anzahl }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Zählen
         id: suche
@@ -289,7 +291,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Immer
         run: echo "Dieser Schritt läuft normal"
@@ -388,7 +390,7 @@ jobs:
       matrix:
         stufe: [INFO, WARNING, ERROR]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Zählen und speichern
         env:
@@ -400,7 +402,7 @@ jobs:
           echo "$STUFE: $ANZAHL"
 
       - name: Teilergebnis hochladen
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ergebnis-${{ matrix.stufe }}
           path: ergebnis/
@@ -413,7 +415,7 @@ jobs:
       - name: Teilergebnisse laden
         id: laden
         continue-on-error: true
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           pattern: ergebnis-*
           merge-multiple: true
@@ -470,7 +472,7 @@ Deshalb prüft der Workflow `outcome`: Nur dort ist der echte Fehler noch sichtb
 
 > **Dateikollisionen bei `merge-multiple`:** Mit `merge-multiple: true` landen die Dateien aller Artefakte im selben Ordner. Hier ist das unproblematisch, weil jeder Matrix-Lauf eine anders benannte Datei erzeugt (`INFO.txt`, `WARNING.txt`, `ERROR.txt`). Würden zwei Läufe eine gleichnamige Datei hochladen, könnte eine die andere überschreiben.
 
-> **Zu `download-artifact@v4`:** `pattern` und `merge-multiple` werden von dieser Action unterstützt. Prüfe die Optionen trotzdem vor der Veröffentlichung gegen die aktuelle Dokumentation, da sich Optionen und Hauptversionen ändern können.
+> **Zu `download-artifact@v8`:** `pattern` und `merge-multiple` werden von dieser Action unterstützt. Prüfe die Optionen trotzdem vor der Veröffentlichung gegen die aktuelle Dokumentation, da sich Optionen und Hauptversionen ändern können.
 
 **Aufgaben**
 1. Starte die Pipeline. Wo findest du die Zusammenfassung, und welche Zahlen zeigt sie?
@@ -499,7 +501,7 @@ Deshalb prüft der Workflow `outcome`: Nur dort ist der echte Fehler noch sichtb
 | Aufräumschritt läuft nach Abbruch weiter | `always()` kann nach einer Abbruchanforderung noch starten, `!cancelled()` verwenden |
 | Artefakt-Download findet nichts | Muster passt nicht zu den Artefaktnamen, alle Uploads sind gescheitert, oder die Artefakte kommen aus einem anderen Lauf |
 | Download-Fehler wird nicht erkannt | `conclusion` statt `outcome` geprüft, oder `continue-on-error` verbirgt die Ursache (im Log des Download-Schritts nachsehen) |
-| Zwei Artefakte mit gleichem Namen | In v4 muss der Name pro Lauf eindeutig sein |
+| Zwei Artefakte mit gleichem Namen | Artefaktnamen müssen innerhalb eines Laufs eindeutig sein |
 | Dateien überschreiben sich nach dem Download | `merge-multiple` legt alle Dateien in einen Ordner, gleichnamige Dateien kollidieren |
 
 ---

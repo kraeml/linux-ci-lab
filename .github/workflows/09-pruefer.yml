@@ -1,0 +1,27 @@
+# Linux CI — Beispielcode
+# Lizenz: MIT (siehe LICENSE-CODE.txt)
+name: 09 - Auto-Prüfer
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "loesungen/**"
+
+jobs:
+  pruefen:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Aufgabe 1 prüfen
+        run: |
+          ERWARTET=$(grep -c ' ERROR ' daten/server.log)
+          ANTWORT=$(tr -d '[:space:]' < loesungen/aufgabe1.txt)
+          echo "Erwartet: $ERWARTET, Antwort: $ANTWORT"
+          if [ "$ANTWORT" = "$ERWARTET" ]; then
+            echo "Richtig!"
+          else
+            echo "Leider falsch. Tipp: grep -c"
+            exit 1
+          fi

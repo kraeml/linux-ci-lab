@@ -115,7 +115,7 @@ Lokal verifiziert.
 #### Aufgabe 3
 
 ```bash
-grep -E "WARNING|ERROR" daten/server.log
+grep -E ' (WARNING|ERROR) ' daten/server.log
 ```
 
 **Ausgabe:** die drei `ERROR`-Zeilen und die eine `WARNING`-Zeile:
@@ -142,7 +142,7 @@ grep -c "FATAL" daten/server.log
 #### Aufgabe 5
 
 ```bash
-grep "ERROR" daten/server.log | tail -n 1
+grep ' ERROR ' daten/server.log | tail -n 1
 ```
 
 **Ausgabe:**
@@ -212,8 +212,10 @@ Beim manuellen Start von `04-skript.yml` die Eingabe `fehlerfall` auf `true` set
 
 ### Lektion 5: Mehrere Jobs und `needs:`
 
+Der Workflow `.github/workflows/05-mehrere-jobs.yml` und die Daten aus Teil 1 sind im Branch verfügbar.
+
 #### Aufgabe 1
-Im vorhandenen Workflow starten `zaehlen` und `parallel-a` ohne `needs:` parallel. `melden` wartet wegen `needs: zaehlen` auf `zaehlen`. Der konkrete Graph im Actions-Tab ist **ungetestet**.
+Im vorhandenen Workflow starten `zaehlen` und `parallel-a` ohne `needs:` parallel. `melden` wartet wegen `needs: zaehlen` auf `zaehlen`. Erwartet werden `Gefunden: 3` und `Der Job zaehlen meldet 3 Fehler`. Lokale Daten-/Shell-Ausgabe geprüft; Actions-Graph **ungetestet**.
 
 #### Aufgabe 2
 Vollständiger zusätzlicher Job:
@@ -233,7 +235,7 @@ Vollständiger zusätzlicher Job:
 In `zaehlen` nur den Suchbegriff ändern:
 
 ```yaml
-          ANZAHL=$(grep -c "FATAL" daten/server.log || true)
+          ANZAHL=$(grep -c ' FATAL ' daten/server.log || true)
           echo "Gefunden: $ANZAHL"
           echo "anzahl=$ANZAHL" >> "$GITHUB_OUTPUT"
 ```
@@ -245,18 +247,28 @@ Ohne Checkout fehlt `daten/server.log`. `grep` gibt einen Dateifehler aus und no
 
 ### Lektion 6: Häufigkeiten zählen und Dateien durchsuchen
 
+**Beispieldateien:** Für den Workflow müssen `daten/zugriffe.log` und `daten/bericht.txt` im gewählten Branch enthalten sein. Die Zählbefehle filtern die Kommentarzeilen heraus.
+
 #### Aufgabe 1
 
 ```bash
-cut -d' ' -f1 daten/zugriffe.log | sort | uniq -c | sort -nr | head -n 1
+grep -v '^#' daten/zugriffe.log | cut -d' ' -f1 | sort | uniq -c | sort -nr | head -n 1
 ```
 
 **Ausgabe:** `4 anna`. Lokal verifiziert. Bei Gleichstand würde `head -n 1` nur eine der gleich häufigen Personen zeigen.
 
+Die Seitenzählung wird analog ausgeführt:
+
+```bash
+grep -v '^#' daten/zugriffe.log | cut -d' ' -f2 | sort | uniq -c | sort -nr
+```
+
+Ergebnis: `/produkte=4`, `/start=3`, `/kontakt=3`.
+
 #### Aufgabe 2
 
 ```bash
-awk '{print $3}' daten/server.log | sort | uniq -c | sort -nr
+grep -v '^#' daten/server.log | awk '{print $3}' | sort | uniq -c | sort -nr
 ```
 
 **Ausgabe:**
@@ -267,7 +279,7 @@ awk '{print $3}' daten/server.log | sort | uniq -c | sort -nr
       1 WARNING
 ```
 
-Lokal verifiziert. Spalte 3 wurde zuvor anhand von `head daten/server.log` festgestellt.
+Lokal verifiziert. `grep -v '^#'` entfernt zuerst die Kommentarzeilen des Beispieldatensatzes; die Schweregrade stehen danach in Spalte 3.
 
 #### Aufgabe 3
 
@@ -275,45 +287,48 @@ Lokal verifiziert. Spalte 3 wurde zuvor anhand von `head daten/server.log` festg
 find . -type f -name "*.txt"
 ```
 
-Mit der im Kurs zusätzlich angelegten Struktur lautet die lokale Ausgabe:
+Im aktuellen Kurs-Repository findet der Befehl mindestens:
 
 ```text
 ./daten/einkauf.txt
 ./daten/bericht.txt
-./loesungen/aufgabe1.txt
+./daten/server.log
+./daten/zugriffe.log
 ```
 
-Lokal verifiziert; bei weiteren Repo-Dateien kommen entsprechende Treffer hinzu.
+Die genaue Ausgabe hängt von weiteren Dateien im Repository ab. Wird die Antwortdatei angelegt, erscheint außerdem `./loesungen/aufgabe1.txt`.
 
 #### Aufgabe 4
 Ohne das erste `sort`:
 
 ```bash
-cut -d' ' -f1 daten/zugriffe.log | uniq -c | sort -nr
+grep -v '^#' daten/zugriffe.log | cut -d' ' -f1 | uniq -c | sort -nr
 ```
 
 werden nur direkt benachbarte gleiche Namen gezählt. Für die Kursdaten entstehen dadurch mehrere Teilgruppen statt der korrekten Summen; `anna` erscheint z. B. als einzelne Gruppen mit `1`, statt insgesamt `4`. `sort` muss vor `uniq -c` stehen. Lokal verifiziert.
 
 ### Lektion 7: Artefakte hochladen und herunterladen
 
+Die Workflow-Datei `.github/workflows/07-artefakte.yml` lädt den Bericht mit `actions/upload-artifact@v7` hoch und demonstriert den Browser-Download sowie die Weitergabe zwischen Jobs mit `actions/download-artifact@v8`.
+
 #### Aufgabe 1
-Nach erfolgreichem Lauf: **Actions → Lauf öffnen → Artifacts → `auswertung`** herunterladen, ZIP entpacken und `bericht.txt` lesen. Inhalt (Datum ausgenommen):
+Nach erfolgreichem Lauf: **Actions → Lauf öffnen → Artifacts → `auswertung`** herunterladen, ZIP entpacken und `bericht.txt` lesen. Der Job `weiterverarbeiten` zeigt denselben Bericht nach Download mit `actions/download-artifact@v8` aus dem vorherigen Job. Inhalt (Datum ausgenommen):
 
 ```text
 Auswertung vom 2026-10-20
 Fehler im Server-Log: 3
-Zeilen im Zugriffslog: 10
+Datensätze im Zugriffslog: 10
 Beliebteste Seite:
       4 /produkte
 ```
 
-Das Datum ist nur beispielhaft und wird durch `date +%Y-%m-%d` bestimmt. Lokale Erzeugung der Textwerte verifiziert; Upload, Download und ZIP **ungetestet**.
+Das Datum ist nur beispielhaft und wird durch `date +%Y-%m-%d` bestimmt. Lokale Textwerte verifiziert; Upload, Browser-Download, Job-zu-Job-Download und ZIP **ungetestet**.
 
 #### Aufgabe 2
 Im Block vor `} | tee ergebnis/bericht.txt` ergänzen:
 
 ```bash
-            echo "Warnungen im Server-Log: $(grep -c 'WARNING' daten/server.log || true)"
+            echo "Warnungen im Server-Log: $(grep -c ' WARNING ' daten/server.log || true)"
 ```
 
 Erwartete zusätzliche Zeile: `Warnungen im Server-Log: 1`. Lokal verifiziert.
@@ -381,12 +396,12 @@ Temporär ersetzen:
     - cron: "*/5 * * * *"
 ```
 
-auf den Standardbranch committen, einige Minuten warten und danach wieder `30 6 * * 1` einsetzen. Die Änderung unter `.github/workflows/` löst wegen `push.paths: daten/**` keinen Push-Lauf dieses Workflows aus. Cron-Verzögerung oder Ausbleiben eines Laufs sind **ungetestet**; Zeitplan, UTC und Standardbranch beachten.
+Für einen echten Lauf muss diese Version des Workflows auf dem Standardbranch liegen. Die Datei gehört zuerst in einen Feature-Branch, wird geprüft und nach `develop` integriert. Der Kursverantwortliche stellt sie anschließend für den Test auf dem Standardbranch bereit. Nach der Beobachtung `30 6 * * 1` wiederherstellen. GitHub-Planung kann verzögert sein; ein manueller `workflow_dispatch`-Lauf testet den Schedule nicht. Cron-Live-Test **ungetestet**.
 
 ### Abschlussprojekt: Der Auto-Prüfer
 
 #### Aufgabe 1
-`loesungen/aufgabe1.txt` auf `5` setzen und committen:
+`loesungen/aufgabe1.txt` auf `5` setzen, committen und pushen:
 
 ```bash
 printf '5\n' > loesungen/aufgabe1.txt
@@ -398,7 +413,7 @@ git push
 Der Prüfschritt gibt `Erwartet: 3, Antwort: 5`, danach `Leider falsch. Tipp: grep -c` und beendet sich mit `exit 1`. GitHub-Status **ungetestet**, lokale Vergleichslogik geprüft.
 
 #### Aufgabe 2
-Auf `3` korrigieren:
+Auf `3` korrigieren, committen und pushen:
 
 ```bash
 printf '3\n' > loesungen/aufgabe1.txt
@@ -421,7 +436,7 @@ Vollständiger zusätzlicher Schritt:
 ```yaml
       - name: Aufgabe 2 prüfen
         run: |
-          ERWARTET=$(wc -l < daten/einkauf.txt)
+          ERWARTET=$(grep -vc '^#' daten/einkauf.txt)
           ANTWORT=$(tr -d '[:space:]' < loesungen/aufgabe2.txt)
           echo "Erwartet: $ERWARTET, Antwort: $ANTWORT"
           if [ "$ANTWORT" = "$ERWARTET" ]; then
@@ -444,7 +459,7 @@ Beispiel für eine eigene Frage: meistbesuchte Seite, mit `loesungen/aufgabe3.tx
 ```yaml
       - name: Aufgabe 3 prüfen
         run: |
-          ERWARTET=$(cut -d' ' -f2 daten/zugriffe.log | sort | uniq -c | sort -nr | awk 'NR==1 {print $2}')
+          ERWARTET=$(grep -v '^#' daten/zugriffe.log | cut -d' ' -f2 | sort | uniq -c | sort -nr | awk 'NR==1 {print $2}')
           ANTWORT=$(tr -d '[:space:]' < loesungen/aufgabe3.txt)
           echo "Erwartet: $ERWARTET, Antwort: $ANTWORT"
           if [ "$ANTWORT" = "$ERWARTET" ]; then
@@ -626,7 +641,7 @@ Ein direkter `uses:`-Aufruf kann nicht zugleich eigene `steps:` für den Upload 
 
 ```yaml
       - name: Teilergebnis hochladen
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ergebnis-${{ inputs.suchwort }}
           path: ergebnis/
@@ -674,7 +689,7 @@ Im Schritt `Zusammenfassung schreiben` zum Testen ergänzen:
           fi
 ```
 
-Bei einem tatsächlich fehlgeschlagenen Download werden `outcome=failure` und wegen `continue-on-error: true` typischerweise `conclusion=success` erwartet. Der Folgeschritt läuft weiter, weil sein Download-Schritt den Job nicht fehlschlagen lässt. Die Summary soll `Download fehlgeschlagen ...` statt Zahlen enthalten; der Job `zusammenfassen` endet anschließend mit Fehler. Ob `download-artifact@v4` bei null Treffern `failure` oder `success` meldet, ist laut Kurstext nicht ausdrücklich garantiert und hier **ungetestet**. Falls `outcome=success` gilt, greift die anschließende `ls sammlung/*.txt`-Prüfung und meldet `Download erfolgreich, aber keine Teilergebnis-Dateien gefunden.`. Die genaue Download-Logmeldung ist ebenfalls **ungetestet**.
+Bei einem tatsächlich fehlgeschlagenen Download werden `outcome=failure` und wegen `continue-on-error: true` typischerweise `conclusion=success` erwartet. Der Folgeschritt läuft weiter, weil sein Download-Schritt den Job nicht fehlschlagen lässt. Die Summary soll `Download fehlgeschlagen ...` statt Zahlen enthalten; der Job `zusammenfassen` endet anschließend mit Fehler. Ob `download-artifact@v8` bei null Treffern `failure` oder `success` meldet, ist laut Kurstext nicht ausdrücklich garantiert und hier **ungetestet**. Falls `outcome=success` gilt, greift die anschließende `ls sammlung/*.txt`-Prüfung und meldet `Download erfolgreich, aber keine Teilergebnis-Dateien gefunden.`. Die genaue Download-Logmeldung ist ebenfalls **ungetestet**.
 
 #### Aufgabe 5
 Mit `if: ${{ !cancelled() }}` soll `zusammenfassen` nach einem Abbruch nicht mehr starten; war es bereits gestartet, kann es je nach Zeitpunkt weiterlaufen oder beendet werden. Mit `if: ${{ always() }}` darf der Job auch nach einer Abbruchanforderung noch starten, kann aber anschließend ebenfalls abgebrochen werden. Das Ergebnis hängt vom Zeitpunkt und GitHub-Abbruchverhalten ab und ist **ungetestet**.
@@ -683,35 +698,31 @@ Mit `if: ${{ !cancelled() }}` soll `zusammenfassen` nach einem Abbruch nicht meh
 
 ### Lokal verifiziert
 
-- `grep -c "ERROR" daten/server.log` ergibt `3`.
+- `grep -c ' ERROR ' daten/server.log` ergibt `3`.
 - `wc -l daten/einkauf.txt` ergibt `5`; `daten/server.log` enthält `9` Logzeilen.
+- `grep -vc '^#' daten/zugriffe.log` ergibt `10` Zugriffsdatensätze; mit zwei Kopfzeilen sind es `12` physische Zeilen.
+- `grep -vc '^#' daten/bericht.txt` ergibt `4` Berichtzeilen.
 - `bash -n skripte/begruessung.sh` und `shellcheck skripte/begruessung.sh` laufen für die eingecheckte Skriptfassung ohne Meldungen.
 - `INFO` ergibt `5`, `WARNING` ergibt `1`.
-- `grep 'anna'` liefert zwei Zeilen.
-- `grep -E "WARNING|ERROR"` liefert vier Zeilen.
-- `grep "ERROR" ... | tail -n 1` liefert den Zeitstempel `2026-10-19 08:25:55`.
-- `cut | sort | uniq -c | sort -nr` ergibt Personen `anna=4`, `clara=3`, `ben=3`.
-- Seiten ergeben `/produkte=4`, `/start=3`, `/kontakt=3`; Top 1 ist `/produkte`.
-- `awk '{print $3}' ...` ergibt `INFO=5`, `ERROR=3`, `WARNING=1`.
+- `grep 'anna' daten/server.log` liefert zwei Zeilen.
+- `grep -E ' (WARNING|ERROR) ' daten/server.log` liefert vier Zeilen.
+- `grep ' ERROR ' ... | tail -n 1` liefert den Zeitstempel `2026-10-19 08:25:55`.
+- `grep -v '^#' daten/zugriffe.log | cut -d' ' -f1 | sort | uniq -c | sort -nr` ergibt Personen `anna=4`, `clara=3`, `ben=3`.
+- Nach Herausfiltern der Kommentarzeilen ergeben sich Seiten `/produkte=4`, `/start=3`, `/kontakt=3`; Top 1 ist `/produkte`. Die Beispieldatei enthält 12 physische Zeilen (2 Hinweise, 10 Datensätze).
+- `grep -v '^#' daten/bericht.txt | wc -l` ergibt vier Zeilen Berichtstext.
+- `grep -v '^#' daten/server.log | awk '{print $3}' | sort | uniq -c | sort -nr` ergibt `INFO=5`, `ERROR=3`, `WARNING=1`.
 - `wc -l daten/einkauf.txt` ergibt `5`; die Auto-Prüfung mit Antwort `3` ergibt `match=yes` für Aufgabe 1.
-- `find . -type f -name "*.txt"` findet die im Nachbau angelegten drei Textdateien.
+- `find daten -type f -name "*.txt"` findet `daten/einkauf.txt` und `daten/bericht.txt`; die übrigen Treffer hängen von weiteren Repository-Dateien ab.
 - `uniq -c` ohne vorheriges `sort` zeigt nur Nachbargruppen und ist deshalb für Gesamthäufigkeiten falsch.
 
 ### Unstimmigkeiten / Fehler im Kurstext
 
 1. **Teil 1, Lektion 1, Aufgabe 2:** Als Beispiel steht `2026-10-19`, während der aktuelle Ausführungstag laut Arbeitskontext **2026-10-20** ist. Das Beispiel ist ausdrücklich nur ein Beispiel; `date` liefert den tatsächlichen Tag.
 2. **Teil 1, Lektion 2:** Der doppelte `mkdir`-Fehlertest läuft in einem eigenen Schritt unter `testordner`; `continue-on-error: true` verhindert, dass der absichtliche Fehler den gesamten Workflow fehlschlagen lässt.
-3. **Teil 2, Lektion 6:** In der Musterzählung für Personen ist die Reihenfolge bei Gleichstand nicht fachlich eindeutig: `ben` und `clara` haben beide `3`. `sort -nr` kann bei gleicher Zahl eine Reihenfolge liefern, auf die man sich nicht als fachliche Rangfolge verlassen sollte.
+3. **Teil 2, Lektion 6:** In der Musterzählung für Personen ist die Reihenfolge bei Gleichstand nicht fachlich eindeutig: `ben` und `clara` haben beide `3`. `sort -nr` kann bei gleicher Zahl eine Reihenfolge liefern, auf die man sich nicht als fachliche Rangfolge verlassen sollte. Die Kommentarzeilen der Beispieldatei müssen beim Zählen herausgefiltert werden.
 4. **Teil 2, Lektion 7:** `|| true` beim `grep` fängt wie beschrieben nicht nur „keine Treffer“, sondern auch echte Dateifehler ab. Das ist als Kursvereinfachung markiert, sollte in produktiven Workflows aber nicht unverändert verwendet werden.
 5. **Teil 3, Lektion 9, Aufgabe 3:** Die zweidimensionale Matrix mit `stufe` und `datei` erzeugt technisch auch sinnlose Kombinationen (`INFO`/`WARNING`/`ERROR` gegen `daten/zugriffe.log`). Das ist keine Rechenfehler, aber eine fachliche Unstimmigkeit, die der Kurs selbst erwähnt.
 6. **Teil 3, Lektion 10, Aufgabe 3:** Die Aussage zur Secret-Maskierung nach `rev` ist absichtlich vorsichtig. Es darf nicht behauptet werden, dass der veränderte Wert sicher maskiert wird.
-7. **Teil 3, Abschlussprojekt, Aufgabe 4b:** Das Verhalten von `download-artifact@v4` bei null passenden Artefakten wird im Kurs selbst als nicht ausdrücklich dokumentierte Zusage bezeichnet. Deshalb ist eine eindeutige erwartete Meldung hier nicht garantiert; die vorhandene `ls`-Absicherung ist notwendig.
+7. **Teil 3, Abschlussprojekt, Aufgabe 4b:** Das Verhalten von `download-artifact@v8` bei null passenden Artefakten wird im Kurs selbst als nicht ausdrücklich dokumentierte Zusage bezeichnet. Deshalb ist eine eindeutige erwartete Meldung hier nicht garantiert; die vorhandene `ls`-Absicherung ist notwendig.
 8. **Teil 3, Lektion 12:** `always()` kann nach einer Abbruchanforderung noch starten, garantiert aber kein vollständiges Weiterlaufen. Ein beobachtetes Ergebnis hängt vom Zeitpunkt ab und ist kein stabiler Sollwert.
-9. **YAML-Parserprüfung:** PyYAML konnte die extrahierten YAML-Blöcke aus Teil 1 (4/4) und Teil 3 (8/8) parsen. In Teil 2 waren 5/6 Blöcke parsebar; der Block zu `08-zeitplan.yml` scheitert bei einem Standard-YAML-Parser an `run: echo "Ausgelöst durch: $EREIGNIS"`, weil der Doppelpunkt im unquotierten Plain-Scalar problematisch ist. Robuster ist beispielsweise `run: 'echo "Ausgelöst durch: $EREIGNIS"'` oder ein Block-Scalar:
-
-```yaml
-        run: |
-          echo "Ausgelöst durch: $EREIGNIS"
-```
-
-Der Befund wurde lokal mit PyYAML reproduziert; GitHub Actions akzeptiert die Originaldatei in der tatsächlichen GitHub-Parserumgebung hier nicht getestet.
+9. **YAML-Parserprüfung:** Die ursprüngliche YAML-Beispielzeile mit Doppelpunkt und unquotiertem `run:`-Scalar war mehrdeutig. Die ausführbare `.github/workflows/08-zeitplan.yml` nutzt einen Block-Scalar und wird im Rahmen der Überarbeitung mit `actionlint` geprüft. Markdown-Codeblöcke sind nicht mehr die ausführbare Quelle.
