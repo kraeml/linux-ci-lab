@@ -28,8 +28,8 @@ Dieses Repository enthält einen Einsteigerkurs zu Linux, Git und CI. Schreibe f
 
 - Verwende Git Flow.
   - Lege für jede Änderung zuerst einen eigenen Feature-Branch an, ausgehend von `develop`, mit dem Namensschema `feature/<kurzbeschreibung>` (z. B. `feature/lektion-03-grep`).
-  - Führe Feature-Branches nur nach `develop` zusammen, per Pull Request bzw. Merge Request.
-  - Schließe einen gemergten Feature-Branch anschließend mit `git flow feature finish <kurzbeschreibung>` ab. Führe den Befehl erst nach dem PR-/MR-Merge aus; prüfe bei Squash- oder Rebase-Merges den Verlauf, bevor du ihn lokal abschließt.
+  - Integriere Feature-Branches nach erfolgreicher Prüfung ausschließlich in `develop`. Das kann per Pull Request bzw. Merge Request oder lokal mit `git flow feature finish <kurzbeschreibung>` erfolgen.
+  - Nach einem PR-/MR-Merge wird der lokale Feature-Branch mit `git flow feature finish <kurzbeschreibung>` abgeschlossen. Bei Squash- oder Rebase-Merges ist vor dem lokalen Abschluss der Verlauf zu prüfen. Ohne PR/MR darf `git flow feature finish` nach erfolgreicher Prüfung direkt lokal ausgeführt werden.
   - Arbeite nicht direkt auf `main` oder `develop`.
 - Halte Linux-Befehle möglichst plattformneutral (POSIX-Shell). Wo GNU- und BSD-Varianten abweichen (z. B. bei `sed` oder `date`), weise darauf hin.
 - Der aktuelle Kurs behandelt GitHub Actions. Codeberg/Forgejo Actions und GitLab CI/CD sind mögliche spätere Erweiterungen.
