@@ -131,7 +131,7 @@ Lokal verifiziert.
 
 #### Aufgabe 4
 
-Beim manuellen Start des Workflows `03 - Texte auswerten` die Eingabe `fehlerfall` auf `true` setzen. Der optionale Schritt führt aus:
+Beim manuellen Start des Workflows `03 - Texte auswerten` im Lern-Repository die Eingabe `fehlerfall` auf `true` setzen. Der optionale Schritt führt aus:
 
 ```bash
 grep -c "FATAL" daten/server.log
@@ -212,13 +212,13 @@ Beim manuellen Start von `04-skript.yml` die Eingabe `fehlerfall` auf `true` set
 
 ### Lektion 5: Mehrere Jobs und `needs:`
 
-Der Workflow `.github/workflows/05-mehrere-jobs.yml` und die Daten aus Teil 1 sind im Branch verfügbar.
+Arbeite in deinem eigenen Lern-Repository aus Teil 1 weiter. Für die Lektionen 5 bis 8 überträgst du die aufgelisteten Workflows und Beispieldateien aus dem Kurs-Repository ins Lern-Repository und startest die Läufe dort. `daten/server.log` stammt aus Teil 1.
 
 #### Aufgabe 1
-Im vorhandenen Workflow starten `zaehlen` und `parallel-a` ohne `needs:` parallel. `melden` wartet wegen `needs: zaehlen` auf `zaehlen`. Erwartet werden `Gefunden: 3` und `Der Job zaehlen meldet 3 Fehler`. Lokale Daten-/Shell-Ausgabe geprüft; Actions-Graph **ungetestet**.
+Im Workflow `.github/workflows/05-mehrere-jobs.yml` des Lern-Repositorys starten `zaehlen` und `parallel-a` ohne `needs:` parallel. `melden` wartet wegen `needs: zaehlen` auf `zaehlen`. Erwartet werden `Gefunden: 3` und `Der Job zaehlen meldet 3 Fehler`. Lokale Daten-/Shell-Ausgabe geprüft; Actions-Graph **ungetestet**.
 
 #### Aufgabe 2
-Vollständiger zusätzlicher Job:
+Füge den folgenden Job in `.github/workflows/05-mehrere-jobs.yml` des Lern-Repositorys ein:
 
 ```yaml
   abschluss:
@@ -232,7 +232,7 @@ Vollständiger zusätzlicher Job:
 `abschluss` startet erst, wenn `melden` und `parallel-a` erfolgreich beendet sind. Job-Graph **ungetestet**.
 
 #### Aufgabe 3
-In `zaehlen` nur den Suchbegriff ändern:
+Ändere im Workflow `.github/workflows/05-mehrere-jobs.yml` im Job `zaehlen` den Suchbegriff von `ERROR` auf `FATAL`:
 
 ```yaml
           ANZAHL=$(grep -c ' FATAL ' daten/server.log || true)
@@ -240,14 +240,14 @@ In `zaehlen` nur den Suchbegriff ändern:
           echo "anzahl=$ANZAHL" >> "$GITHUB_OUTPUT"
 ```
 
-Für die Kursdatei wird `0` weitergereicht. Wegen `|| true` bleibt `zaehlen` grün; `melden` läuft weiter und meldet sinngemäß `Der Job zaehlen meldet 0 Fehler`. GitHub-Output-Weitergabe **ungetestet**, Shell-/Datenwert lokal plausibilisiert.
+Für die Beispieldatei wird `0` weitergereicht. Wegen `|| true` bleibt `zaehlen` grün; `melden` läuft weiter und meldet sinngemäß `Der Job zaehlen meldet 0 Fehler`. GitHub-Output-Weitergabe **ungetestet**, Shell-/Datenwert lokal plausibilisiert.
 
 #### Aufgabe 4
-Ohne Checkout fehlt `daten/server.log`. `grep` gibt einen Dateifehler aus und normalerweise Exit-Code 2; `|| true` macht daraus trotzdem einen erfolgreichen Schritt. Dadurch ist `ANZAHL` leer oder enthält nicht zuverlässig eine gültige Zählung (die konkrete Bash-Auswertung/Logdarstellung ist vom Runner abhängig). `melden` läuft deshalb weiter und kann eine leere Zahl melden. Diese GitHub-Beobachtung ist **ungetestet**; der Kurs warnt zu Recht, dass `|| true` echte Fehler verschluckt.
+Ohne Checkout fehlt `daten/server.log`. `grep` gibt den Dateifehler auf stderr aus und liefert Exit-Code 2. `|| true` unterdrückt den Fehlertext nicht, fängt aber den Status ab. Da die Befehlssubstitution keinen Wert enthält, ist `ANZAHL` leer. Erwartet werden im Protokoll `Gefunden: ` und danach `Der Job zaehlen meldet  Fehler` (ohne Zahl). Bash-Verhalten lokal reproduziert; der GitHub-Joblauf und die Anzeige sind **ungetestet**.
 
 ### Lektion 6: Häufigkeiten zählen und Dateien durchsuchen
 
-**Beispieldateien:** Für den Workflow müssen `daten/zugriffe.log` und `daten/bericht.txt` im gewählten Branch enthalten sein. Die Zählbefehle filtern die Kommentarzeilen heraus.
+Übertrage `.github/workflows/06-auswerten.yml` sowie die Beispieldateien `daten/zugriffe.log` und `daten/bericht.txt` aus dem Kurs-Repository ins Lern-Repository. Die Auswertungsbefehle filtern Kommentarzeilen heraus.
 
 #### Aufgabe 1
 
@@ -279,53 +279,56 @@ grep -v '^#' daten/server.log | awk '{print $3}' | sort | uniq -c | sort -nr
       1 WARNING
 ```
 
-Lokal verifiziert. `grep -v '^#'` entfernt zuerst die Kommentarzeilen des Beispieldatensatzes; die Schweregrade stehen danach in Spalte 3.
+Lokal mit den Daten aus dem Lern-Repository geprüft. `grep -v '^#'` entfernt die Kommentarzeilen der Beispieldatei; die Schweregrade stehen danach in Spalte 3.
 
 #### Aufgabe 3
 
 ```bash
-find . -type f -name "*.txt"
+find daten -type f -name "*.txt"
 ```
 
-Im aktuellen Kurs-Repository findet der Befehl mindestens:
+Im Lern-Repository ergibt sich für diesen Befehl folgende Ausgabe:
 
 ```text
-./daten/einkauf.txt
-./daten/bericht.txt
-./daten/server.log
-./daten/zugriffe.log
+daten/einkauf.txt
+daten/bericht.txt
 ```
 
-Die genaue Ausgabe hängt von weiteren Dateien im Repository ab. Wird die Antwortdatei angelegt, erscheint außerdem `./loesungen/aufgabe1.txt`.
+Ein Aufruf von `find . -type f -name "*.txt"` durchsucht stattdessen das ganze Lern-Repository. Dabei können abhängig von den vorhandenen Dateien weitere Treffer erscheinen.
 
 #### Aufgabe 4
-Ohne das erste `sort`:
+Entferne im Workflow im Lern-Repository `sort`, und zwar das direkt vor `uniq -c`:
 
 ```bash
 grep -v '^#' daten/zugriffe.log | cut -d' ' -f1 | uniq -c | sort -nr
 ```
 
-werden nur direkt benachbarte gleiche Namen gezählt. Für die Kursdaten entstehen dadurch mehrere Teilgruppen statt der korrekten Summen; `anna` erscheint z. B. als einzelne Gruppen mit `1`, statt insgesamt `4`. `sort` muss vor `uniq -c` stehen. Lokal verifiziert.
+werden nur direkt benachbarte gleiche Namen gezählt. Für die Beispieldaten im Lern-Repository entstehen dadurch mehrere Teilgruppen statt der korrekten Summen; `anna` erscheint z. B. als einzelne Gruppen mit `1`, statt insgesamt `4`. `sort` muss vor `uniq -c` stehen. Lokal mit den Beispieldaten im Lern-Repository verifiziert.
 
 ### Lektion 7: Artefakte hochladen und herunterladen
 
-Die Workflow-Datei `.github/workflows/07-artefakte.yml` lädt den Bericht mit `actions/upload-artifact@v7` hoch und demonstriert den Browser-Download sowie die Weitergabe zwischen Jobs mit `actions/download-artifact@v8`.
+Übertrage `.github/workflows/07-artefakte.yml` und die benötigten Beispieldateien aus dem Kurs-Repository in dein Lern-Repository. Pushe alle Dateien, bevor du den Workflow startest. Der Workflow im Lern-Repository lädt den Bericht mit `actions/upload-artifact@v7` hoch; `actions/download-artifact@v8` zeigt, wie ein zweiter Job das Artefakt weiterverwendet.
 
 #### Aufgabe 1
-Nach erfolgreichem Lauf: **Actions → Lauf öffnen → Artifacts → `auswertung`** herunterladen, ZIP entpacken und `bericht.txt` lesen. Der Job `weiterverarbeiten` zeigt denselben Bericht nach Download mit `actions/download-artifact@v8` aus dem vorherigen Job. Inhalt (Datum ausgenommen):
+Starte den Workflow im Lern-Repository. Job `bericht` erzeugt `ergebnis/bericht.txt` und lädt die Datei unter dem Artefaktnamen `auswertung` hoch. Job `weiterverarbeiten` wartet mit `needs: bericht`, lädt das Artefakt mit `actions/download-artifact@v8` nach `weitergabe/` herunter und gibt die Datei aus. Im Browser kann dasselbe Artefakt als ZIP heruntergeladen werden.
+
+**Erwarteter Inhalt der Datei `bericht.txt`** (das Datum variiert):
 
 ```text
-Auswertung vom 2026-10-20
+Auswertung vom YYYY-MM-DD
 Fehler im Server-Log: 3
 Datensätze im Zugriffslog: 10
 Beliebteste Seite:
       4 /produkte
 ```
 
-Das Datum ist nur beispielhaft und wird durch `date +%Y-%m-%d` bestimmt. Lokale Textwerte verifiziert; Upload, Browser-Download, Job-zu-Job-Download und ZIP **ungetestet**.
+Berichtinhalt und lokale Berichtserzeugung sind geprüft. GitHub-Upload, Browser-Download, Job-Abhängigkeit und Job-zu-Job-Download sind **ungetestet**.
 
 #### Aufgabe 2
-Im Block vor `} | tee ergebnis/bericht.txt` ergänzen:
+Der Browser-Download wurde bereits in Aufgabe 1 beschrieben. Er ist vom automatischen Download im Job `weiterverarbeiten` zu unterscheiden. Der Download durch `actions/download-artifact@v8` ist **ungetestet**.
+
+#### Aufgabe 3
+Im Block des Jobs `bericht` die folgende Zeile vor `} | tee ergebnis/bericht.txt` ergänzen:
 
 ```bash
             echo "Warnungen im Server-Log: $(grep -c ' WARNING ' daten/server.log || true)"
@@ -333,8 +336,8 @@ Im Block vor `} | tee ergebnis/bericht.txt` ergänzen:
 
 Erwartete zusätzliche Zeile: `Warnungen im Server-Log: 1`. Lokal verifiziert.
 
-#### Aufgabe 3
-Vollständiger `with:`-Block:
+#### Aufgabe 4
+Dem `with:`-Block des Schritts `Ergebnis hochladen` den Wert `retention-days` hinzufügen:
 
 ```yaml
         with:
@@ -343,9 +346,10 @@ Vollständiger `with:`-Block:
           retention-days: 1
 ```
 
-Danach committen und den Workflow erneut starten. Nur neu erstellte Artefakte erhalten die neue Frist. Ansicht und Fristvergleich sind **ungetestet**.
+Committe und pushe die Änderung im Lern-Repository und starte den Workflow erneut. Nur neu erstellte Artefakte erhalten die neue Frist. Ob die Fristangabe in der Ansicht erscheint, wurde **nicht getestet**.
 
-#### Aufgabe 4
+#### Aufgabe 5
+Ändere im Upload-Schritt `Ergebnis hochladen` den Wert `path` auf diese mehrzeilige Liste:
 
 ```yaml
         with:
@@ -355,21 +359,18 @@ Danach committen und den Workflow erneut starten. Nur neu erstellte Artefakte er
             daten/server.log
 ```
 
-Damit werden Bericht und Server-Log im Artefakt erfasst. Upload-Inhalt **ungetestet**.
+Damit werden der Bericht und zusätzlich `daten/server.log` in dasselbe Artefakt aufgenommen. Upload-Inhalt **ungetestet**.
+
+
 
 ### Lektion 8: Zeitplan mit Cron und weitere Trigger
 
+Übertrage `.github/workflows/08-zeitplan.yml` aus dem Kurs-Repository ins Lern-Repository und pushe sie auf den Standardbranch. Dort ist der manuelle Start verfügbar; der Schedule-Test gehört zur betreuten Aufgabe im Kurs-Repository.
+
+Vor den Aufgaben: Pushe `.github/workflows/08-zeitplan.yml` auf den Standardbranch deines Lern-Repositorys, damit `workflow_dispatch` in **Actions** verfügbar wird. Beim manuellen Start wird `workflow_dispatch` ausgegeben. Ein realer manueller Lauf ist **ungetestet**.
+
 #### Aufgabe 1
-Beim manuellen Start lautet die relevante Änderung:
-
-```text
-Ausgelöst durch: workflow_dispatch
-```
-
-Das ist aus der Triggerdefinition logisch; der tatsächliche Actions-Lauf ist **ungetestet**.
-
-#### Aufgabe 2
-`daten/einkauf.txt` ändern, committen und pushen. Wegen `push.paths: ["daten/**"]` sollte ein Lauf mit
+Ändere im Lern-Repository `daten/einkauf.txt`, committe und pushe die Änderung auf einen Arbeitsbranch, der Workflow 08 enthält. Wegen `push.paths: ["daten/**"]` sollte ein Lauf mit
 
 ```text
 Ausgelöst durch: push
@@ -377,7 +378,9 @@ Ausgelöst durch: push
 
 entstehen. GitHub-Trigger **ungetestet**.
 
-#### Aufgabe 3
+#### Aufgabe 2
+Cron-Ausdrücke, passend zu den drei Zeitangaben:
+
 
 ```text
 # täglich 12:00 UTC
@@ -388,20 +391,22 @@ entstehen. GitHub-Trigger **ungetestet**.
 */30 * * * *
 ```
 
-#### Aufgabe 4
-Temporär ersetzen:
+#### Aufgabe 3
+Betreute Zusatzaufgabe im Kurs-Repository: Die Schedule-Datei muss auf dessen Standardbranch liegen. Die Kursleitung nimmt über den Git-Flow des Kurs-Repositories eine geprüfte Änderung auf `*/5 * * * *` vor und integriert sie in den Standardbranch.
 
 ```yaml
   schedule:
     - cron: "*/5 * * * *"
 ```
 
-Für einen echten Lauf muss diese Version des Workflows auf dem Standardbranch liegen. Die Datei gehört zuerst in einen Feature-Branch, wird geprüft und nach `develop` integriert. Der Kursverantwortliche stellt sie anschließend für den Test auf dem Standardbranch bereit. Nach der Beobachtung `30 6 * * 1` wiederherstellen. GitHub-Planung kann verzögert sein; ein manueller `workflow_dispatch`-Lauf testet den Schedule nicht. Cron-Live-Test **ungetestet**.
+Nach einigen Minuten kann die Kursleitung mit der Gruppe im Actions-Tab prüfen, ob ein `schedule`-Lauf erscheint. Anschließend stellt sie den ursprünglichen Cron-Ausdruck über eine weitere geprüfte Änderung wieder her. Ein manueller `workflow_dispatch`-Lauf testet den Zeitplan nicht. Geplante Läufe können verzögert sein oder ausbleiben; der Live-Test ist **ungetestet**.
 
 ### Abschlussprojekt: Der Auto-Prüfer
 
+Übertrage `.github/workflows/09-pruefer.yml` aus dem Kurs-Repository ins Lern-Repository und pushe sie zunächst auf dessen Standardbranch, damit `workflow_dispatch` verfügbar ist. Erstelle dann einen Arbeitsbranch vom aktualisierten Standardbranch; so enthält auch er den Workflow. Lege dort `loesungen/aufgabe1.txt` mit der Antwort `3` an und pushe sie. Der `push`-Trigger kann nun starten.
+
 #### Aufgabe 1
-`loesungen/aufgabe1.txt` auf `5` setzen, committen und pushen:
+In deinem Lern-Repository `loesungen/aufgabe1.txt` auf `5` setzen, committen und pushen:
 
 ```bash
 printf '5\n' > loesungen/aufgabe1.txt
@@ -410,10 +415,10 @@ git commit -m "Falsche Antwort testen"
 git push
 ```
 
-Der Prüfschritt gibt `Erwartet: 3, Antwort: 5`, danach `Leider falsch. Tipp: grep -c` und beendet sich mit `exit 1`. GitHub-Status **ungetestet**, lokale Vergleichslogik geprüft.
+Der Prüfschritt gibt `Erwartet: 3, Antwort: 5`, danach `Leider falsch. Tipp: grep -c`, dann beendet er sich mit `exit 1`. GitHub-Status **ungetestet**, lokale Vergleichslogik geprüft.
 
 #### Aufgabe 2
-Auf `3` korrigieren, committen und pushen:
+Die Datei in deinem Lern-Repository auf `3` korrigieren, committen und pushen:
 
 ```bash
 printf '3\n' > loesungen/aufgabe1.txt
@@ -425,13 +430,9 @@ git push
 Erwartete Meldung: `Erwartet: 3, Antwort: 3` und `Richtig!`; der Schritt sollte grün werden (**ungetestet**).
 
 #### Aufgabe 3
-Vorbereitung:
+Erstelle im Lern-Repository `loesungen/aufgabe2.txt` mit der Beispielantwort `5` und pushe die Datei.
 
-```bash
-printf '5\n' > loesungen/aufgabe2.txt
-```
-
-Vollständiger zusätzlicher Schritt:
+Füge diesen Schritt zum Auto-Prüfer in deinem Lern-Repository hinzu:
 
 ```yaml
       - name: Aufgabe 2 prüfen
@@ -450,11 +451,13 @@ Vollständiger zusätzlicher Schritt:
 Erwartet: `5`, Antwort: `5`, danach `Richtig!`. Lokal verifiziert.
 
 #### Aufgabe 4
-Beispiel für eine eigene Frage: meistbesuchte Seite, mit `loesungen/aufgabe3.txt` gleich `/produkte`:
+Beispiel für eine eigene Frage: meistbesuchte Seite. Lege im Lern-Repository `loesungen/aufgabe3.txt` mit `/produkte` an und pushe die Datei:
 
 ```text
 /produkte
 ```
+
+Ergänze folgenden Schritt im Auto-Prüfer deines Lern-Repositorys:
 
 ```yaml
       - name: Aufgabe 3 prüfen
@@ -702,6 +705,7 @@ Mit `if: ${{ !cancelled() }}` soll `zusammenfassen` nach einem Abbruch nicht meh
 - `wc -l daten/einkauf.txt` ergibt `5`; `daten/server.log` enthält `9` Logzeilen.
 - `grep -vc '^#' daten/zugriffe.log` ergibt `10` Zugriffsdatensätze; mit zwei Kopfzeilen sind es `12` physische Zeilen.
 - `grep -vc '^#' daten/bericht.txt` ergibt `4` Berichtzeilen.
+- Der simulierte Berichtschritt gibt `Auswertung vom <Datum>`, `Fehler im Server-Log: 3`, `Datensätze im Zugriffslog: 10` und `      4 /produkte` aus. Das Datum hängt vom Ausführungszeitpunkt ab.
 - `bash -n skripte/begruessung.sh` und `shellcheck skripte/begruessung.sh` laufen für die eingecheckte Skriptfassung ohne Meldungen.
 - `INFO` ergibt `5`, `WARNING` ergibt `1`.
 - `grep 'anna' daten/server.log` liefert zwei Zeilen.
@@ -712,7 +716,7 @@ Mit `if: ${{ !cancelled() }}` soll `zusammenfassen` nach einem Abbruch nicht meh
 - `grep -v '^#' daten/bericht.txt | wc -l` ergibt vier Zeilen Berichtstext.
 - `grep -v '^#' daten/server.log | awk '{print $3}' | sort | uniq -c | sort -nr` ergibt `INFO=5`, `ERROR=3`, `WARNING=1`.
 - `wc -l daten/einkauf.txt` ergibt `5`; die Auto-Prüfung mit Antwort `3` ergibt `match=yes` für Aufgabe 1.
-- `find daten -type f -name "*.txt"` findet `daten/einkauf.txt` und `daten/bericht.txt`; die übrigen Treffer hängen von weiteren Repository-Dateien ab.
+- `find daten -type f -name "*.txt"` findet im Lern-Repository genau `daten/einkauf.txt` und `daten/bericht.txt`.
 - `uniq -c` ohne vorheriges `sort` zeigt nur Nachbargruppen und ist deshalb für Gesamthäufigkeiten falsch.
 
 ### Unstimmigkeiten / Fehler im Kurstext
