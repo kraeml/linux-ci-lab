@@ -212,10 +212,10 @@ Beim manuellen Start von `04-skript.yml` die Eingabe `fehlerfall` auf `true` set
 
 ### Lektion 5: Mehrere Jobs und `needs:`
 
-Arbeite in deinem eigenen Lern-Repository aus Teil 1 weiter. Für die Lektionen 5 bis 8 überträgst du die aufgelisteten Workflows und Beispieldateien aus dem Kurs-Repository ins Lern-Repository und startest die Läufe dort. `daten/server.log` stammt aus Teil 1.
+Arbeite in deinem eigenen Lern-Repository aus Teil 1 weiter; du brauchst dort keinen Git Flow. Lege die im Kurstext gezeigten Workflow-Dateien und Beispieldateien unter den angegebenen Pfaden an. `daten/server.log` stammt aus Teil 1.
 
 #### Aufgabe 1
-Im Workflow `.github/workflows/05-mehrere-jobs.yml` des Lern-Repositorys starten `zaehlen` und `parallel-a` ohne `needs:` parallel. `melden` wartet wegen `needs: zaehlen` auf `zaehlen`. Erwartet werden `Gefunden: 3` und `Der Job zaehlen meldet 3 Fehler`. Lokale Daten-/Shell-Ausgabe geprüft; Actions-Graph **ungetestet**.
+Stelle sicher, dass `.github/workflows/05-mehrere-jobs.yml` und `daten/server.log` auf dem Standardbranch des Lern-Repositorys liegen. Im Workflow starten `zaehlen` und `parallel-a` ohne `needs:` parallel. `melden` wartet wegen `needs: zaehlen` auf `zaehlen`. Erwartet werden `Gefunden: 3` und `Der Job zaehlen meldet 3 Fehler`. Lokale Daten-/Shell-Ausgabe geprüft; Actions-Graph **ungetestet**.
 
 #### Aufgabe 2
 Füge den folgenden Job in `.github/workflows/05-mehrere-jobs.yml` des Lern-Repositorys ein:
@@ -247,7 +247,7 @@ Ohne Checkout fehlt `daten/server.log`. `grep` gibt den Dateifehler auf stderr a
 
 ### Lektion 6: Häufigkeiten zählen und Dateien durchsuchen
 
-Übertrage `.github/workflows/06-auswerten.yml` sowie die Beispieldateien `daten/zugriffe.log` und `daten/bericht.txt` aus dem Kurs-Repository ins Lern-Repository. Die Auswertungsbefehle filtern Kommentarzeilen heraus.
+Lege `.github/workflows/06-auswerten.yml`, `daten/zugriffe.log` und `daten/bericht.txt` nach den Beispielen im Kurstext in deinem Lern-Repository an. Die Beispieldateien entsprechen den Angaben in Teil 2; die Auswertungsbefehle filtern Kommentarzeilen heraus.
 
 #### Aufgabe 1
 
@@ -307,7 +307,7 @@ werden nur direkt benachbarte gleiche Namen gezählt. Für die Beispieldaten im 
 
 ### Lektion 7: Artefakte hochladen und herunterladen
 
-Übertrage `.github/workflows/07-artefakte.yml` und die benötigten Beispieldateien aus dem Kurs-Repository in dein Lern-Repository. Pushe alle Dateien, bevor du den Workflow startest. Der Workflow im Lern-Repository lädt den Bericht mit `actions/upload-artifact@v7` hoch; `actions/download-artifact@v8` zeigt, wie ein zweiter Job das Artefakt weiterverwendet.
+Lege `.github/workflows/07-artefakte.yml` nach dem Beispiel im Kurstext in deinem Lern-Repository an. Stelle außerdem sicher, dass `daten/server.log` aus Teil 1 und `daten/zugriffe.log` aus Teil 2 dort vorhanden sind. Der Workflow lädt den Bericht mit `actions/upload-artifact@v7` hoch; `actions/download-artifact@v8` zeigt, wie ein zweiter Job das Artefakt weiterverwendet.
 
 #### Aufgabe 1
 Starte den Workflow im Lern-Repository. Job `bericht` erzeugt `ergebnis/bericht.txt` und lädt die Datei unter dem Artefaktnamen `auswertung` hoch. Job `weiterverarbeiten` wartet mit `needs: bericht`, lädt das Artefakt mit `actions/download-artifact@v8` nach `weitergabe/` herunter und gibt die Datei aus. Im Browser kann dasselbe Artefakt als ZIP heruntergeladen werden.
@@ -365,12 +365,12 @@ Damit werden der Bericht und zusätzlich `daten/server.log` in dasselbe Artefakt
 
 ### Lektion 8: Zeitplan mit Cron und weitere Trigger
 
-Übertrage `.github/workflows/08-zeitplan.yml` aus dem Kurs-Repository ins Lern-Repository und pushe sie auf den Standardbranch. Dort ist der manuelle Start verfügbar; der Schedule-Test gehört zur betreuten Aufgabe im Kurs-Repository.
+Lege `.github/workflows/08-zeitplan.yml` nach dem Beispiel im Kurstext in deinem Lern-Repository an und committe die Datei auf den Standardbranch. Dort ist der manuelle Start verfügbar; den Zeitplan-Test führst du selbst im Lern-Repository aus.
 
-Vor den Aufgaben: Pushe `.github/workflows/08-zeitplan.yml` auf den Standardbranch deines Lern-Repositorys, damit `workflow_dispatch` in **Actions** verfügbar wird. Beim manuellen Start wird `workflow_dispatch` ausgegeben. Ein realer manueller Lauf ist **ungetestet**.
+Vor den Aufgaben: Stelle sicher, dass `.github/workflows/08-zeitplan.yml` auf dem Standardbranch liegt, damit `workflow_dispatch` in **Actions** verfügbar wird. Beim manuellen Start wird `workflow_dispatch` ausgegeben. Ein realer manueller Lauf ist **ungetestet**.
 
 #### Aufgabe 1
-Ändere im Lern-Repository `daten/einkauf.txt`, committe und pushe die Änderung auf einen Arbeitsbranch, der Workflow 08 enthält. Wegen `push.paths: ["daten/**"]` sollte ein Lauf mit
+Erstelle über die Branch-Auswahl auf der Hauptseite des Lern-Repositorys einen Arbeitsbranch vom Standardbranch, der Workflow 08 enthält. Ändere dort `daten/einkauf.txt`, committe und pushe die Änderung. Wegen `push.paths: ["daten/**"]` sollte ein Lauf mit
 
 ```text
 Ausgelöst durch: push
@@ -392,18 +392,18 @@ Cron-Ausdrücke, passend zu den drei Zeitangaben:
 ```
 
 #### Aufgabe 3
-Betreute Zusatzaufgabe im Kurs-Repository: Die Schedule-Datei muss auf dessen Standardbranch liegen. Die Kursleitung nimmt über den Git-Flow des Kurs-Repositories eine geprüfte Änderung auf `*/5 * * * *` vor und integriert sie in den Standardbranch.
+Der Schedule-Workflow muss auf dem Standardbranch des Lern-Repositorys liegen. Ändere in `.github/workflows/08-zeitplan.yml` den Cron-Ausdruck im Browser vorübergehend:
 
 ```yaml
   schedule:
     - cron: "*/5 * * * *"
 ```
 
-Nach einigen Minuten kann die Kursleitung mit der Gruppe im Actions-Tab prüfen, ob ein `schedule`-Lauf erscheint. Anschließend stellt sie den ursprünglichen Cron-Ausdruck über eine weitere geprüfte Änderung wieder her. Ein manueller `workflow_dispatch`-Lauf testet den Zeitplan nicht. Geplante Läufe können verzögert sein oder ausbleiben; der Live-Test ist **ungetestet**.
+Committe die Änderung direkt auf den Standardbranch. Nach einigen Minuten kannst du im Actions-Tab prüfen, ob ein `schedule`-Lauf erscheint. Stelle danach den ursprünglichen Ausdruck `30 6 * * 1` wieder her und committe auch diese Änderung auf den Standardbranch. Ein manueller `workflow_dispatch`-Lauf testet den Zeitplan nicht. Geplante Läufe können verzögert sein oder ausbleiben; der Live-Test ist **ungetestet**.
 
 ### Abschlussprojekt: Der Auto-Prüfer
 
-Übertrage `.github/workflows/09-pruefer.yml` aus dem Kurs-Repository ins Lern-Repository und pushe sie zunächst auf dessen Standardbranch, damit `workflow_dispatch` verfügbar ist. Erstelle dann einen Arbeitsbranch vom aktualisierten Standardbranch; so enthält auch er den Workflow. Lege dort `loesungen/aufgabe1.txt` mit der Antwort `3` an und pushe sie. Der `push`-Trigger kann nun starten.
+Lege `.github/workflows/09-pruefer.yml` nach dem Beispiel im Kurstext an und committe die Datei auf den Standardbranch, damit `workflow_dispatch` verfügbar ist. Erstelle anschließend über die Branch-Auswahl auf der Hauptseite des Lern-Repositorys einen Arbeitsbranch vom Standardbranch. Lege dort `loesungen/aufgabe1.txt` mit der Antwort `3` an und pushe den Commit. Der Arbeitsbranch enthält damit ebenfalls den Prüfer-Workflow. Für das Lern-Repository brauchst du keinen Git Flow.
 
 #### Aufgabe 1
 In deinem Lern-Repository `loesungen/aufgabe1.txt` auf `5` setzen, committen und pushen:

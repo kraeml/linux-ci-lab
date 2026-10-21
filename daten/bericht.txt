@@ -1,5 +1,5 @@
 # Linux CI — Beispieldaten
-# Lizenz: CC BY 4.0 (siehe LICENSE-CONTENT.txt)
+# Lizenz: CC BY 4.0 (siehe LICENSE-CONTENT.txt im Kurs-Repository)
 Quartalsbericht
 Umsatz steigt
 Kosten sinken

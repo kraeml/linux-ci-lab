@@ -1,5 +1,5 @@
 # Linux CI — Beispielcode
-# Lizenz: MIT (siehe LICENSE-CODE.txt)
+# Lizenz: MIT (siehe LICENSE-CODE.txt im Kurs-Repository)
 name: 07 - Artefakte
 
 on:

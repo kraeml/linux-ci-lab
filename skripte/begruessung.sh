@@ -1,5 +1,5 @@
 #!/bin/bash
-# Linux CI — Beispielcode, MIT (siehe LICENSE-CODE.txt)
+# Linux CI — Beispielcode, MIT (siehe LICENSE-CODE.txt im Kurs-Repository)
 
 NAME="$1"
 

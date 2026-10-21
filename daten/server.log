@@ -1,5 +1,5 @@
 # Linux CI — Beispieldaten
-# Lizenz: CC BY 4.0 (siehe LICENSE-CONTENT.txt)
+# Lizenz: CC BY 4.0 (siehe LICENSE-CONTENT.txt im Kurs-Repository)
 2026-10-19 08:01:12 INFO Server gestartet
 2026-10-19 08:05:33 INFO Benutzer anna angemeldet
 2026-10-19 08:07:45 ERROR Datenbank nicht erreichbar
