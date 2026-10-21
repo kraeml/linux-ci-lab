@@ -38,6 +38,7 @@ Dieses Repository enthält einen Einsteigerkurs zu Linux, Git und CI. Schreibe f
 - Behaupte nicht, dass Konfigurationen unverändert zwischen Plattformen funktionieren. Wenn Inhalte für weitere Plattformen ergänzt werden, erkläre sie getrennt und stelle Unterschiede sachlich dar.
 - Nenne erforderliche Runner oder andere Voraussetzungen, wenn sie für eine Übung relevant sind.
 - Beachte: Ein Workflow mit `workflow_dispatch` kann auf GitHub nur manuell gestartet werden, wenn seine Workflow-Datei auf dem Standardbranch vorhanden ist. Plane Tests entsprechend, ohne den manuellen Trigger stillschweigend durch einen anderen Trigger zu ersetzen. Ein manuelles `workflow_dispatch` startet den Workflow nur für den ausgewählten Branch; es ist kein Test für `schedule` und ersetzt nicht die Voraussetzung, dass die Schedule-Datei auf dem Standardbranch liegt.
+- Wird ein Schedule-Test im Lern-Repository ausdrücklich beauftragt, kennzeichne ihn als betreute Ausnahme: Die Kursleitung integriert die temporäre Cron-Änderung nach Git Flow in den Standardbranch des Lern-Repositorys, begleitet den Test und stellt den ursprünglichen Zeitplan durch eine weitere geprüfte Änderung wieder her. Ein manueller `workflow_dispatch`-Lauf ist kein Schedule-Test.
 
 ## Releases
 
