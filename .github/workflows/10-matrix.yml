@@ -1,0 +1,23 @@
+# Linux CI — Beispielcode
+# Lizenz: MIT (siehe LICENSE-CODE.txt im Kurs-Repository)
+name: 10 - Matrix
+
+on:
+  workflow_dispatch:
+
+jobs:
+  suchen:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        stufe: [INFO, WARNING, ERROR]
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Einträge zählen
+        env:
+          STUFE: ${{ matrix.stufe }}
+        run: |
+          ANZAHL=$(grep -c "$STUFE" daten/server.log || true)
+          echo "Stufe $STUFE: $ANZAHL Einträge"

@@ -1,0 +1,64 @@
+# Linux CI — Beispielcode
+# Lizenz: MIT (siehe LICENSE-CODE.txt im Kurs-Repository)
+name: 14 - Bedingungen
+
+on:
+  workflow_dispatch:
+    inputs:
+      modus:
+        description: "Modus"
+        type: choice
+        options:
+          - normal
+          - fehler
+        default: normal
+
+jobs:
+  pruefen:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Immer
+        run: echo "Dieser Schritt läuft normal"
+
+      - name: Absichtlicher Fehler
+        if: ${{ inputs.modus == 'fehler' }}
+        run: |
+          echo "Jetzt schlägt es fehl"
+          exit 1
+
+      - name: Nur bei Erfolg
+        if: ${{ success() }}
+        run: echo "Alles bisher in Ordnung"
+
+      - name: Nur bei Fehler
+        if: ${{ failure() }}
+        run: echo "Etwas ist schiefgegangen"
+
+      - name: Aufräumen (läuft immer)
+        if: ${{ always() }}
+        run: echo "Aufräumen, egal was war"
+
+      - name: Zusammenfassung
+        if: ${{ always() }}
+        env:
+          MODUS: ${{ inputs.modus }}
+          STATUS: ${{ job.status }}
+        run: |
+          {
+            echo "## Ergebnis"
+            echo "- Modus: $MODUS"
+            echo "- Status: $STATUS"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  optional:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Darf scheitern
+        continue-on-error: true
+        run: exit 1
+
+      - name: Läuft trotzdem
+        run: echo "Der Fehler davor wurde toleriert"

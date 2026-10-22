@@ -1,5 +1,5 @@
 # Linux CI — Beispielcode
-# Lizenz: MIT (siehe LICENSE-CODE.txt)
+# Lizenz: MIT (siehe LICENSE-CODE.txt im Kurs-Repository)
 name: 04 - Mein erstes Skript
 
 on:
@@ -23,7 +23,7 @@ jobs:
   skript:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Variablen anzeigen
         run: |

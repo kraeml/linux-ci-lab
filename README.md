@@ -10,7 +10,7 @@ Der Kurs richtet sich an Einsteigerinnen und Einsteiger und umfasst drei aufeina
 2. [Teil 2: Jobs, Dateien, Zeitpläne und ein Abschlussprojekt](Linux%20%2B%20GitHub%20Actions,%20Teil%202.md)
 3. [Teil 3: Matrix-Builds, Secrets, wiederverwendbare Workflows und Fehlerbehandlung](Linux%20%2B%20GitHub%20Actions,%20Teil%203.md)
 
-Beginne mit Teil 1 und bearbeite die Teile der Reihe nach. Teile 2 und 3 bauen auf den vorherigen Kursteilen und ihren Beispieldateien auf.
+Beginne mit Teil 1 und bearbeite die Teile der Reihe nach. Für alle drei Teile verwendest du dasselbe eigene Lern-Repository. Lege die im Kurstext gezeigten Dateien im Lern-Repository an und führe dort die Workflows aus. Die Lizenzdateien bleiben im Kurs-Repository; Git Flow brauchst du für dein Lern-Repository nicht.
 
 ## Voraussetzungen
 

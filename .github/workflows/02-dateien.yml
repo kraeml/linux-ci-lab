@@ -1,5 +1,5 @@
 # Linux CI — Beispielcode
-# Lizenz: MIT (siehe LICENSE-CODE.txt)
+# Lizenz: MIT (siehe LICENSE-CODE.txt im Kurs-Repository)
 name: 02 - Dateien und Ordner
 
 on:
@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Repo auschecken
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Was liegt im Repo?
         run: ls -la

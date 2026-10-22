@@ -1,0 +1,40 @@
+# Linux CI — Beispielcode
+# Lizenz: MIT (siehe LICENSE-CODE.txt im Kurs-Repository)
+name: 06 - Auswerten
+
+on:
+  workflow_dispatch:
+
+jobs:
+  auswerten:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Wer war wie oft da?
+        run: |
+          echo "--- Besuche pro Person ---"
+          grep -v '^#' daten/zugriffe.log | cut -d' ' -f1 | sort | uniq -c | sort -nr
+
+      - name: Welche Seiten sind beliebt?
+        run: |
+          echo "--- Seitenaufrufe ---"
+          grep -v '^#' daten/zugriffe.log | cut -d' ' -f2 | sort | uniq -c | sort -nr
+
+      - name: Top 1
+        run: |
+          echo "--- Beliebteste Seite ---"
+          grep -v '^#' daten/zugriffe.log | cut -d' ' -f2 | sort | uniq -c | sort -nr | head -n 1
+
+      - name: Mit awk eine Spalte holen
+        run: grep -v '^#' daten/zugriffe.log | awk '{print $2}' | sort -u
+
+      - name: Dateien finden
+        run: |
+          echo "--- alle .log-Dateien ---"
+          find . -name "*.log"
+          echo "--- alle Dateien in daten/ ---"
+          find daten -type f
+
+      - name: Bericht lesen
+        run: cat daten/bericht.txt

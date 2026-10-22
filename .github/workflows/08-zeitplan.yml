@@ -1,0 +1,31 @@
+# Linux CI — Beispielcode
+# Lizenz: MIT (siehe LICENSE-CODE.txt im Kurs-Repository)
+name: 08 - Zeitplan
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "daten/**"
+  pull_request:
+    paths:
+      - "daten/**"
+  schedule:
+    - cron: "30 6 * * 1"
+
+jobs:
+  taeglich:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Was hat mich ausgelöst?
+        env:
+          EREIGNIS: ${{ github.event_name }}
+        run: |
+          echo "Ausgelöst durch: $EREIGNIS"
+
+      - name: Log-Auswertung
+        run: |
+          echo "Log-Einträge: $(grep -c -E ' (INFO|WARNING|ERROR) ' daten/server.log)"
+          echo "Datum (UTC): $(date -u +%Y-%m-%d)"

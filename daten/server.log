@@ -1,0 +1,11 @@
+# Linux CI — Beispieldaten
+# Lizenz: CC BY 4.0 (siehe LICENSE-CONTENT.txt im Kurs-Repository)
+2026-10-19 08:01:12 INFO Server gestartet
+2026-10-19 08:05:33 INFO Benutzer anna angemeldet
+2026-10-19 08:07:45 ERROR Datenbank nicht erreichbar
+2026-10-19 08:09:02 INFO Benutzer ben angemeldet
+2026-10-19 08:12:10 WARNING Speicher bei 85 Prozent
+2026-10-19 08:15:27 ERROR Zeitüberschreitung bei Anfrage
+2026-10-19 08:20:41 INFO Benutzer anna abgemeldet
+2026-10-19 08:25:55 ERROR Datenbank nicht erreichbar
+2026-10-19 08:30:00 INFO Backup gestartet

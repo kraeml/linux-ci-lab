@@ -1,5 +1,5 @@
 # Linux CI — Beispielcode
-# Lizenz: MIT (siehe LICENSE-CODE.txt)
+# Lizenz: MIT (siehe LICENSE-CODE.txt im Kurs-Repository)
 name: 03 - Texte auswerten
 
 on:
@@ -15,7 +15,7 @@ jobs:
   logs:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Anfang und Ende
         run: |
