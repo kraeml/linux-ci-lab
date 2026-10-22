@@ -2,25 +2,29 @@
 
 ## Vorbereitung
 
-Für diesen Kurs brauchst du ein GitHub-Konto, ein Repository mit aktiviertem GitHub Actions und Schreibzugriff auf das Repository, um einen Workflow manuell zu starten. Dieser Teil enthält die vier Beispiel-Workflows sowie `daten/einkauf.txt`, `daten/server.log` und `skripte/begruessung.sh` bereits. Prüfe im Tab **Code**, ob diese Dateien vorhanden sind.
+Für diesen Kurs brauchst du ein GitHub-Konto und ein eigenes Lern-Repository mit aktivierten GitHub Actions. Du brauchst Schreibzugriff, um Änderungen dorthin zu pushen und Workflows manuell zu starten. Für die Lern-Repositorys in diesem Kurs brauchst du keinen Git Flow. Lege Dateien anhand der Codeblöcke im Kurstext an; die Vorlagen liegen auch im Kurs-Repository.
 
-Die Workflow-Dateien liegen unter `.github/workflows/` und enden auf `.yml`. Sie starten ausschließlich manuell über `workflow_dispatch`. Damit GitHub den manuellen Start anbietet, muss die Workflow-Datei auf dem **Standardbranch** des Repositories liegen. Beim Start kannst du dann den Branch wählen, dessen Dateien ausgeführt werden sollen. Wenn du die Beispiele in dein eigenes Lern-Repository überträgst, lege die genannten Dateien mit den angezeigten Pfaden an und committe sie. Diese Hinweise entsprechen der GitHub-Dokumentation zu [manuellen Workflow-Starts](https://docs.github.com/en/actions/how-tos/manage-workflow-runs/manually-run-a-workflow) und zum Ereignis [`workflow_dispatch`](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#workflow_dispatch) (Stand: 20.10.2026).
+1. Lege auf GitHub ein öffentliches Repository `linux-lernen` mit README an.
+2. Erstelle Dateien im Browser über **Add file → Create new file**. Gibst du als Dateinamen einen Pfad wie `daten/einkauf.txt` ein, legt GitHub die Ordner automatisch an. Leere Ordner lassen sich im Browser nicht anlegen. Klicke zum Speichern auf **Commit changes**; dadurch wird direkt auf dem ausgewählten Branch committed.
+3. Committe die Workflow-Dateien auf den **Standardbranch** (meist `main`). Damit `workflow_dispatch` ausgelöst werden kann, muss die Workflow-Datei dort liegen. Beim manuellen Start kannst du anschließend einen Branch auswählen.
 
-**So startest und prüfst du einen Workflow:** Öffne den Tab **Actions**, wähle links den genannten Workflow und klicke **Run workflow**. Wähle bei Bedarf den Branch aus und starte den Lauf. Öffne den Lauf und danach den Job; in den Schritten siehst du Befehle und Ausgaben. Prüfe das Ergebnis anhand der in der Lektion genannten Kontrollpunkte.
+**Einen Arbeitsbranch über die GitHub-Oberfläche erstellen:** Öffne die Hauptseite deines Repositorys und klicke in der Dateiansicht auf die Branch-Auswahl. Gib im Feld **Find or create a branch...** einen Namen ein, zum Beispiel `aufgabe-skript`, und wähle **Create branch: aufgabe-skript**. Falls nötig, wähle vorher den Standardbranch als Ausgangspunkt. Arbeite bei den Aufgaben, die einen Arbeitsbranch verlangen, in diesem Branch weiter. Siehe GitHubs Anleitung zum [Erstellen von Branches](https://docs.github.com/en/pull-requests/how-tos/commit-changes/managing-branches-within-your-repository). Wenn du die Dateien im GitHub-Browser bearbeitest, speichert **Commit changes** direkt auf dem ausgewählten Branch. Das ersetzt den in den Aufgaben genannten Push; bei Arbeit mit Git auf deinem Rechner musst du weiterhin pushen.
 
-Die Workflows verwenden `ubuntu-latest`, also einen von GitHub bereitgestellten Ubuntu-Runner. Die genaue Ubuntu-Version kann sich ändern. Bei den Workflows 2 bis 4 lädt `actions/checkout@v7` die Dateien des ausgewählten Branches in den Arbeitsbereich des Jobs. Version 7 verwendet Node.js 24; siehe die [offizielle Action-Dokumentation](https://github.com/actions/checkout) (Stand: 20.10.2026).
+Die Lizenzdateien bleiben im Kurs-Repository. Lizenzhinweise in den Code- und Beispieldatenblöcken verweisen auf diese Dateien; kopiere sie nicht in dein Lern-Repository.
 
-> Die gezeigten Fehlerproben sind beabsichtigt. Wo nötig, sind sie so eingerichtet, dass ein Fehler gezeigt wird, ohne den gesamten Übungslauf abzubrechen.
+> Workflow-Dateien müssen im Hauptverzeichnis des Projekts unter `.github/workflows/` liegen und auf `.yml` oder `.yaml` enden. Die gezeigten Fehlerproben sind beabsichtigt. Wo nötig, sind sie so eingerichtet, dass ein Fehler gezeigt wird, ohne den gesamten Übungslauf abzubrechen.
 
 ---
 
 ## Lektion 1: Hallo Linux
 
-**Lernziel:** Du kannst einen einfachen Workflow mit `workflow_dispatch`, einem Job und aufeinanderfolgenden Schritten lesen und die Ausgaben grundlegender Linux-Befehle im Runner finden.
+**Lernziel:** Du kannst einen einfachen Workflow mit `workflow_dispatch`, einem Job und aufeinanderfolgenden Schritten lesen und die Ausgaben grundlegender Linux-Befehle `echo`, `whoami`, `pwd`, `date`, `uname` im Runner finden.
 
-**Datei:** `.github/workflows/01-hallo-linux.yml`
+**Datei anlegen:** `.github/workflows/01-hallo-linux.yml`
 
 ```yaml
+# Linux CI — Beispielcode
+# Lizenz: MIT (siehe LICENSE-CODE.txt im Kurs-Repository)
 name: 01 - Hallo Linux
 
 on:
@@ -46,10 +50,18 @@ jobs:
         run: uname -a
 ```
 
+Die Workflow-Dateien liegen unter `.github/workflows/` und enden auf `.yml`. Unser Beispiel oben startet ausschließlich manuell über `workflow_dispatch`. Damit GitHub **Run workflow** anbietet, muss die Workflow-Datei auf dem **Standardbranch deines Lern-Repositorys** liegen (meist `main`). Beim Start wählst du den Branch, dessen Dateien ausgeführt werden sollen.
+
+Diese Hinweise entsprechen der GitHub-Dokumentation zu [manuellen Workflow-Starts](https://docs.github.com/en/actions/how-tos/manage-workflow-runs/manually-run-a-workflow) und zum Ereignis [`workflow_dispatch`](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#workflow_dispatch) (Stand: 21.10.2026).
+
+**So startest und prüfst du einen Workflow:** Öffne den Tab **Actions**, wähle links den genannten Workflow und klicke **Run workflow** auf der rechten Seite. Wähle bei Bedarf den Branch aus und starte den Lauf. Öffne den Lauf und danach den Job; in den Schritten siehst du Befehle und Ausgaben. Prüfe das Ergebnis anhand der in der Lektion genannten Kontrollpunkte.
+
+Die Workflows verwenden `ubuntu-latest`, einen von GitHub bereitgestellten Ubuntu-Runner. Die genaue Ubuntu-Version kann sich ändern. Die vollständigen Workflow-Dateien und Skriptvorlagen liegen zusätzlich im Kurs-Repository.
+
 **Ausprobieren**
 
 1. Öffne im Tab **Actions** den Workflow **„01 - Hallo Linux“**.
-2. Klicke **Run workflow**, wähle den Branch und starte den Lauf.
+2. Klicke **Run workflow**, wähle den Branch für den Lauf und starte ihn.
 3. Öffne den Lauf und den Job `erkunden`.
 4. Klappe jeden Schritt auf. Prüfe, dass die Begrüßung erscheint und `whoami`, `pwd`, `date` und `uname` jeweils eine Ausgabe liefern.
 
@@ -86,13 +98,15 @@ jobs:
 
 ## Lektion 2: Dateien und Ordner
 
-**Lernziele:** Du kannst Dateien im Runner-Verzeichnis auflisten und lesen, Dateien und Ordner anlegen, kopieren, umbenennen und löschen. Du verstehst, warum der Workflow `checkout` benötigt. Er nutzt `actions/checkout@v7` mit Node.js 24.
+**Lernziele:** Du kannst Dateien im Runner-Verzeichnis auflisten und lesen, Dateien und Ordner anlegen, kopieren, umbenennen und löschen. Du verstehst, warum der Workflow `checkout` benötigt.
 
-**Beispieldatei:** `daten/einkauf.txt` ist im Repository vorhanden. Zwei Kommentarzeilen nennen Herkunft und Lizenz; die Einkaufsliste enthält fünf Einträge:
+In den Workflows 2 bis 4 lädt `actions/checkout@v7` die Dateien aus dem ausgeführten Branch in den Arbeitsbereich des Jobs. Version 7 verwendet Node.js 24; siehe die [offizielle Action-Dokumentation](https://github.com/actions/checkout) (Stand: 21.10.2026).
+
+**Datei anlegen:** Lege `daten/einkauf.txt` in deinem Lern-Repository an. Die zwei Kommentarzeilen nennen Herkunft und Lizenz; die Einkaufsliste enthält fünf Einträge:
 
 ```text
 # Linux CI — Beispieldaten
-# Lizenz: CC BY 4.0 (siehe LICENSE-CONTENT.txt)
+# Lizenz: CC BY 4.0 (siehe LICENSE-CONTENT.txt im Kurs-Repository)
 Brot
 Milch
 Käse
@@ -100,9 +114,11 @@ Käse
 Kaffee
 ```
 
-**Datei:** `.github/workflows/02-dateien.yml`
+**Datei anlegen:** `.github/workflows/02-dateien.yml`
 
 ```yaml
+# Linux CI — Beispielcode
+# Lizenz: MIT (siehe LICENSE-CODE.txt im Kurs-Repository)
 name: 02 - Dateien und Ordner
 
 on:
@@ -153,7 +169,7 @@ jobs:
 
 **Warum `checkout`?**
 
-Jeder Job läuft auf einer eigenen Runner-Umgebung. Damit die Dateien deines Repositorys dort bereitliegen, lädt `actions/checkout@v7` sie in den Arbeitsbereich. Die Schritte **innerhalb desselben Jobs** verwenden denselben Arbeitsbereich: Was ein Schritt anlegt, ist im nächsten Schritt noch da. Bei GitHub-gehosteten Runnern stellt GitHub für jeden Job eine eigene Umgebung bereit.
+Jeder Job läuft auf einer eigenen Runner-Umgebung. Damit die Dateien **deines Repositorys** dort bereitliegen, lädt `actions/checkout@v7` sie in den Arbeitsbereich. Die Schritte **innerhalb desselben Jobs** verwenden denselben Arbeitsbereich: Was ein Schritt anlegt, ist im nächsten Schritt noch da. Bei GitHub-gehosteten Runnern stellt GitHub für **jeden Job** eine **eigene Umgebung** bereit.
 
 `uses:` ruft eine fertige Action auf; `run:` führt Befehle in der Shell aus. Der Test mit doppeltem `mkdir` ist ein eigener Schritt. `continue-on-error: true` lässt den Workflow nach dem erwarteten Fehler fortsetzen; der Schritt kann als fehlgeschlagen angezeigt werden, ohne den gesamten Job fehlschlagen zu lassen.
 
@@ -192,13 +208,13 @@ Jeder Job läuft auf einer eigenen Runner-Umgebung. Damit die Dateien deines Rep
 
 ## Lektion 3: Texte durchsuchen und auswerten
 
-**Lernziele:** Du kannst Anfang und Ende einer Datei anzeigen, Zeilen zählen, passende Zeilen suchen und Befehle mit Pipes verbinden.
+**Lernziele:** Du kannst Anfang und Ende einer Datei anzeigen, Zeilen zählen, passende Zeilen suchen und Befehle mit Pipes verbinden. Du übst `head`, `tail`, `wc`, `grep`, `sort`, `cut` und die Pipe (`|`).
 
-**Beispieldatei:** `daten/server.log` liegt im Repository. Die Zeitstempel sind erfundene Beispieldaten und müssen nicht zum aktuellen Datum passen.
+**Vorbereitung:** Lege `daten/server.log` an. Die Zeitstempel sind frei erfundene Beispieldaten und müssen nicht zum aktuellen Datum passen.
 
 ```text
 # Linux CI — Beispieldaten
-# Lizenz: CC BY 4.0 (siehe LICENSE-CONTENT.txt)
+# Lizenz: CC BY 4.0 (siehe LICENSE-CONTENT.txt im Kurs-Repository)
 2026-10-19 08:01:12 INFO Server gestartet
 2026-10-19 08:05:33 INFO Benutzer anna angemeldet
 2026-10-19 08:07:45 ERROR Datenbank nicht erreichbar
@@ -210,9 +226,11 @@ Jeder Job läuft auf einer eigenen Runner-Umgebung. Damit die Dateien deines Rep
 2026-10-19 08:30:00 INFO Backup gestartet
 ```
 
-**Datei:** `.github/workflows/03-texte.yml`
+**Datei anlegen:** `.github/workflows/03-texte.yml`
 
 ```yaml
+# Linux CI — Beispielcode
+# Lizenz: MIT (siehe LICENSE-CODE.txt im Kurs-Repository)
 name: 03 - Texte auswerten
 
 on:
@@ -308,12 +326,13 @@ Mit `grep -E "a|b"` suchst du nach `a` **oder** `b`.
 
 ## Lektion 4: Variablen und das erste Shell-Skript
 
-**Lernziele:** Du kannst Shell-Variablen und Workflow-Eingaben unterscheiden, ein Bash-Skript mit einem Parameter ausführen und erklären, warum Eingaben über eine Umgebungsvariable übergeben werden.
+**Lernziele:** Du kannst Shell-Variablen und Workflow-Eingaben unterscheiden, ein Bash-Skript mit einem Parameter ausführen und erklären, warum Eingaben über eine Umgebungsvariable übergeben werden. Das Kommando `chmod` anwenden.
 
-**Skriptdatei:** `skripte/begruessung.sh` ist im Repository vorhanden. Der Workflow zeigt zunächst die Dateirechte, macht das Skript mit `chmod +x` ausführbar und führt es anschließend aus.
+**Datei anlegen:** `skripte/begruessung.sh`. Der Ordner `skripte/` entsteht über den Pfad im Dateinamen.
 
 ```bash
 #!/bin/bash
+# Linux CI — Beispielcode, MIT (siehe LICENSE-CODE.txt im Kurs-Repository)
 # Ein einfaches Skript mit Variable und Schleife
 
 NAME="$1"
@@ -333,9 +352,11 @@ done
 
 > Der Wochentag kommt von `date +%A`. Die Sprache der Ausgabe hängt von der Runner-Umgebung ab und ist auf GitHub-Runnern in der Regel Englisch.
 
-**Datei:** `.github/workflows/04-skript.yml`
+**Datei anlegen:** `.github/workflows/04-skript.yml`
 
 ```yaml
+# Linux CI — Beispielcode
+# Lizenz: MIT (siehe LICENSE-CODE.txt im Kurs-Repository)
 name: 04 - Mein erstes Skript
 
 on:
@@ -443,9 +464,9 @@ Die Faustregel: **Setze nicht vertrauenswürdige Eingaben nicht direkt in den Sh
 **Aufgaben**
 
 1. Starte den Workflow mit einem Namen, der Leerzeichen enthält, zum Beispiel `Ada Lovelace`. Weshalb kommt der vollständige Name als ein Parameter beim Skript an?
-2. Ändere die Schleife in `skripte/begruessung.sh`, sodass sie bis 5 zählt. Committe die Änderung auf einem Branch und starte den Workflow mit diesem Branch. Prüfe die fünf ausgegebenen Zahlen.
-3. Ergänze im Skript die Uhrzeit mit `date +%H:%M`. Die konkrete Uhrzeit hängt vom Ausführungszeitpunkt und der Umgebung ab.
-4. Starte den Workflow erneut und setze die Eingabe `fehlerfall` (Beschreibung: `Fehlendes Ausführungsrecht testen`) auf `true`. Der Workflow entfernt mit `chmod -x` das Ausführungsrecht und versucht das Skript direkt auszuführen. Prüfe den erwarteten Fehler `Permission denied`; `continue-on-error: true` lässt den übrigen Job weiterlaufen. Das genaue Verhalten im GitHub-Runner wurde noch nicht getestet.
+2. Erstelle über die Branch-Auswahl auf dem Tab **Code** einen Arbeitsbranch vom Standardbranch, wie in der Vorbereitung beschrieben. Ändere darin die Schleife in `skripte/begruessung.sh`, sodass sie bis 5 zählt. Committe und pushe die Änderung. Starte den Workflow mit diesem Branch und prüfe die fünf ausgegebenen Zahlen.
+3. Ergänze im Skript die Uhrzeit mit `date +%H:%M`. Committe und pushe die Änderung auf den Arbeitsbranch. Die konkrete Uhrzeit hängt vom Ausführungszeitpunkt und der Umgebung ab.
+4. Committe und pushe die Workflow-Änderung auf den Branch. Starte den Workflow erneut und setze die Eingabe `fehlerfall` (Beschreibung: `Fehlendes Ausführungsrecht testen`) auf `true`. Der Workflow entfernt mit `chmod -x` das Ausführungsrecht und versucht das Skript direkt auszuführen. Prüfe den erwarteten Fehler `Permission denied`; `continue-on-error: true` lässt den übrigen Job weiterlaufen. Das genaue Verhalten im GitHub-Runner wurde noch nicht getestet.
 
 ---
 

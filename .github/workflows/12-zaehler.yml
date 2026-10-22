@@ -1,0 +1,37 @@
+# Linux CI — Beispielcode
+# Lizenz: MIT (siehe LICENSE-CODE.txt im Kurs-Repository)
+name: 12 - Zähler (wiederverwendbar)
+
+on:
+  workflow_call:
+    inputs:
+      datei:
+        description: "Pfad zur Datei"
+        required: true
+        type: string
+      suchwort:
+        description: "Gesuchtes Wort"
+        required: true
+        type: string
+    outputs:
+      anzahl:
+        description: "Anzahl der Treffer"
+        value: ${{ jobs.zaehlen.outputs.anzahl }}
+
+jobs:
+  zaehlen:
+    runs-on: ubuntu-latest
+    outputs:
+      anzahl: ${{ steps.suche.outputs.anzahl }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Zählen
+        id: suche
+        env:
+          DATEI: ${{ inputs.datei }}
+          SUCHWORT: ${{ inputs.suchwort }}
+        run: |
+          ANZAHL=$(grep -c -- "$SUCHWORT" "$DATEI" || true)
+          echo "$SUCHWORT in $DATEI: $ANZAHL"
+          echo "anzahl=$ANZAHL" >> "$GITHUB_OUTPUT"

@@ -1,0 +1,35 @@
+# Linux CI — Beispielcode
+# Lizenz: MIT (siehe LICENSE-CODE.txt im Kurs-Repository)
+name: 05 - Mehrere Jobs
+
+on:
+  workflow_dispatch:
+
+jobs:
+  zaehlen:
+    runs-on: ubuntu-latest
+    outputs:
+      fehler: ${{ steps.zaehle.outputs.anzahl }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Fehler zählen
+        id: zaehle
+        run: |
+          ANZAHL=$(grep -c ' ERROR ' daten/server.log || true)
+          echo "Gefunden: $ANZAHL"
+          echo "anzahl=$ANZAHL" >> "$GITHUB_OUTPUT"
+
+  parallel-a:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Ich laufe gleichzeitig mit zaehlen"
+
+  melden:
+    runs-on: ubuntu-latest
+    needs: zaehlen
+    steps:
+      - name: Ergebnis ausgeben
+        env:
+          FEHLER: ${{ needs.zaehlen.outputs.fehler }}
+        run: echo "Der Job zaehlen meldet $FEHLER Fehler"

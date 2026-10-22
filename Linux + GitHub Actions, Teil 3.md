@@ -1,14 +1,16 @@
 # Kurs: Linux + GitHub Actions, Teil 3 (v5)
 
-Teil 3 baut auf Teil 1 und 2 auf. Du brauchst die Repo-Struktur aus Teil 1 und 2, insbesondere `daten/server.log` und `daten/zugriffe.log`. Es gibt **4 Lektionen** (9 bis 12) und ein Abschlussprojekt.
+Teil 3 baut auf Teil 1 und 2 auf. Du brauchst die Struktur deines eigenen Lern-Repositorys aus den vorherigen Teilen, insbesondere `daten/server.log` und `daten/zugriffe.log`. Für Teil 3 wird dasselbe Lern-Repository weiterverwendet; Git Flow ist dafür nicht nötig. Die Aktionen `actions/checkout@v7`, `actions/upload-artifact@v7` und `actions/download-artifact@v8` verwenden Node.js 24 (Stand 21.10.2026). Die Major-Tags folgen den neuesten Patch-Versionen ihrer Hauptversionen, fixieren aber keine einzelne Patch-Version. Es gibt **4 Lektionen** (9 bis 12) und ein Abschlussprojekt.
 
 > Wie in Teil 2 gilt: Befehlsausgaben in den Erklärungen sind Beispiele. Prüfe sie gegen dein echtes Log im Actions-Tab.
-
+>
 > **Nummerierung:** In Teil 2 hieß der Auto-Prüfer `09-pruefer.yml`. Die neuen Dateien beginnen deshalb bei `10`. Die Lektionstitel zählen unabhängig davon (Lektion 9 bis 12).
 
 ## Vorbereitung
 
-Für Lektion 10 brauchst du einen Eintrag unter **Settings → Secrets and variables → Actions** (Beschreibung dort). Weitere Dateien sind nicht nötig.
+Lege die gezeigten Workflow-Dateien unter ihren Pfaden auf dem Standardbranch deines Lern-Repositorys an und committe sie dort. So kannst du sie über **Actions** manuell starten. Beim Bearbeiten im GitHub-Browser speichert **Commit changes** auf dem ausgewählten Branch; arbeitest du lokal, pushe deine Commits wie beschrieben. Lizenzhinweise in den Codeblöcken verweisen auf Dateien im Kurs-Repository.
+
+Für Lektion 10 brauchst du außerdem einen Eintrag unter **Settings → Secrets and variables → Actions** (Beschreibung dort).
 
 ---
 
@@ -16,9 +18,13 @@ Für Lektion 10 brauchst du einen Eintrag unter **Settings → Secrets and varia
 
 **Lernziele:** `strategy.matrix`, mehrere Läufe aus einer Job-Definition, `fail-fast`, `include`
 
-**Datei:** `.github/workflows/10-matrix.yml`
+**Action-Versionen:** Die Workflows in diesem Kursteil verwenden `actions/checkout@v7` (Node.js 24), `actions/upload-artifact@v7` (Node.js 24) und `actions/download-artifact@v8` (Node.js 24). Stand 21.10.2026 sind die neuesten Releases v7.0.1, v7.0.2 und v8.0.2. Die Tags `@v7` und `@v8` folgen den neuesten Patch-Versionen ihrer Hauptversionen, fixieren aber keine einzelne Patch-Version. Selbst gehostete Runner benötigen für Node.js 24 mindestens Runner-Version 2.327.1.
+
+**Datei anlegen:** `.github/workflows/10-matrix.yml`
 
 ```yaml
+# Linux CI — Beispielcode
+# Lizenz: MIT (siehe LICENSE-CODE.txt im Kurs-Repository)
 name: 10 - Matrix
 
 on:
@@ -32,7 +38,7 @@ jobs:
       matrix:
         stufe: [INFO, WARNING, ERROR]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Einträge zählen
         env:
@@ -45,7 +51,7 @@ jobs:
 **Wie das funktioniert**
 
 | Konzept | Bedeutung |
-|---------|-----------|
+| --------- | ----------- |
 | `strategy.matrix` | Erzeugt aus einer Job-Definition mehrere Jobs, einen pro Wert |
 | `matrix.stufe` | Zugriff auf den Wert des jeweiligen Laufs |
 | `fail-fast: false` | Die anderen Läufe laufen weiter, auch wenn einer fehlschlägt (Standard ist `true`: dann werden laufende Matrix-Jobs abgebrochen) |
@@ -101,9 +107,11 @@ Der Eintrag unter `include:` ergänzt die bestehende Kombination mit `stufe: ERR
 
 > **Nutze ausschließlich Testwerte.** `Pinguin42` ist ein reiner Demowert, der in diesem Kurs absichtlich ausgegeben wird. Gib hier niemals echte Passwörter, Tokens oder Zugangsdaten ein, auch nicht vorübergehend.
 
-**Datei:** `.github/workflows/11-secrets.yml`
+**Datei anlegen:** `.github/workflows/11-secrets.yml`
 
 ```yaml
+# Linux CI — Beispielcode
+# Lizenz: MIT (siehe LICENSE-CODE.txt im Kurs-Repository)
 name: 11 - Secrets und Variablen
 
 on:
@@ -129,7 +137,7 @@ jobs:
 **Unterschied auf einen Blick**
 
 | | Variable (`vars.`) | Secret (`secrets.`) |
-|--|--------------------|---------------------|
+| -- | -------------------- | --------------------- |
 | Für | Nicht sensible Konfiguration | Passwörter, Tokens, Schlüssel |
 | Sichtbar in den Einstellungen | Ja, Wert lesbar | Nein, nach dem Speichern nicht mehr angezeigt |
 | Im Log | Wird normal angezeigt | Wird automatisch als `***` maskiert |
@@ -163,9 +171,11 @@ GitHub ersetzt den exakten Secret-Wert im Log durch `***`. Das hilft gegen verse
 
 **Idee:** Statt dieselben Schritte in vielen Workflows zu kopieren, schreibst du sie einmal und rufst sie auf.
 
-**Datei 1: der wiederverwendbare Workflow** `.github/workflows/12-zaehler.yml`
+**Datei anlegen 1: wiederverwendbarer Workflow** `.github/workflows/12-zaehler.yml`
 
 ```yaml
+# Linux CI — Beispielcode
+# Lizenz: MIT (siehe LICENSE-CODE.txt im Kurs-Repository)
 name: 12 - Zähler (wiederverwendbar)
 
 on:
@@ -190,7 +200,7 @@ jobs:
     outputs:
       anzahl: ${{ steps.suche.outputs.anzahl }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Zählen
         id: suche
@@ -203,9 +213,11 @@ jobs:
           echo "anzahl=$ANZAHL" >> "$GITHUB_OUTPUT"
 ```
 
-**Datei 2: der aufrufende Workflow** `.github/workflows/13-aufrufer.yml`
+**Datei anlegen 2: aufrufender Workflow** `.github/workflows/13-aufrufer.yml`
 
 ```yaml
+# Linux CI — Beispielcode
+# Lizenz: MIT (siehe LICENSE-CODE.txt im Kurs-Repository)
 name: 13 - Aufrufer
 
 on:
@@ -240,7 +252,7 @@ jobs:
 **Wie das funktioniert**
 
 | Element | Bedeutung |
-|---------|-----------|
+| --------- | ----------- |
 | `on: workflow_call` | Macht den Workflow von anderen Workflows aufrufbar |
 | `inputs:` | Parameter, die der Aufrufer über `with:` übergibt |
 | `outputs:` (oben) | Werte, die der aufgerufene Workflow an den Aufrufer zurückgibt |
@@ -268,9 +280,11 @@ Zwei Besonderheiten:
 
 **Lernziele:** `if:`, Statusfunktionen (`always()`, `failure()`, `success()`, `cancelled()`), `continue-on-error`, `$GITHUB_STEP_SUMMARY`, `timeout-minutes`
 
-**Datei:** `.github/workflows/14-bedingungen.yml`
+**Datei anlegen:** `.github/workflows/14-bedingungen.yml`
 
 ```yaml
+# Linux CI — Beispielcode
+# Lizenz: MIT (siehe LICENSE-CODE.txt im Kurs-Repository)
 name: 14 - Bedingungen
 
 on:
@@ -289,7 +303,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Immer
         run: echo "Dieser Schritt läuft normal"
@@ -338,7 +352,7 @@ jobs:
 **Wie das funktioniert**
 
 | Element | Bedeutung |
-|---------|-----------|
+| --------- | ----------- |
 | `if:` | Schritt oder Job läuft nur, wenn die Bedingung wahr ist |
 | `success()` | Wahr, wenn alle vorherigen Schritte erfolgreich waren (das ist die **Standardbedingung** ohne `if:`) |
 | `failure()` | Wahr, wenn ein vorheriger Schritt fehlgeschlagen ist |
@@ -372,9 +386,11 @@ Verbinde Matrix, Artefakte und Zusammenfassung.
 
 **Ziel:** Ein Workflow zählt für mehrere Log-Stufen die Einträge, sammelt die Ergebnisse und schreibt eine Zusammenfassung.
 
-**Datei:** `.github/workflows/15-pipeline.yml`
+**Datei anlegen:** `.github/workflows/15-pipeline.yml`
 
 ```yaml
+# Linux CI — Beispielcode
+# Lizenz: MIT (siehe LICENSE-CODE.txt im Kurs-Repository)
 name: 15 - Pipeline
 
 on:
@@ -388,7 +404,7 @@ jobs:
       matrix:
         stufe: [INFO, WARNING, ERROR]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Zählen und speichern
         env:
@@ -400,7 +416,7 @@ jobs:
           echo "$STUFE: $ANZAHL"
 
       - name: Teilergebnis hochladen
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ergebnis-${{ matrix.stufe }}
           path: ergebnis/
@@ -413,7 +429,7 @@ jobs:
       - name: Teilergebnisse laden
         id: laden
         continue-on-error: true
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           pattern: ergebnis-*
           merge-multiple: true
@@ -470,7 +486,7 @@ Deshalb prüft der Workflow `outcome`: Nur dort ist der echte Fehler noch sichtb
 
 > **Dateikollisionen bei `merge-multiple`:** Mit `merge-multiple: true` landen die Dateien aller Artefakte im selben Ordner. Hier ist das unproblematisch, weil jeder Matrix-Lauf eine anders benannte Datei erzeugt (`INFO.txt`, `WARNING.txt`, `ERROR.txt`). Würden zwei Läufe eine gleichnamige Datei hochladen, könnte eine die andere überschreiben.
 
-> **Zu `download-artifact@v4`:** `pattern` und `merge-multiple` werden von dieser Action unterstützt. Prüfe die Optionen trotzdem vor der Veröffentlichung gegen die aktuelle Dokumentation, da sich Optionen und Hauptversionen ändern können.
+> **Zu `download-artifact@v8`:** `pattern` und `merge-multiple` werden von dieser Action unterstützt. Prüfe die Optionen trotzdem vor der Veröffentlichung gegen die aktuelle Dokumentation, da sich Optionen und Hauptversionen ändern können.
 
 **Aufgaben**
 1. Starte die Pipeline. Wo findest du die Zusammenfassung, und welche Zahlen zeigt sie?
@@ -486,7 +502,7 @@ Deshalb prüft der Workflow `outcome`: Nur dort ist der echte Fehler noch sichtb
 ## Häufige Fehler in Teil 3
 
 | Fehler | Ursache |
-|--------|---------|
+| -------- | --------- |
 | Matrix-Wert ist leer | Falsche Schreibweise, es heißt `matrix.stufe` und nicht `matrix.Stufe` oder `${{ stufe }}` |
 | Zu viele Läufe | Zwei Dimensionen multiplizieren sich |
 | Secret ist leer | Name falsch geschrieben, nicht angelegt, oder Workflow läuft aus einem Fork |
@@ -499,7 +515,7 @@ Deshalb prüft der Workflow `outcome`: Nur dort ist der echte Fehler noch sichtb
 | Aufräumschritt läuft nach Abbruch weiter | `always()` kann nach einer Abbruchanforderung noch starten, `!cancelled()` verwenden |
 | Artefakt-Download findet nichts | Muster passt nicht zu den Artefaktnamen, alle Uploads sind gescheitert, oder die Artefakte kommen aus einem anderen Lauf |
 | Download-Fehler wird nicht erkannt | `conclusion` statt `outcome` geprüft, oder `continue-on-error` verbirgt die Ursache (im Log des Download-Schritts nachsehen) |
-| Zwei Artefakte mit gleichem Namen | In v4 muss der Name pro Lauf eindeutig sein |
+| Zwei Artefakte mit gleichem Namen | Artefaktnamen müssen innerhalb eines Laufs eindeutig sein |
 | Dateien überschreiben sich nach dem Download | `merge-multiple` legt alle Dateien in einen Ordner, gleichnamige Dateien kollidieren |
 
 ---
@@ -530,7 +546,7 @@ timeout-minutes: N              Zeitlimit für den Job
 ## Änderungen gegenüber v4
 
 | Stelle | Änderung |
-|--------|----------|
+| -------- | ---------- |
 | Abschlussprojekt | Neuer Abschnitt "`outcome` und `conclusion`" mit Vergleichstabelle und Begründung, warum `outcome` geprüft wird |
 | Abschlussprojekt, Aufgabe 4b | Fragt ausdrücklich nach `outcome` und `conclusion`, mit Anleitung zur zusätzlichen Ausgabe und der Frage, warum der Folgeschritt weiterläuft |
 | Lektion 10 | Satz zu Secrets präzisiert: Wert wird nicht mehr angezeigt, berechtigte Workflows können ihn verwenden; Tabellenzeile "nicht mehr angezeigt" statt "nicht mehr lesbar" |

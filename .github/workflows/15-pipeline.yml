@@ -1,0 +1,66 @@
+# Linux CI — Beispielcode
+# Lizenz: MIT (siehe LICENSE-CODE.txt im Kurs-Repository)
+name: 15 - Pipeline
+
+on:
+  workflow_dispatch:
+
+jobs:
+  zaehlen:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        stufe: [INFO, WARNING, ERROR]
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Zählen und speichern
+        env:
+          STUFE: ${{ matrix.stufe }}
+        run: |
+          mkdir -p ergebnis
+          ANZAHL=$(grep -c "$STUFE" daten/server.log || true)
+          echo "$STUFE=$ANZAHL" > "ergebnis/$STUFE.txt"
+          echo "$STUFE: $ANZAHL"
+
+      - name: Teilergebnis hochladen
+        uses: actions/upload-artifact@v7
+        with:
+          name: ergebnis-${{ matrix.stufe }}
+          path: ergebnis/
+
+  zusammenfassen:
+    runs-on: ubuntu-latest
+    needs: zaehlen
+    if: ${{ !cancelled() }}
+    steps:
+      - name: Teilergebnisse laden
+        id: laden
+        continue-on-error: true
+        uses: actions/download-artifact@v8
+        with:
+          pattern: ergebnis-*
+          merge-multiple: true
+          path: sammlung/
+
+      - name: Zusammenfassung schreiben
+        env:
+          LADEN: ${{ steps.laden.outcome }}
+        run: |
+          if [ "$LADEN" != "success" ]; then
+            echo "Download fehlgeschlagen (Status: $LADEN), Details im Log des Schritts 'Teilergebnisse laden'." | tee -a "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+          if ! ls sammlung/*.txt > /dev/null 2>&1; then
+            echo "Download erfolgreich, aber keine Teilergebnis-Dateien gefunden." | tee -a "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+          {
+            echo "## Log-Auswertung"
+            echo ""
+            for datei in sammlung/*.txt; do
+              echo "- $(cat "$datei")"
+            done
+          } >> "$GITHUB_STEP_SUMMARY"
+          cat sammlung/*.txt

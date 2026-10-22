@@ -1,0 +1,31 @@
+# Linux CI — Beispielcode
+# Lizenz: MIT (siehe LICENSE-CODE.txt im Kurs-Repository)
+name: 13 - Aufrufer
+
+on:
+  workflow_dispatch:
+
+jobs:
+  fehler:
+    uses: ./.github/workflows/12-zaehler.yml
+    with:
+      datei: daten/server.log
+      suchwort: ERROR
+
+  zugriffe:
+    uses: ./.github/workflows/12-zaehler.yml
+    with:
+      datei: daten/zugriffe.log
+      suchwort: produkte
+
+  ergebnis:
+    runs-on: ubuntu-latest
+    needs: [fehler, zugriffe]
+    steps:
+      - name: Ergebnisse ausgeben
+        env:
+          FEHLER: ${{ needs.fehler.outputs.anzahl }}
+          ZUGRIFFE: ${{ needs.zugriffe.outputs.anzahl }}
+        run: |
+          echo "Fehler im Server-Log: $FEHLER"
+          echo "Zugriffe auf /produkte: $ZUGRIFFE"
