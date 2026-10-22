@@ -480,7 +480,7 @@ Erwartete Werte sind `ERWARTET=/produkte` und `ANTWORT=/produkte`; lokal verifiz
 ### Lektion 9: Matrix-Builds
 
 #### Aufgabe 1
-Die Matrixdatei enthält die drei Werte INFO, WARNING und ERROR sowie einen `include`-Eintrag für `produkte` in `daten/zugriffe.log`. Das ergibt vier Läufe. Die tatsächlichen Anzeigenamen in GitHub sind **ungetestet**; Inhalte sollen die genannten Suchbegriffe und Dateien erkennen lassen.
+Die Matrixdatei enthält die drei Matrix-Läufe für INFO, WARNING und ERROR in `daten/server.log`. `include` ergänzt bei ERROR den Hinweis „kritischer Fehler“ und fügt einen weiteren Lauf für `produkte` in `daten/zugriffe.log` hinzu. Insgesamt sind es vier Läufe. Die tatsächlichen Anzeigenamen in GitHub sind **ungetestet**.
 
 #### Aufgabe 2
 
@@ -634,10 +634,10 @@ ERROR=3
 Die Zusammenfassung steht in der Laufübersicht und enthält `INFO=5`, `WARNING=1` und `ERROR=3` (Reihenfolge der Dateiglobs kann abweichen). Lokale Zählwerte verifiziert; Matrix, Artefakte und Summary **ungetestet**.
 
 #### Aufgabe 2
-Matrix ändern zu:
+Im Abschlussprojekt heißt der Matrix-Schlüssel `stufe`; in Lektion 9 heißt er `suchbegriff`. Ergänze im Pipeline-Workflow `stufe` um `FATAL`:
 
 ```yaml
-        suchbegriff: [INFO, WARNING, ERROR, FATAL]
+        stufe: [INFO, WARNING, ERROR, FATAL]
 ```
 
 Zusätzliche Datei `FATAL.txt` mit `FATAL=0`; die übrigen Zahlen bleiben `INFO=5`, `WARNING=1`, `ERROR=3`. Lokal verifiziert; Upload/Download **ungetestet**.

@@ -18,7 +18,7 @@ Für Lektion 10 brauchst du außerdem einen Eintrag unter **Settings → Secrets
 
 **Lernziel:** Du erstellst mehrere sinnvolle Läufe aus einer Job-Definition, ergänzt mit `include` gezielt Werte und untersuchst, wie `fail-fast` mit Fehlern umgeht.
 
-**Action-Versionen:** Zum Prüfstand 22.10.2026 zeigen die offiziellen Release-Seiten `checkout` v7.0.1, `upload-artifact` v7.0.2 und `download-artifact` v8.0.2 als neueste Releases. Die verwendeten Major-Tags folgen neuen Patch-Releases innerhalb ihrer Hauptversion und pinnen keine exakte Version. Die veröffentlichten Aktionshinweise nennen Node.js 24 für alle drei Actions und für selbst gehostete Runner mindestens Version 2.327.1. Der gehostete Runner `ubuntu-latest` wird von GitHub verwaltet. Prüfe Versionsangaben vor einer späteren Aktualisierung erneut in den [Release-Hinweisen von checkout](https://github.com/actions/checkout/releases), [upload-artifact](https://github.com/actions/upload-artifact/releases) und [download-artifact](https://github.com/actions/download-artifact/releases) sowie den jeweiligen Readmes.
+**Action-Versionen:** Zum Prüfstand 22.10.2026 zeigen die offiziellen Release-Seiten `checkout` v7.0.1, `upload-artifact` v7.0.2 und `download-artifact` v8.0.2 als neueste Releases. Die verwendeten Major-Tags folgen neuen Patch-Releases innerhalb ihrer Hauptversion und pinnen keine exakte Version. Die veröffentlichten Aktionshinweise nennen Node.js 24 für alle drei Actions und für selbst gehostete Runner mindestens Version 2.327.1. Der gehostete Runner `ubuntu-latest` wird von GitHub verwaltet. Für produktive oder sicherheitskritische Workflows empfiehlt GitHub, Actions ohne Dependency-Lockfile auf eine geprüfte vollständige Commit-SHA zu pinnen und Aktualisierungen bewusst zu prüfen; ein Major-Tag ist einfacher zu warten, folgt aber einem beweglichen Verweis. Prüfe Versionsangaben vor einer späteren Aktualisierung erneut in den [Release-Hinweisen von checkout](https://github.com/actions/checkout/releases), [upload-artifact](https://github.com/actions/upload-artifact/releases) und [download-artifact](https://github.com/actions/download-artifact/releases) sowie den jeweiligen Readmes.
 
 **Datei anlegen:** `.github/workflows/10-matrix.yml`
 
@@ -121,9 +121,9 @@ Der Eintrag unter `include:` ergänzt die bestehende Kombination `suchbegriff: E
 **Aufgaben**
 1. Starte den Workflow. Wie viele Jobs siehst du? Wie heißen sie?
 2. Füge `FATAL` zur Liste `suchbegriff` hinzu. Läuft der Job grün durch? Warum?
-3. Ändere den `include`-Eintrag mit `hinweis` vorübergehend von `suchbegriff: ERROR` zu `suchbegriff: WARNING`. Starte den Workflow erneut: Wie viele Läufe siehst du, und in welchem Lauf wird der Hinweis ausgegeben? Stelle danach den ursprünglichen Wert wieder her.
+3. Ändere den `include`-Eintrag mit `hinweis` vorübergehend von `suchbegriff: ERROR` zu `suchbegriff: WARNING`. Da WARNING bereits in der Ausgangsmatrix vorkommt, wird diese Kombination um den Hinweis erweitert; es entsteht kein zusätzlicher Lauf. Starte den Workflow erneut und kontrolliere, in welchem Lauf der Hinweis ausgegeben wird. Stelle danach den ursprünglichen Wert wieder her.
 4. Das Grundbeispiel enthält den `datei`-Eintrag und `include` bereits. Erkläre, warum diese vier Kombinationen fachlich sinnvoll sind, und nenne für jede Kombination Datei und Suchbegriff.
-5. **Nur beobachten:** Lass den WARNING-Lauf bewusst fehlschlagen: Ergänze im `run:`-Block vor der Zählung `[ "$SUCHBEGRIFF" != "WARNING" ] || exit 1`. Starte mit `fail-fast: false` und kontrolliere, dass die anderen Matrix-Läufe weiterlaufen. Stelle danach `fail-fast: true` ein und beobachte, welche noch laufenden bzw. wartenden Läufe GitHub abbricht. Entferne die Fehlerzeile danach wieder. Das Timing ist nicht festgelegt und soll nicht bewertet werden. Diese Timing-Beobachtung ist explorativ; bewerte nicht, wie viele Läufe bereits fertig waren.
+5. **Nur beobachten:** Lass den WARNING-Lauf bewusst fehlschlagen: Ergänze im `run:`-Block vor der Zählung `[ "$SUCHBEGRIFF" != "WARNING" ] || exit 1`. Starte mit `fail-fast: false` und kontrolliere, dass die anderen Matrix-Läufe weiterlaufen. Stelle danach `fail-fast: true` ein und beobachte, welche noch laufenden bzw. wartenden Läufe GitHub abbricht. Entferne die Fehlerzeile danach wieder. Das Timing ist nicht festgelegt und soll nicht bewertet werden.
 
 ---
 
@@ -376,7 +376,7 @@ jobs:
 
       - name: Abbruch prüfen
         if: ${{ cancelled() }}
-        run: echo "Der Lauf wurde abgebrochen"
+        run: echo "Abbruch erkannt (falls Schritt noch startet)"
 
       - name: Nach Erfolg oder Fehler
         if: ${{ !cancelled() }}
@@ -422,7 +422,7 @@ jobs:
 
 **Warum „Nur bei Erfolg“ im Fehlermodus übersprungen wird:** Der Schritt „Absichtlicher Fehler“ schlägt fehl. Danach wird jeder Schritt, dessen Bedingung ohne Statusfunktion auskommt, nur ausgeführt, wenn bisher alles erfolgreich war. „Nur bei Erfolg“ nutzt `success()` ausdrücklich und wird deshalb übersprungen, während `failure()` und `always()` greifen.
 
-**`cancelled()` selbst beobachten:** Der Schritt „Abbruch prüfen“ zeigt, wie `cancelled()` geschrieben wird. Ein manueller Abbruch kann Schritte überspringen, bevor diese Bedingung noch sichtbar ausgewertet wird. Betrachte deshalb den Abbruchversuch als Beobachtung, nicht als Test mit garantiertem Schritt-Ergebnis.
+**`cancelled()` selbst beobachten:** Der Schritt „Abbruch prüfen“ zeigt, wie `cancelled()` geschrieben wird und macht im Schrittnamen sowie in der Ausgabe deutlich, dass sein Start nicht garantiert ist. Ein manueller Abbruch kann Schritte überspringen, bevor diese Bedingung noch sichtbar ausgewertet wird. Betrachte deshalb den Abbruchversuch als Beobachtung, nicht als Test mit garantiertem Schritt-Ergebnis.
 
 **`always()` oder `!cancelled()`?** Nach einer Abbruchanforderung kann ein Schritt mit `always()` noch starten. Der Abbruch kann ihn aber anschließend beenden, ein Weiterlaufen ist nicht garantiert. `always()` eignet sich für kurze, sichere Aufräumschritte. Für Schritte, die nach einem Fehler weiterlaufen sollen, bei einem Abbruch aber gar nicht erst starten sollen, ist `!cancelled()` meist die passendere Bedingung. Das gilt besonders für Schritte, die lange dauern oder hängen könnten.
 
@@ -568,7 +568,7 @@ Deshalb prüft der Workflow `outcome`: Nur dort ist der echte Fehler noch sichtb
 3. Baue den Zählschritt so um, dass er den wiederverwendbaren Workflow aus Lektion 11 verwendet statt eigenem `grep`. Welche Teile der Pipeline müssen sich ändern, welche nicht? (Tipp: Ein Aufruf per `uses:` kann ebenfalls in einer Matrix stehen, aber der Artefakt-Upload müsste dann im wiederverwendbaren Workflow stattfinden.)
 4. Teste zwei Fehlerfälle. Füge jeweils die angegebene Zeile in den Schritt `Zählen und speichern` ein und entferne sie nach dem Test wieder:
    - **a) Ein Lauf scheitert vor dem Upload:** Füge vor der Zählung `[ "$STUFE" != "WARNING" ] || exit 1` ein. Der WARNING-Lauf lädt nichts hoch. Kontrolliere im Log, welche Dateien heruntergeladen und in die Zusammenfassung aufgenommen wurden.
-   - **b) Alle Läufe scheitern vor dem Upload:** Füge `exit 1` direkt nach `mkdir -p ergebnis` ein. Es wird nichts hochgeladen. Im Workflow ist die Ausgabe von `outcome` und `conclusion` bereits vorbereitet. Warum läuft der Folgeschritt dank `continue-on-error: true` weiter? Prüfe, ob die Action einen Fehler meldet oder der Download-Schritt erfolgreich, aber ohne Dateien endet. In beiden Fällen muss die Prüfung den Zusammenfassungsschritt scheitern lassen. Das genaue Verhalten bei null Artefakten ist eine Beobachtung und keine feste Soll-Ausgabe. Warum läuft der Folgeschritt dank `continue-on-error: true` weiter? Prüfe, ob die Action einen Fehler meldet oder der Download-Schritt erfolgreich, aber ohne Dateien endet. In beiden Fällen muss die Prüfung den Zusammenfassungsschritt scheitern lassen. Das genaue Verhalten bei null Artefakten ist eine Beobachtung und keine feste Soll-Ausgabe.
+   - **b) Alle Läufe scheitern vor dem Upload:** Füge `exit 1` direkt nach `mkdir -p ergebnis` ein. Es wird nichts hochgeladen. Im Workflow sind die Ausgaben von `outcome` und `conclusion` vorbereitet. Prüfe, ob die Action einen Fehler meldet oder der Download-Schritt erfolgreich, aber ohne Dateien endet. In beiden Fällen muss die Prüfung den Zusammenfassungsschritt scheitern lassen. Das genaue Verhalten bei null Artefakten ist eine Beobachtung und keine feste Soll-Ausgabe.
 5. Breche einen laufenden Lauf von Hand ab. Beobachte, ob `zusammenfassen` startet oder weiterläuft. Ändere die Bedingung auf `always()` und wiederhole den Versuch. Die Ergebnisse hängen vom Abbruchzeitpunkt ab; bewerte nicht, ob der Job noch gestartet oder beendet wurde. Stelle die ursprüngliche Bedingung anschließend wieder her.
 
 ---

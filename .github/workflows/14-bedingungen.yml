@@ -43,7 +43,7 @@ jobs:
 
       - name: Abbruch prüfen
         if: ${{ cancelled() }}
-        run: echo "Der Lauf wurde abgebrochen"
+        run: echo "Abbruch erkannt (falls Schritt noch startet)"
 
       - name: Nach Erfolg oder Fehler
         if: ${{ !cancelled() }}
