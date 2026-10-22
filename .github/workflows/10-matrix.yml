@@ -11,13 +11,37 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        stufe: [INFO, WARNING, ERROR]
+        suchbegriff: [INFO, WARNING, ERROR]
+        datei: [daten/server.log]
+        include:
+          - suchbegriff: ERROR
+            hinweis: "kritischer Fehler"
+          - suchbegriff: produkte
+            datei: daten/zugriffe.log
     steps:
       - uses: actions/checkout@v7
 
       - name: Einträge zählen
         env:
-          STUFE: ${{ matrix.stufe }}
+          SUCHBEGRIFF: ${{ matrix.suchbegriff }}
+          DATEI: ${{ matrix.datei }}
+          HINWEIS: ${{ matrix.hinweis }}
         run: |
-          ANZAHL=$(grep -c "$STUFE" daten/server.log || true)
-          echo "Stufe $STUFE: $ANZAHL Einträge"
+          if [ ! -f "$DATEI" ]; then
+            echo "Datei $DATEI fehlt" >&2
+            exit 2
+          fi
+          if ANZAHL=$(grep -F -c -- "$SUCHBEGRIFF" "$DATEI"); then
+            :
+          else
+            STATUS=$?
+            if [ "$STATUS" -eq 1 ]; then
+              ANZAHL=0
+            else
+              exit "$STATUS"
+            fi
+          fi
+          echo "$SUCHBEGRIFF in $DATEI: $ANZAHL Einträge"
+          if [ -n "$HINWEIS" ]; then
+            echo "$HINWEIS"
+          fi

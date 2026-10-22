@@ -480,63 +480,59 @@ Erwartete Werte sind `ERWARTET=/produkte` und `ANTWORT=/produkte`; lokal verifiz
 ### Lektion 9: Matrix-Builds
 
 #### Aufgabe 1
-Die Matrix `[INFO, WARNING, ERROR]` erzeugt drei Jobs: `suchen (INFO)`, `suchen (WARNING)` und `suchen (ERROR)`. Die Job-Namen/Ansicht sind **ungetestet**.
+Die Matrixdatei enthält die drei Werte INFO, WARNING und ERROR sowie einen `include`-Eintrag für `produkte` in `daten/zugriffe.log`. Das ergibt vier Läufe. Die tatsächlichen Anzeigenamen in GitHub sind **ungetestet**; Inhalte sollen die genannten Suchbegriffe und Dateien erkennen lassen.
 
 #### Aufgabe 2
 
 ```yaml
-        stufe: [INFO, WARNING, ERROR, FATAL]
+        suchbegriff: [INFO, WARNING, ERROR, FATAL]
 ```
 
-Es entstehen vier Läufe. Für `FATAL` gibt `grep -c` `0` aus; `|| true` verhindert den Fehlerstatus. Erwartete Meldung: `Stufe FATAL: 0 Einträge`. Lokal verifiziert; Matrixausführung **ungetestet**.
+Die ursprünglichen drei Stufen plus `FATAL` und der Zugriffslauf ergeben fünf Läufe. Bei FATAL wird kein Treffer gefunden; der Schritt gibt `0` aus und bleibt erfolgreich. Die Datei und `grep`-Statusbehandlung lassen sich lokal ausführen; Matrixausführung **ungetestet**.
 
 #### Aufgabe 3
-Vollständiger Matrixblock:
+Wird `include` geändert zu:
 
 ```yaml
-      fail-fast: false
-      matrix:
-        stufe: [INFO, ERROR]
-        datei: [daten/server.log, daten/zugriffe.log]
+          - suchbegriff: WARNING
+            hinweis: "prüfen"
 ```
 
-Das ergibt `2 × 2 = 4` Läufe. `ERROR` passt sinnvoll zu `server.log`; `INFO` ebenfalls. Beide Suchstufen sind für `zugriffe.log` fachlich sinnlos, weil diese Datei keine Log-Level enthält; technisch können sie trotzdem Treffer liefern, falls ein Suchwort im Text vorkommt.
+wird die ursprüngliche WARNING-Kombination ergänzt; es kommt kein zusätzlicher Lauf hinzu. Der Hinweis wird nur in diesem Lauf ausgegeben. GitHub-Matrixausführung **ungetestet**.
 
 #### Aufgabe 4
-Im `run:`-Block ergänzen:
+Der Matrixblock aus dem Kurstext erzeugt drei Läufe mit `daten/server.log` und einen mit `daten/zugriffe.log`. Die Shell meldet `produkte in daten/zugriffe.log: 4` für den Zugriffslauf sowie `INFO in daten/server.log: 5`, `WARNING in daten/server.log: 1` und `ERROR in daten/server.log: 3`. Die Zahlen sind lokal verifiziert; die tatsächliche Matrixausführung ist **ungetestet**.
+
+#### Aufgabe 5
+
+Im `run:`-Block vor der Ausgabe ergänzen:
 
 ```bash
-          [ "$STUFE" != "WARNING" ] || exit 1
+          [ "$SUCHBEGRIFF" != "WARNING" ] || exit 1
 ```
 
-Bei `WARNING` schlägt ein Matrix-Lauf absichtlich fehl. Mit `fail-fast: true` versucht GitHub laufende andere Matrix-Läufe abzubrechen; bereits beendete Läufe bleiben bestehen. Mit `false` laufen die anderen weiter. Das konkrete Timing/der Graph ist **ungetestet**.
+Bei `fail-fast: false` laufen die anderen Jobs trotz des WARNING-Fehlers weiter. Bei `true` werden noch laufende oder wartende Matrix-Jobs abgebrochen; bereits abgeschlossene bleiben abgeschlossen. Timing und Graph sind **ungetestet** und sollen nicht als festes Soll bewertet werden.
 
 ### Lektion 10: Secrets und Variablen
 
 #### Aufgabe 1
-Nach dem Anlegen von `KURS_GEHEIMNIS=Pinguin42` und `KURS_THEMA=Linux` lautet die erwartete Ausgabe:
+Bei `KURS_THEMA=Linux` und einem gesetzten Secret lautet die erwartete, secretfreie Ausgabe:
 
 ```text
 Das Kursthema ist Linux
-Länge des Geheimnisses: 9
-Wert: ***
+Secret ist gesetzt
 ```
 
-`Pinguin42` hat 9 Zeichen; GitHub soll den exakten Secret-Wert maskieren. Anlegen und Maskierung sind **ungetestet**.
+Der Secret-Wert und seine Länge erscheinen nicht. GitHub-Konfiguration und Workflow-Lauf sind **ungetestet**.
 
 #### Aufgabe 2
 Nur den Repository-Wert `KURS_THEMA` ändern und den Workflow erneut starten; die YAML-Datei bleibt unverändert. Tatsächlicher Settings-/Workflow-Effekt **ungetestet**.
 
 #### Aufgabe 3
-
-```yaml
-        run: echo "$GEHEIMNIS" | rev
-```
-
-Für `Pinguin42` wäre der veränderte Text `24niugniP`. Ob bzw. wie dieser veränderte Wert maskiert wird, darf nicht vorausgesetzt werden: die Maskierung zielt auf den exakten Wert und ist kein verlässlicher Schutz gegen Transformationen. **Ungetestet; Secret nicht ausgeben.**
+Secrets sollen auch in veränderter oder kodierter Form nie ausgegeben werden. GitHub maskiert exakte Secret-Werte in Logs; die Maskierung ist keine Garantie für umgeformte Inhalte. Die Aufgabe ist eine Erklärung ohne Änderung des Workflows und ohne Secret-Ausgabe.
 
 #### Aufgabe 4
-Ein echtes Passwort gehört als Secret gespeichert, weil Variablenwerte lesbar und für normale Konfiguration gedacht sind. Ein Secret wird dagegen geschützt und im Log maskiert; trotzdem darf man es nicht absichtlich ausgeben oder in Artefakte schreiben.
+Ein echtes Passwort gehört als Secret gespeichert, weil Variablenwerte lesbar und für normale Konfiguration gedacht sind. Secrets sind geschützt und GitHub versucht sie in Logs zu maskieren; trotzdem dürfen sie nicht absichtlich ausgegeben oder in Artefakte geschrieben werden.
 
 ### Lektion 11: Wiederverwendbare Workflows
 
@@ -586,27 +582,31 @@ Im wiederverwendbaren Workflow beide Felder ändern:
 Beim Weglassen wird `ERROR` verwendet; `grep` zählt somit die drei Fehlerzeilen. GitHub-Workflow-Call **ungetestet**.
 
 #### Aufgabe 4
-Wird nur die Schritt-ID von `suche` umbenannt, aber nicht
+
+Wird `id: suche` in `id: ermitteln` geändert, aber die Job-Ausgabe bleibt bei
 
 ```yaml
 outputs:
   anzahl: ${{ steps.suche.outputs.anzahl }}
 ```
 
-angepasst, verweist der Job-Output auf eine nicht mehr passende Schritt-ID. Der Workflow-Output bzw. der Aufrufer erhält keinen gültigen Wert; je nach GitHub-Validierung kann der Workflow bereits validierungsseitig scheitern. Die genaue GitHub-Meldung ist **ungetestet**. Lösung: ID und Referenz gemeinsam umbenennen.
+verweist der Job-Output noch auf die alte Schritt-ID. Passe ihn auf `${{ steps.ermitteln.outputs.anzahl }}` an. Auch die tatsächliche Ausgabeprüfung im aufrufenden Workflow ist **ungetestet**; der korrekte Pfad von Schritt zu Job und Workflow bleibt unverändert.
 
 ### Lektion 12: Bedingungen, Zusammenfassungen und Fehlerbehandlung
 
 #### Aufgabe 1
-Bei `modus=normal` läuft `Immer`, der absichtliche Fehler wird übersprungen, `Nur bei Erfolg`, `Aufräumen` und `Zusammenfassung` laufen. `optional` läuft ebenfalls; sein Fehler wird toleriert. Die Zusammenfassung enthält `Modus: normal` und typischerweise `Status: success`. Laufansicht **ungetestet**.
+Bei `modus=normal` läuft `Immer`, der absichtliche Fehler wird übersprungen, `Nur bei Erfolg`, `Aufräumschritt`, `Nach Erfolg oder Fehler` und `Zusammenfassung` laufen. `Abbruch prüfen` wird übersprungen; `optional` läuft ebenfalls und toleriert seinen Fehler. Die Zusammenfassung enthält `Modus: normal` und typischerweise `Status: success`. Laufansicht **ungetestet**.
 
 #### Aufgabe 2
-Bei `modus=fehler`: `Immer` läuft, `Absichtlicher Fehler` endet mit `exit 1`, `Nur bei Erfolg` wird übersprungen, `Nur bei Fehler` und `Aufräumen` laufen, die Zusammenfassung läuft mit `always()`. Sie enthält `Modus: fehler` und typischerweise `Status: failure`. Die Summary erscheint oben auf der Laufübersicht. GitHub-Verhalten **ungetestet**.
+Bei `modus=fehler`: `Immer` läuft, `Absichtlicher Fehler` endet mit `exit 1`, `Nur bei Erfolg` wird übersprungen, `Nur bei Fehler`, `Aufräumschritt`, `Nach Erfolg oder Fehler` und die Zusammenfassung laufen. `Abbruch prüfen` wird übersprungen. Die Zusammenfassung enthält `Modus: fehler` und typischerweise `Status: failure`. Die Summary erscheint oben auf der Laufübersicht. GitHub-Verhalten **ungetestet**.
 
 #### Aufgabe 3
 Ohne `if: ${{ always() }}` gilt die Standardbedingung `success()`. Nach dem absichtlichen Fehler wird der Aufräumschritt daher im Fehlermodus übersprungen. Im Normalmodus läuft er weiter. Das ist gemäß Actions-Semantik, aber **ungetestet**.
 
 #### Aufgabe 4
+`cancelled()` ist direkt im Schritt „Abbruch prüfen“ verwendet. Bei einem manuellen Abbruch kann GitHub weitere Schritte beenden, bevor sie laufen; das Vorhandensein der Bedingung garantiert also keine sichtbare Meldung. Dieser Test ist ausdrücklich explorativ und **ungetestet**.
+
+#### Aufgabe 5
 
 ```yaml
     timeout-minutes: 1
@@ -615,12 +615,15 @@ Ohne `if: ${{ always() }}` gilt die Standardbedingung `success()`. Nach dem absi
         run: sleep 90
 ```
 
-Nach etwa einer Minute wird der Job wegen des Zeitlimits abgebrochen; nachfolgende Standardschritte werden nicht normal weitergeführt. Exakte Abbruchmeldung und Status **ungetestet**.
+Nach etwa einer Minute wird der Job wegen des Zeitlimits abgebrochen; nachfolgende Standardschritte werden nicht normal weitergeführt. Exakte Abbruchmeldung und Status **ungetestet**. Die Änderung anschließend zurücknehmen.
+
+#### Aufgabe 6
+Der manuelle Abbruch während `sleep 60` ist eine Timing-Beobachtung. `cancelled()` ist wahr, nachdem der Lauf als abgebrochen markiert wurde, aber es gibt keine Garantie, dass der zugehörige Schritt dann noch startet. Auch `!cancelled()` soll nach einer Abbruchanforderung nicht ausgeführt werden. Laufverhalten **ungetestet**.
 
 ### Abschlussprojekt: Auswertungs-Pipeline
 
 #### Aufgabe 1
-Die drei Matrix-Läufe erzeugen:
+Die drei Matrix-Läufe des Abschlussprojekts erzeugen:
 
 ```text
 INFO=5
@@ -628,19 +631,19 @@ WARNING=1
 ERROR=3
 ```
 
-Die Zusammenfassung steht in der Laufübersicht und enthält entsprechend `- INFO=5`, `- WARNING=1`, `- ERROR=3` (Reihenfolge der Dateiglobs kann abweichen). Lokale Zählwerte verifiziert; Matrix, Artefakte und Summary **ungetestet**.
+Die Zusammenfassung steht in der Laufübersicht und enthält `INFO=5`, `WARNING=1` und `ERROR=3` (Reihenfolge der Dateiglobs kann abweichen). Lokale Zählwerte verifiziert; Matrix, Artefakte und Summary **ungetestet**.
 
 #### Aufgabe 2
 Matrix ändern zu:
 
 ```yaml
-        stufe: [INFO, WARNING, ERROR, FATAL]
+        suchbegriff: [INFO, WARNING, ERROR, FATAL]
 ```
 
 Zusätzliche Datei `FATAL.txt` mit `FATAL=0`; die übrigen Zahlen bleiben `INFO=5`, `WARNING=1`, `ERROR=3`. Lokal verifiziert; Upload/Download **ungetestet**.
 
 #### Aufgabe 3
-Ein direkter `uses:`-Aufruf kann nicht zugleich eigene `steps:` für den Upload enthalten. Deshalb muss der wiederverwendbare Workflow um einen Upload-Schritt erweitert werden, z. B.:
+Ein direkter `uses:`-Aufruf kann nicht zugleich eigene `steps:` für den Upload enthalten. Deshalb muss der wiederverwendbare Workflow um einen Upload-Schritt erweitert werden:
 
 ```yaml
       - name: Teilergebnis hochladen
@@ -650,11 +653,10 @@ Ein direkter `uses:`-Aufruf kann nicht zugleich eigene `steps:` für den Upload 
           path: ergebnis/
 ```
 
-Dafür braucht `12-zaehler.yml` zusätzlich eine Datei-/Ergebnis-Erzeugung, etwa:
+Dafür erzeugt `12-zaehler.yml` vor dem Upload eine Datei. In `run:` wird der bestehende sichere Suchblock wiederverwendet; zusätzlich kommt die Ablage hinzu:
 
-```yaml
+```bash
           mkdir -p ergebnis
-          ANZAHL=$(grep -c -- "$SUCHWORT" "$DATEI" || true)
           echo "$SUCHWORT=$ANZAHL" > "ergebnis/$SUCHWORT.txt"
           echo "anzahl=$ANZAHL" >> "$GITHUB_OUTPUT"
 ```
@@ -662,7 +664,7 @@ Dafür braucht `12-zaehler.yml` zusätzlich eine Datei-/Ergebnis-Erzeugung, etwa
 Der Pipeline-Matrixjob wird dann zu einem aufgerufenen Job mit `uses: ./.github/workflows/12-zaehler.yml`, `with: datei: daten/server.log` und `suchwort: ${{ matrix.stufe }}`. Der Job kann dabei nicht zusätzlich `runs-on:` oder `steps:` enthalten. Der Job `zusammenfassen` und sein Download-/Summary-Code bleiben unverändert, sofern die Artefaktnamen und Dateien gleich bleiben. Workflow-Call/Artefaktverhalten **ungetestet**.
 
 #### Aufgabe 4a
-Vor dem Speichern:
+Im `run:`-Block vor der Zählung:
 
 ```bash
           [ "$STUFE" != "WARNING" ] || exit 1
@@ -678,7 +680,7 @@ Direkt nach dem Erzeugen des Ordners:
           exit 1
 ```
 
-Im Schritt `Zusammenfassung schreiben` zum Testen ergänzen:
+Ersetze im Schritt `Zusammenfassung schreiben` den bisherigen `env:`- und `run:`-Block durch den nachstehenden. Er gibt beide Statuswerte aus und behält beide Fehlerprüfungen bei:
 
 ```yaml
         env:
@@ -687,12 +689,16 @@ Im Schritt `Zusammenfassung schreiben` zum Testen ergänzen:
         run: |
           echo "outcome=$LADEN, conclusion=$CONCLUSION"
           if [ "$LADEN" != "success" ]; then
-            echo "Download fehlgeschlagen (Status: $LADEN), Details im Log des Schritts 'Teilergebnisse laden'." | tee -a "$GITHUB_STEP_SUMMARY"
+            echo "Download fehlgeschlagen" | tee -a "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+          if ! ls sammlung/*.txt > /dev/null 2>&1; then
+            echo "Keine Teilergebnis-Dateien gefunden" | tee -a "$GITHUB_STEP_SUMMARY"
             exit 1
           fi
 ```
 
-Bei einem tatsächlich fehlgeschlagenen Download werden `outcome=failure` und wegen `continue-on-error: true` typischerweise `conclusion=success` erwartet. Der Folgeschritt läuft weiter, weil sein Download-Schritt den Job nicht fehlschlagen lässt. Die Summary soll `Download fehlgeschlagen ...` statt Zahlen enthalten; der Job `zusammenfassen` endet anschließend mit Fehler. Ob `download-artifact@v8` bei null Treffern `failure` oder `success` meldet, ist laut Kurstext nicht ausdrücklich garantiert und hier **ungetestet**. Falls `outcome=success` gilt, greift die anschließende `ls sammlung/*.txt`-Prüfung und meldet `Download erfolgreich, aber keine Teilergebnis-Dateien gefunden.`. Die genaue Download-Logmeldung ist ebenfalls **ungetestet**.
+Bei einem tatsächlich fehlgeschlagenen Download sind `outcome=failure` und wegen `continue-on-error: true` `conclusion=success` zu erwarten. Der Folgeschritt läuft weiter, weil der Fehler des Download-Schritts toleriert wurde. Falls der Download ohne Treffer stattdessen erfolgreich endet, verhindert die Dateiprüfung trotzdem eine leere Zusammenfassung. Welcher Fall eintritt, ist **ungetestet** und keine feste Soll-Ausgabe; der Schritt muss in beiden Fällen mit Fehler enden.
 
 #### Aufgabe 5
 Mit `if: ${{ !cancelled() }}` soll `zusammenfassen` nach einem Abbruch nicht mehr starten; war es bereits gestartet, kann es je nach Zeitpunkt weiterlaufen oder beendet werden. Mit `if: ${{ always() }}` darf der Job auch nach einer Abbruchanforderung noch starten, kann aber anschließend ebenfalls abgebrochen werden. Das Ergebnis hängt vom Zeitpunkt und GitHub-Abbruchverhalten ab und ist **ungetestet**.
@@ -721,12 +727,9 @@ Mit `if: ${{ !cancelled() }}` soll `zusammenfassen` nach einem Abbruch nicht meh
 
 ### Unstimmigkeiten / Fehler im Kurstext
 
-1. **Teil 1, Lektion 1, Aufgabe 2:** Als Beispiel steht `2026-10-19`, während der aktuelle Ausführungstag laut Arbeitskontext **2026-10-20** ist. Das Beispiel ist ausdrücklich nur ein Beispiel; `date` liefert den tatsächlichen Tag.
+1. **Teil 1, Lektion 1, Aufgabe 2:** Als Beispiel steht `2026-10-19`, während der aktuelle Ausführungstag laut Arbeitskontext **2026-10-22** ist. Das Beispiel ist ausdrücklich nur ein Beispiel; `date` liefert den tatsächlichen Tag.
 2. **Teil 1, Lektion 2:** Der doppelte `mkdir`-Fehlertest läuft in einem eigenen Schritt unter `testordner`; `continue-on-error: true` verhindert, dass der absichtliche Fehler den gesamten Workflow fehlschlagen lässt.
 3. **Teil 2, Lektion 6:** In der Musterzählung für Personen ist die Reihenfolge bei Gleichstand nicht fachlich eindeutig: `ben` und `clara` haben beide `3`. `sort -nr` kann bei gleicher Zahl eine Reihenfolge liefern, auf die man sich nicht als fachliche Rangfolge verlassen sollte. Die Kommentarzeilen der Beispieldatei müssen beim Zählen herausgefiltert werden.
 4. **Teil 2, Lektion 7:** `|| true` beim `grep` fängt wie beschrieben nicht nur „keine Treffer“, sondern auch echte Dateifehler ab. Das ist als Kursvereinfachung markiert, sollte in produktiven Workflows aber nicht unverändert verwendet werden.
-5. **Teil 3, Lektion 9, Aufgabe 3:** Die zweidimensionale Matrix mit `stufe` und `datei` erzeugt technisch auch sinnlose Kombinationen (`INFO`/`WARNING`/`ERROR` gegen `daten/zugriffe.log`). Das ist keine Rechenfehler, aber eine fachliche Unstimmigkeit, die der Kurs selbst erwähnt.
-6. **Teil 3, Lektion 10, Aufgabe 3:** Die Aussage zur Secret-Maskierung nach `rev` ist absichtlich vorsichtig. Es darf nicht behauptet werden, dass der veränderte Wert sicher maskiert wird.
-7. **Teil 3, Abschlussprojekt, Aufgabe 4b:** Das Verhalten von `download-artifact@v8` bei null passenden Artefakten wird im Kurs selbst als nicht ausdrücklich dokumentierte Zusage bezeichnet. Deshalb ist eine eindeutige erwartete Meldung hier nicht garantiert; die vorhandene `ls`-Absicherung ist notwendig.
-8. **Teil 3, Lektion 12:** `always()` kann nach einer Abbruchanforderung noch starten, garantiert aber kein vollständiges Weiterlaufen. Ein beobachtetes Ergebnis hängt vom Zeitpunkt ab und ist kein stabiler Sollwert.
-9. **YAML-Parserprüfung:** Die ursprüngliche YAML-Beispielzeile mit Doppelpunkt und unquotiertem `run:`-Scalar war mehrdeutig. Die ausführbare `.github/workflows/08-zeitplan.yml` nutzt einen Block-Scalar und wird im Rahmen der Überarbeitung mit `actionlint` geprüft. Markdown-Codeblöcke sind nicht mehr die ausführbare Quelle.
+5. **Teil 3, Abschlussprojekt, Aufgabe 4b:** `download-artifact@v8` dokumentiert nicht, dass ein Muster ohne passende Artefakte zwingend einen Fehlerstatus liefert. Die Workflow-Datei kontrolliert deshalb zusätzlich, ob heruntergeladene `.txt`-Dateien vorhanden sind.
+6. **Teil 3, Lektion 12:** `always()` kann nach einer Abbruchanforderung noch starten, garantiert aber kein vollständiges Weiterlaufen. Ein beobachtetes Ergebnis hängt vom Zeitpunkt ab und ist kein stabiler Sollwert.
