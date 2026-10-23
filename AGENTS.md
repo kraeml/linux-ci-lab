@@ -2,7 +2,7 @@
 
 ## Projekt und Zielgruppe
 
-Dieses Repository enthält einen Einsteigerkurs zu Linux, Git und CI. Schreibe für Lernende mit wenig oder keiner Vorerfahrung.
+Dieses Repository enthält einen Einsteigerkurs zu Linux, Git, YAML, Markdown und CI. Schreibe für Lernende mit wenig oder keiner Vorerfahrung.
 
 ## Schreib- und Lernstil
 
@@ -15,6 +15,7 @@ Dieses Repository enthält einen Einsteigerkurs zu Linux, Git und CI. Schreibe f
 - Trenne Musterlösungen von den Aufgaben. Bewahre sie unter `lehrkraft/` auf und erwähne oder verlinke sie nicht in Einstiegen für Lernende. Markiere Musterlösungen als *ungetestet*, solange sie nicht ausgeführt wurden.
 - Kennzeichne Beispieldaten und erwartete Ausgaben.
 - Nutze Fehler, um zu zeigen, wie Lernende ihre Arbeit prüfen und verbessern können.
+- Prüfe interne Links in Markdown-Dateien auf vorhandene Dateien und gültige Abschnittsanker. Prüfe externe Links auf Erreichbarkeit, wenn sie neu erstellt oder geändert wurden.
 
 ## Technische Sorgfalt
 
