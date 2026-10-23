@@ -2,7 +2,7 @@
 
 ## Vorbereitung
 
-Für diesen Kurs brauchst du ein GitHub-Konto und ein eigenes Lern-Repository mit aktivierten GitHub Actions. Du brauchst Schreibzugriff, um Änderungen dorthin zu pushen und Workflows manuell zu starten. Für die Lern-Repositorys in diesem Kurs brauchst du keinen Git Flow. Lege Dateien anhand der Codeblöcke im Kurstext an; die Vorlagen liegen auch im Kurs-Repository.
+Für diesen Kurs brauchst du ein GitHub-Konto und ein eigenes Lern-Repository mit aktivierten GitHub Actions. Du brauchst Schreibzugriff, um Änderungen dorthin zu pushen und Workflows manuell zu starten. Für die Lern-Repositorys in diesem Kurs brauchst du keinen Git Flow. Lege Dateien anhand der Codeblöcke im Kurstext an; die Vorlagen liegen auch im Kurs-Repository. Wenn du YAML oder Git erst kennenlernen möchtest, findest du die Grundlagen in [YAML-Grundlagen](YAML-Grundlagen.md) und [Git-Grundlagen](Git-Grundlagen.md).
 
 1. Lege auf GitHub ein öffentliches Repository `linux-lernen` mit README an.
 2. Erstelle Dateien im Browser über **Add file → Create new file**. Gibst du als Dateinamen einen Pfad wie `daten/einkauf.txt` ein, legt GitHub die Ordner automatisch an. Leere Ordner lassen sich im Browser nicht anlegen. Klicke zum Speichern auf **Commit changes**; dadurch wird direkt auf dem ausgewählten Branch committed.
@@ -297,9 +297,8 @@ Die Ausgabe des linken Kommandos wird zur Eingabe des rechten. Achtung: Dieses B
 | `grep -i` | Groß- und Kleinschreibung ignorieren |
 | `sort` | Zeilen sortieren |
 | `cut -d' ' -f4-` | Felder ab Feld 4 ausschneiden; ein einzelnes Leerzeichen ist der Trenner |
-| `|` | Pipe: Ausgabe weiterreichen |
 
-Mit `grep -E "a|b"` suchst du nach `a` **oder** `b`.
+**Pipe (`|`):** Die Ausgabe des linken Kommandos wird zur Eingabe des rechten Kommandos weitergereicht. Zum Beispiel sucht `grep -E "a|b"` nach `a` **oder** `b`.
 
 > **Fehlerprobe: `grep` ohne Treffer.** Beim manuellen Start von **„03 - Texte auswerten“** kannst du die Eingabe `fehlerfall` auf `true` setzen. In der Actions-Oberfläche wird sie mit der Beschreibung `FATAL-Suche ohne Treffer ausführen` angezeigt. `grep -c "FATAL" daten/server.log` gibt `0` aus, aber liefert Exit-Code 1, weil nichts gefunden wurde. Der Schritt wird als fehlgeschlagen angezeigt; `continue-on-error: true` sorgt dafür, dass der Job trotzdem erfolgreich enden kann. Ohne diese Einstellung wäre dies der letzte Schritt und der Job würde fehlschlagen.
 >
