@@ -32,6 +32,19 @@ jobs:
           DATEI: ${{ inputs.datei }}
           SUCHWORT: ${{ inputs.suchwort }}
         run: |
-          ANZAHL=$(grep -c -- "$SUCHWORT" "$DATEI" || true)
+          if [ ! -f "$DATEI" ]; then
+            echo "Datei nicht gefunden: $DATEI" >&2
+            exit 2
+          fi
+          if ANZAHL=$(grep -F -c -- "$SUCHWORT" "$DATEI"); then
+            :
+          else
+            STATUS=$?
+            if [ "$STATUS" -eq 1 ]; then
+              ANZAHL=0
+            else
+              exit "$STATUS"
+            fi
+          fi
           echo "$SUCHWORT in $DATEI: $ANZAHL"
           echo "anzahl=$ANZAHL" >> "$GITHUB_OUTPUT"

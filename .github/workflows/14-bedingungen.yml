@@ -37,9 +37,17 @@ jobs:
         if: ${{ failure() }}
         run: echo "Etwas ist schiefgegangen"
 
-      - name: Aufräumen (läuft immer)
+      - name: Aufräumschritt (läuft immer)
         if: ${{ always() }}
-        run: echo "Aufräumen, egal was war"
+        run: echo "Dieser kurze Schritt läuft unabhängig vom Ergebnis"
+
+      - name: Abbruch prüfen
+        if: ${{ cancelled() }}
+        run: echo "Abbruch erkannt (falls Schritt noch startet)"
+
+      - name: Nach Erfolg oder Fehler
+        if: ${{ !cancelled() }}
+        run: echo "Der Lauf wurde nicht abgebrochen"
 
       - name: Zusammenfassung
         if: ${{ always() }}
