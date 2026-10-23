@@ -82,7 +82,7 @@ In Teil 2, Lektion 8, sind `push`, `pull_request` und `schedule` ausdrücklich a
 
 **Lernziel:** Du änderst einen ungefährlichen YAML-Wert auf einem Arbeitsbranch, prüfst den Datei-Diff und kontrollierst die Änderung anschließend im manuellen Workflow-Lauf.
 
-**Voraussetzung:** Die Datei `.github/workflows/01-hallo-linux.yml` liegt bereits auf dem Standardbranch deines Lern-Repositorys. Der Workflow enthält `workflow_dispatch`. Auf GitHub muss die Datei auf dem Standardbranch vorhanden sein, damit der manuelle Start angeboten wird. Im Dialog **Run workflow** kannst du über das Feld **Branch** den Arbeitsbranch auswählen. GitHub führt dabei den Workflow aus der gewählten Referenz aus. Siehe GitHubs aktuelle Anleitung zum [manuellen Starten eines Workflows](https://docs.github.com/en/actions/how-tos/manage-workflow-runs/manually-run-a-workflow) und zum [Ansehen von Workflow-Läufen](https://docs.github.com/en/actions/how-tos/monitor-workflows/viewing-workflow-run-history) (Prüfstand: 23.10.2026).
+**Voraussetzung:** Die Datei `.github/workflows/01-hallo-linux.yml` wurde bereits auf dem Standardbranch deines Lern-Repositorys angelegt und committet. Der Workflow enthält `workflow_dispatch`. Erstelle für diese Übung einen neuen Arbeitsbranch vom aktuellen Standardbranch, damit der Branch die Workflow-Datei enthält. Prüfe in der Dateiansicht des neuen Branches, dass die Datei vorhanden ist, bevor du sie bearbeitest. Auf GitHub muss die Datei außerdem auf dem Standardbranch liegen, damit der manuelle Start angeboten wird. Im Dialog **Run workflow** kannst du über das Feld **Branch** den Arbeitsbranch auswählen. GitHub führt dabei den Workflow aus der gewählten Referenz aus. Siehe GitHubs aktuelle Anleitung zum [manuellen Starten eines Workflows](https://docs.github.com/en/actions/how-tos/manage-workflow-runs/manually-run-a-workflow) und zum [Ansehen von Workflow-Läufen](https://docs.github.com/en/actions/how-tos/monitor-workflows/viewing-workflow-run-history) (Prüfstand: 23.10.2026).
 
 **Datei ändern:** `.github/workflows/01-hallo-linux.yml` im eigenen Lern-Repository.
 
@@ -107,6 +107,7 @@ In Teil 2, Lektion 8, sind `push`, `pull_request` und `schedule` ausdrücklich a
 - **Name enthält einen Doppelpunkt und wird falsch gelesen:** Setze den vollständigen Textwert in Anführungszeichen.
 - **Der Lauf zeigt den alten Namen:** Prüfe, ob der Commit wirklich auf dem Arbeitsbranch gespeichert wurde und ob du im Dialog **Run workflow** denselben Branch ausgewählt hast.
 - **Die Änderung taucht nicht im Commit-Diff auf:** Wahrscheinlich wurde die Bearbeitung nicht mit **Commit changes** gespeichert. Kehre zum Editor zurück und speichere sie auf dem Arbeitsbranch.
+- **Die Workflow-Datei fehlt im Arbeitsbranch:** Prüfe, ob der Branch neu vom aktuellen Standardbranch erstellt wurde. Erstelle andernfalls einen neuen Branch vom Standardbranch und kontrolliere erneut, dass die Datei sichtbar ist.
 - **Run workflow wird nicht angeboten:** Prüfe, ob die Workflow-Datei mit `workflow_dispatch` auf dem Standardbranch liegt.
 
 Du kannst danach optional einen Pull Request öffnen, um die Änderung zur Übernahme in den Standardbranch vorzuschlagen. Führe das Zusammenführen nur aus, wenn es die Kursaufgabe verlangt.

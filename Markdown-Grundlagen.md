@@ -129,7 +129,7 @@ Nutze die Vorlage `README-Projektvorlage.md` als Orientierung. Passe sie an und 
 
 Öffne dein Lern-Repository auf GitHub und bearbeite dessen `README.md` im Browser. Schreibe die Inhalte mit Markdown-Syntax. Nutze **Preview**, um die formatierte Darstellung vor dem Speichern anzusehen. Da du Git-Grundlagen bereits gelesen hast, wähle den dort angelegten Arbeitsbranch, falls vorhanden. Andernfalls kannst du diese erste README-Änderung auf dem Standardbranch speichern.
 
-Gib eine kurze Commit-Nachricht ein, die die Änderung beschreibt, und bestätige **Commit changes**. Falls GitHub anbietet, die Änderung auf einem neuen Branch zu speichern, kannst du diese Möglichkeit wählen; prüfe dabei, dass die Branch-Auswahl und der Commit-Schritt angezeigt werden. Der Ablauf ist derselbe wie im Abschnitt „Änderungen und Commits“ in [Git-Grundlagen](Git-Grundlagen.md).
+Gib eine kurze Commit-Nachricht ein, die die Änderung beschreibt, und bestätige **Commit changes**. Falls GitHub anbietet, die Änderung auf einem neuen Branch zu speichern, kannst du diese Möglichkeit wählen; prüfe dabei, dass die Branch-Auswahl und der Commit-Schritt angezeigt werden. Der Ablauf ist derselbe wie im Abschnitt „Änderungen und Commits“ in [Git-Grundlagen](Git-Grundlagen.md#änderungen-und-commits).
 
 ### Ergebniskontrolle
 

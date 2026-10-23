@@ -19,9 +19,9 @@ Der Kurs richtet sich an Einsteigerinnen und Einsteiger und umfasst drei aufeina
 Die Grundlagenmodule begleiten den Kurs. Beginne mit Teil 1 und nutze sie in dieser Reihenfolge:
 
 1. Lege nach Teil 1, Vorbereitung, Schritt 1 dein eigenes Lern-Repository mit der automatisch angelegten `README.md` an. Erstelle noch keine weiteren Kursdateien.
-2. Lies [Git-Grundlagen](Git-Grundlagen.md), bevor du weitere Dateien im Lern-Repository speicherst oder Branches für Kursaufgaben anlegst.
+2. Lies [Git-Grundlagen](Git-Grundlagen.md), bevor du weitere Dateien im Lern-Repository speicherst oder Branches für Kursaufgaben anlegst. Die Brückenübung am Ende machst du erst nach Schritt 4, wenn `01-hallo-linux.yml` im Standardbranch liegt.
 3. Lies [YAML-Grundlagen](YAML-Grundlagen.md) als kurze Vorbereitung vor der ersten Workflow-Datei. Das Modul ist keine Voraussetzung, um mit dem Kurs zu beginnen.
-4. Arbeite Teil 1 weiter und lege `.github/workflows/01-hallo-linux.yml` an. Erstelle danach mit [Markdown-Grundlagen](Markdown-Grundlagen.md) eine Projekt-README für dein Lern-Repository, die auf diese vorhandene Workflow-Datei verlinkt.
+4. Arbeite Teil 1 weiter, lege `.github/workflows/01-hallo-linux.yml` an und committe die Datei auf dem Standardbranch. Mache danach die Brückenübung am Ende der [Git-Grundlagen](Git-Grundlagen.md): Sie ändert einen Schrittnamen in dieser Datei auf einem neuen Arbeitsbranch. Erstelle anschließend mit [Markdown-Grundlagen](Markdown-Grundlagen.md) eine Projekt-README für dein Lern-Repository, die auf die Workflow-Datei verlinkt.
 
 Für alle drei Teile verwendest du dasselbe Lern-Repository. Lege die im Kurstext gezeigten Dateien dort an und führe die Workflows aus. Die Lizenzdateien bleiben im Kurs-Repository; Git Flow brauchst du für dein Lern-Repository nicht.
 
