@@ -495,10 +495,10 @@ Wird `include` geändert zu:
 
 ```yaml
           - suchbegriff: WARNING
-            hinweis: "prüfen"
+            hinweis: "kritischer Fehler"
 ```
 
-wird die ursprüngliche WARNING-Kombination ergänzt; es kommt kein zusätzlicher Lauf hinzu. Der Hinweis wird nur in diesem Lauf ausgegeben. GitHub-Matrixausführung **ungetestet**.
+wird der bestehende WARNING-Lauf um den Hinweis ergänzt; es bleibt bei vier Läufen. Der Hinweis wird nur in diesem Lauf ausgegeben. GitHub-Matrixausführung **ungetestet**.
 
 #### Aufgabe 4
 Der Matrixblock aus dem Kurstext erzeugt drei Läufe mit `daten/server.log` und einen mit `daten/zugriffe.log`. Die Shell meldet `produkte in daten/zugriffe.log: 4` für den Zugriffslauf sowie `INFO in daten/server.log: 5`, `WARNING in daten/server.log: 1` und `ERROR in daten/server.log: 3`. Die Zahlen sind lokal verifiziert; die tatsächliche Matrixausführung ist **ungetestet**.
@@ -595,18 +595,15 @@ verweist der Job-Output noch auf die alte Schritt-ID. Passe ihn auf `${{ steps.e
 ### Lektion 12: Bedingungen, Zusammenfassungen und Fehlerbehandlung
 
 #### Aufgabe 1
-Bei `modus=normal` läuft `Immer`, der absichtliche Fehler wird übersprungen, `Nur bei Erfolg`, `Aufräumschritt`, `Nach Erfolg oder Fehler` und `Zusammenfassung` laufen. `Abbruch prüfen` wird übersprungen; `optional` läuft ebenfalls und toleriert seinen Fehler. Die Zusammenfassung enthält `Modus: normal` und typischerweise `Status: success`. Laufansicht **ungetestet**.
+Bei `modus=normal` läuft `Immer`, der absichtliche Fehler wird übersprungen, `Nur bei Erfolg`, `Aufräumschritt (läuft immer)`, `Nach Erfolg oder Fehler` und `Zusammenfassung` laufen. `Abbruch prüfen` wird übersprungen; `optional` läuft ebenfalls und toleriert seinen Fehler. Die Zusammenfassung enthält `Modus: normal` und typischerweise `Status: success`. Laufansicht **ungetestet**.
 
 #### Aufgabe 2
-Bei `modus=fehler`: `Immer` läuft, `Absichtlicher Fehler` endet mit `exit 1`, `Nur bei Erfolg` wird übersprungen, `Nur bei Fehler`, `Aufräumschritt`, `Nach Erfolg oder Fehler` und die Zusammenfassung laufen. `Abbruch prüfen` wird übersprungen. Die Zusammenfassung enthält `Modus: fehler` und typischerweise `Status: failure`. Die Summary erscheint oben auf der Laufübersicht. GitHub-Verhalten **ungetestet**.
+Bei `modus=fehler`: `Immer` läuft, `Absichtlicher Fehler` endet mit `exit 1`, `Nur bei Erfolg` wird übersprungen, `Nur bei Fehler`, `Aufräumschritt (läuft immer)`, `Nach Erfolg oder Fehler` und die Zusammenfassung laufen. `Abbruch prüfen` wird übersprungen. Die Zusammenfassung enthält `Modus: fehler` und typischerweise `Status: failure`. Die Summary erscheint oben auf der Laufübersicht. GitHub-Verhalten **ungetestet**.
 
 #### Aufgabe 3
-Ohne `if: ${{ always() }}` gilt die Standardbedingung `success()`. Nach dem absichtlichen Fehler wird der Aufräumschritt daher im Fehlermodus übersprungen. Im Normalmodus läuft er weiter. Das ist gemäß Actions-Semantik, aber **ungetestet**.
+Entferne im Workflow beim Schritt `Aufräumschritt (läuft immer)` die Zeile `if: ${{ always() }}`. Dann gilt die Standardbedingung `success()`: Nach dem absichtlichen Fehler wird der Schritt im Fehlermodus übersprungen, im Normalmodus läuft er weiter. Das ist gemäß Actions-Semantik, aber **ungetestet**.
 
 #### Aufgabe 4
-`cancelled()` ist direkt im Schritt „Abbruch prüfen“ verwendet. Bei einem manuellen Abbruch kann GitHub weitere Schritte beenden, bevor sie laufen; das Vorhandensein der Bedingung garantiert also keine sichtbare Meldung. Dieser Test ist ausdrücklich explorativ und **ungetestet**.
-
-#### Aufgabe 5
 
 ```yaml
     timeout-minutes: 1
@@ -617,8 +614,8 @@ Ohne `if: ${{ always() }}` gilt die Standardbedingung `success()`. Nach dem absi
 
 Nach etwa einer Minute wird der Job wegen des Zeitlimits abgebrochen; nachfolgende Standardschritte werden nicht normal weitergeführt. Exakte Abbruchmeldung und Status **ungetestet**. Die Änderung anschließend zurücknehmen.
 
-#### Aufgabe 6
-Der manuelle Abbruch während `sleep 60` ist eine Timing-Beobachtung. `cancelled()` ist wahr, nachdem der Lauf als abgebrochen markiert wurde, aber es gibt keine Garantie, dass der zugehörige Schritt dann noch startet. Auch `!cancelled()` soll nach einer Abbruchanforderung nicht ausgeführt werden. Laufverhalten **ungetestet**.
+#### Aufgabe 5
+Füge einen Schritt `sleep 60` ein und brich den Lauf während des Wartens manuell ab. Das ist eine Timing-Beobachtung: `cancelled()` ist wahr, nachdem der Lauf als abgebrochen markiert wurde, aber es gibt keine Garantie, dass „Abbruch prüfen“ dann noch startet. Auch `!cancelled()` soll nach einer Abbruchanforderung nicht ausgeführt werden. Laufverhalten **ungetestet**. Entferne den Testschritt anschließend.
 
 ### Abschlussprojekt: Auswertungs-Pipeline
 

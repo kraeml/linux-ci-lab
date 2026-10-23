@@ -113,15 +113,15 @@ Das ergibt **4 sinnvolle Läufe**: drei Zählungen der Log-Stufen in `server.log
         suchbegriff: [INFO, ERROR]
         include:
           - suchbegriff: ERROR
-            hinweis: "kritisch"
+            hinweis: "kritischer Fehler"
 ```
 
-Der Eintrag unter `include:` ergänzt die bestehende Kombination `suchbegriff: ERROR` um die zusätzliche Variable `hinweis`. Sie steht als `matrix.hinweis` nur für diese Kombination zur Verfügung. Es wird **kein zusätzlicher Lauf** erzeugt; die Anzahl bleibt bei zwei. Ein `include`-Eintrag, der mit keiner ursprünglichen Kombination vereinbar ist, kann dagegen einen Lauf hinzufügen. Eine vollständige Regelübersicht mit Beispielen steht in der [offiziellen Dokumentation zu Matrix-Läufen](https://docs.github.com/en/actions/using-jobs/using-a-matrix-for-your-jobs).
+Der Eintrag unter `include:` ergänzt die bestehende Kombination `suchbegriff: ERROR` um die zusätzliche Variable `hinweis` mit dem Wert „kritischer Fehler“. Sie steht als `matrix.hinweis` nur für diese Kombination zur Verfügung. Es wird **kein zusätzlicher Lauf** erzeugt; die Anzahl bleibt bei zwei. Ein `include`-Eintrag, der mit keiner ursprünglichen Kombination vereinbar ist, kann dagegen einen Lauf hinzufügen. Eine vollständige Regelübersicht mit Beispielen steht in der [offiziellen Dokumentation zu Matrix-Läufen](https://docs.github.com/en/actions/using-jobs/using-a-matrix-for-your-jobs).
 
 **Aufgaben**
 1. Starte den Workflow. Wie viele Jobs siehst du? Wie heißen sie?
 2. Füge `FATAL` zur Liste `suchbegriff` hinzu. Läuft der Job grün durch? Warum?
-3. Ändere den `include`-Eintrag mit `hinweis` vorübergehend von `suchbegriff: ERROR` zu `suchbegriff: WARNING`. Da WARNING bereits in der Ausgangsmatrix vorkommt, wird diese Kombination um den Hinweis erweitert; es entsteht kein zusätzlicher Lauf. Starte den Workflow erneut und kontrolliere, in welchem Lauf der Hinweis ausgegeben wird. Stelle danach den ursprünglichen Wert wieder her.
+3. Ändere den `include`-Eintrag mit `hinweis` vorübergehend von `suchbegriff: ERROR` zu `suchbegriff: WARNING`. Da WARNING bereits in der Ausgangsmatrix vorkommt, wird der bestehende WARNING-Lauf um den Hinweis erweitert; es bleibt bei vier Läufen. Starte den Workflow erneut und kontrolliere, in welchem Lauf der Hinweis ausgegeben wird. Stelle danach den ursprünglichen Wert wieder her.
 4. Das Grundbeispiel enthält den `datei`-Eintrag und `include` bereits. Erkläre, warum diese vier Kombinationen fachlich sinnvoll sind, und nenne für jede Kombination Datei und Suchbegriff.
 5. **Nur beobachten:** Lass den WARNING-Lauf bewusst fehlschlagen: Ergänze im `run:`-Block vor der Zählung `[ "$SUCHBEGRIFF" != "WARNING" ] || exit 1`. Starte mit `fail-fast: false` und kontrolliere, dass die anderen Matrix-Läufe weiterlaufen. Stelle danach `fail-fast: true` ein und beobachte, welche noch laufenden bzw. wartenden Läufe GitHub abbricht. Entferne die Fehlerzeile danach wieder. Das Timing ist nicht festgelegt und soll nicht bewertet werden.
 
@@ -415,14 +415,14 @@ jobs:
 | `always()` | Wird unabhängig vom Ergebnis der vorherigen Schritte ausgeführt, auch nach einer Abbruchanforderung (der Abbruch kann den Schritt später trotzdem beenden) |
 | `cancelled()` | Wahr, wenn der Lauf abgebrochen wurde; der Schritt mit dieser Bedingung zeigt das Muster, wird nach Abbruch aber nicht garantiert ausgeführt |
 | `!cancelled()` | Läuft nach Erfolg und nach Fehler, aber nicht nach einem Abbruch |
-| `continue-on-error: true` | Ein Schrittfehler wird toleriert; im Beispiel scheitert der Job deshalb nicht |
+| `continue-on-error: true` | Ein Fehler in diesem Schritt lässt den Job nicht scheitern (wie im Job `optional`) |
 | `timeout-minutes` | Bricht den Job nach der angegebenen Zeit ab |
 | `$GITHUB_STEP_SUMMARY` | Datei, deren Markdown-Inhalt als Zusammenfassung im Lauf erscheint |
 | `job.status` | Aktueller Status des Jobs (`success`, `failure` oder `cancelled`) |
 
 **Warum „Nur bei Erfolg“ im Fehlermodus übersprungen wird:** Der Schritt „Absichtlicher Fehler“ schlägt fehl. Danach wird jeder Schritt, dessen Bedingung ohne Statusfunktion auskommt, nur ausgeführt, wenn bisher alles erfolgreich war. „Nur bei Erfolg“ nutzt `success()` ausdrücklich und wird deshalb übersprungen, während `failure()` und `always()` greifen.
 
-**`cancelled()` selbst beobachten:** Der Schritt „Abbruch prüfen“ zeigt, wie `cancelled()` geschrieben wird und macht im Schrittnamen sowie in der Ausgabe deutlich, dass sein Start nicht garantiert ist. Ein manueller Abbruch kann Schritte überspringen, bevor diese Bedingung noch sichtbar ausgewertet wird. Betrachte deshalb den Abbruchversuch als Beobachtung, nicht als Test mit garantiertem Schritt-Ergebnis.
+**`cancelled()` selbst beobachten:** Der Schritt „Abbruch prüfen“ zeigt, wie `cancelled()` geschrieben wird. Sein Start nach einem manuellen Abbruch ist nicht garantiert; das zeigen auch sein Name und seine Ausgabe. Ein manueller Abbruch kann Schritte überspringen, bevor diese Bedingung noch sichtbar ausgewertet wird. Betrachte deshalb den Abbruchversuch als Beobachtung, nicht als Test mit garantiertem Schritt-Ergebnis.
 
 **`always()` oder `!cancelled()`?** Nach einer Abbruchanforderung kann ein Schritt mit `always()` noch starten. Der Abbruch kann ihn aber anschließend beenden, ein Weiterlaufen ist nicht garantiert. `always()` eignet sich für kurze, sichere Aufräumschritte. Für Schritte, die nach einem Fehler weiterlaufen sollen, bei einem Abbruch aber gar nicht erst starten sollen, ist `!cancelled()` meist die passendere Bedingung. Das gilt besonders für Schritte, die lange dauern oder hängen könnten.
 
@@ -433,7 +433,7 @@ jobs:
 **Aufgaben**
 1. Starte den Workflow mit Modus `normal`. Welche Schritte laufen, welche werden übersprungen?
 2. Starte ihn mit Modus `fehler`. Welche Schritte laufen jetzt? Wo erscheint die Zusammenfassung?
-3. Entferne beim Schritt `Kurzer Aufräumschritt` das `if: always()`. Wie ändert sich das Verhalten im Fehlerfall? Stelle die Zeile anschließend wieder her.
+3. Entferne beim Schritt `Aufräumschritt (läuft immer)` das `if: ${{ always() }}`. Wie ändert sich das Verhalten im Fehlerfall? Stelle die Zeile anschließend wieder her.
 4. **Nur beobachten:** Setze `timeout-minutes: 1` und füge einen Schritt `sleep 90` ein. Was passiert ungefähr nach einer Minute? Entferne die Änderung danach wieder.
 5. **Nur beobachten:** Füge einen Schritt `sleep 60` ein, starte den Workflow und brich den Lauf während des Wartens manuell ab. Prüfe, ob `cancelled()`- und `!cancelled()`-Schritte noch ausgeführt werden. Das Ergebnis ist timingabhängig und kein festes Soll-Ergebnis. Entferne den Testschritt anschließend.
 
@@ -541,9 +541,7 @@ Für diese Pipeline bleiben die Werte bei den drei Stufen INFO, WARNING und ERRO
 
 **Der Kontrollfluss im Zusammenfassungsschritt**
 
-Der Download hat `continue-on-error: true`, damit der Folgeschritt auch dann noch läuft, wenn der Download scheitert. Die offizielle [Dokumentation zu `download-artifact@v8`](https://github.com/actions/download-artifact/blob/v8/README.md) beschreibt den Download passender Artefakte, legt aber nicht fest, dass ein Muster ohne Treffer zwingend einen Fehlerstatus liefert. Der Workflow behandelt daher beide möglichen Ergebnisse sicher: Er prüft erst `outcome` und kontrolliert anschließend, ob `.txt`-Dateien vorhanden sind. Bei null hochgeladenen Artefakten kann die Meldung je nach Action-Verhalten entweder „Download fehlgeschlagen“ oder „Download erfolgreich, aber keine Teilergebnis-Dateien gefunden“ lauten; beide Fälle beenden den Zusammenfassungsschritt mit Fehler. Kein leeres Ergebnis wird als Erfolg gemeldet.
-
-Erst wenn beide Prüfungen bestanden sind, wird die Zusammenfassung geschrieben. Ein leeres Ergebnis wird so nie als Erfolg gemeldet.
+Der Download hat `continue-on-error: true`, damit der Folgeschritt auch dann noch läuft, wenn der Download scheitert. Die offizielle [Dokumentation zu `download-artifact@v8`](https://github.com/actions/download-artifact/blob/v8/README.md) beschreibt den Download passender Artefakte, legt aber nicht fest, dass ein Muster ohne Treffer zwingend einen Fehlerstatus liefert. Der Workflow behandelt daher beide möglichen Ergebnisse sicher: Er prüft erst `outcome` und kontrolliert anschließend, ob `.txt`-Dateien vorhanden sind. Bei null hochgeladenen Artefakten kann die Meldung je nach Action-Verhalten entweder „Download fehlgeschlagen“ oder „Download erfolgreich, aber keine Teilergebnis-Dateien gefunden“ lauten; beide Fälle beenden den Zusammenfassungsschritt mit Fehler. Ein leeres Ergebnis wird nie als Erfolg gemeldet.
 
 **`outcome` und `conclusion`: zwei Ergebnisse pro Schritt**
 
@@ -566,9 +564,21 @@ Deshalb prüft der Workflow `outcome`: Nur dort ist der echte Fehler noch sichtb
 1. Starte die Pipeline. Wo findest du die Zusammenfassung, und welche Zahlen zeigt sie?
 2. Ergänze `FATAL` in der `stufe`-Liste des Matrixjobs. Wie sieht die Zusammenfassung aus?
 3. Baue den Zählschritt so um, dass er den wiederverwendbaren Workflow aus Lektion 11 verwendet statt eigenem `grep`. Welche Teile der Pipeline müssen sich ändern, welche nicht? (Tipp: Ein Aufruf per `uses:` kann ebenfalls in einer Matrix stehen, aber der Artefakt-Upload müsste dann im wiederverwendbaren Workflow stattfinden.)
-4. Teste zwei Fehlerfälle. Füge jeweils die angegebene Zeile in den Schritt `Zählen und speichern` ein und entferne sie nach dem Test wieder:
+4. Teste zwei Fehlerfälle. Füge die angegebene Testzeile in den Schritt `Zählen und speichern` ein und entferne sie nach dem Test wieder:
    - **a) Ein Lauf scheitert vor dem Upload:** Füge vor der Zählung `[ "$STUFE" != "WARNING" ] || exit 1` ein. Der WARNING-Lauf lädt nichts hoch. Kontrolliere im Log, welche Dateien heruntergeladen und in die Zusammenfassung aufgenommen wurden.
-   - **b) Alle Läufe scheitern vor dem Upload:** Füge `exit 1` direkt nach `mkdir -p ergebnis` ein. Es wird nichts hochgeladen. Im Workflow sind die Ausgaben von `outcome` und `conclusion` vorbereitet. Prüfe, ob die Action einen Fehler meldet oder der Download-Schritt erfolgreich, aber ohne Dateien endet. In beiden Fällen muss die Prüfung den Zusammenfassungsschritt scheitern lassen. Das genaue Verhalten bei null Artefakten ist eine Beobachtung und keine feste Soll-Ausgabe.
+   - **b) Alle Läufe scheitern vor dem Upload:** Füge `exit 1` direkt nach `mkdir -p ergebnis` ein. Es wird nichts hochgeladen. Ergänze im Schritt `Zusammenfassung schreiben` die Ausgabe von `conclusion` und gib beide Werte am Anfang des Schritts aus. Der Workflow setzt bisher nur `LADEN`:
+
+     ```yaml
+             CONCLUSION: ${{ steps.laden.conclusion }}
+     ```
+
+     Ergänze diese Zeile unter `LADEN:` bei `env:` und füge am Anfang von `run:` Folgendes ein:
+
+     ```bash
+           echo "outcome=$LADEN, conclusion=$CONCLUSION"
+     ```
+
+     Prüfe, ob die Action einen Fehler meldet oder der Download-Schritt erfolgreich, aber ohne Dateien endet. In beiden Fällen muss die Prüfung den Zusammenfassungsschritt scheitern lassen. Das genaue Verhalten bei null Artefakten ist eine Beobachtung und keine feste Soll-Ausgabe.
 5. Breche einen laufenden Lauf von Hand ab. Beobachte, ob `zusammenfassen` startet oder weiterläuft. Ändere die Bedingung auf `always()` und wiederhole den Versuch. Die Ergebnisse hängen vom Abbruchzeitpunkt ab; bewerte nicht, ob der Job noch gestartet oder beendet wurde. Stelle die ursprüngliche Bedingung anschließend wieder her.
 
 ---
@@ -601,7 +611,7 @@ Lege in deinem eigenen Lern-Repository eine Datei `CHEATSHEET.md` an, falls du s
 
 ```
 strategy.matrix                 Ein Job, mehrere Läufe
-matrix.<name>                   Wert im jeweiligen Lauf (z. B. matrix.stufe)
+matrix.<name>                   Wert im jeweiligen Lauf, zum Beispiel `matrix.suchbegriff`
 matrix.include                  Kombination ergänzen oder erweitern
 fail-fast: false                Andere Läufe nicht wegen eines Fehlers abbrechen
 vars.NAME                       Variable (nicht geheim)
