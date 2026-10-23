@@ -19,8 +19,21 @@ jobs:
         env:
           STUFE: ${{ matrix.stufe }}
         run: |
+          if [ ! -f daten/server.log ]; then
+            echo "Datei daten/server.log fehlt" >&2
+            exit 2
+          fi
           mkdir -p ergebnis
-          ANZAHL=$(grep -c "$STUFE" daten/server.log || true)
+          if ANZAHL=$(grep -F -c -- "$STUFE" daten/server.log); then
+            :
+          else
+            STATUS=$?
+            if [ "$STATUS" -eq 1 ]; then
+              ANZAHL=0
+            else
+              exit "$STATUS"
+            fi
+          fi
           echo "$STUFE=$ANZAHL" > "ergebnis/$STUFE.txt"
           echo "$STUFE: $ANZAHL"
 
@@ -49,11 +62,14 @@ jobs:
           LADEN: ${{ steps.laden.outcome }}
         run: |
           if [ "$LADEN" != "success" ]; then
-            echo "Download fehlgeschlagen (Status: $LADEN), Details im Log des Schritts 'Teilergebnisse laden'." | tee -a "$GITHUB_STEP_SUMMARY"
+            echo "Download fehlgeschlagen (Status: $LADEN)," \
+              "Details im Log des Schritts 'Teilergebnisse laden'." \
+              | tee -a "$GITHUB_STEP_SUMMARY"
             exit 1
           fi
           if ! ls sammlung/*.txt > /dev/null 2>&1; then
-            echo "Download erfolgreich, aber keine Teilergebnis-Dateien gefunden." | tee -a "$GITHUB_STEP_SUMMARY"
+            echo "Download erfolgreich, aber keine Teilergebnis-Dateien" \
+              "gefunden." | tee -a "$GITHUB_STEP_SUMMARY"
             exit 1
           fi
           {
