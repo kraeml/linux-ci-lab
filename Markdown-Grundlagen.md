@@ -18,11 +18,11 @@ Eine README ist eine Einstiegsseite zu einem Projekt. Sie soll Fragen beantworte
 
 Die Vorlage ist ein Beispiel für ein fiktives Projekt. Die Angaben darin sind Beispieldaten und müssen durch Informationen zum eigenen Projekt ersetzt werden. Übernimm keine erfundenen Voraussetzungen oder Befehle in eine echte Projektdokumentation.
 
-**Aufgabe:** Lies die Vorlage und markiere Titel, Abschnitte, Liste, Link und Codeblock.
+**Aufgabe:** Lies die Vorlage und markiere Titel, Abschnitte, Listen und die Stelle, an der du später einen eigenen Link ergänzt.
 
 **Ausführung:** Öffne die Datei im Kurs-Repository als Text oder auf GitHub. Vergleiche die Markdown-Schreibweise mit der formatierten Ansicht.
 
-**Kontrolle:** Du findest einen Projekttitel, mehrere Abschnitte mit Überschriften, eine Liste, einen Link und einen hervorgehobenen Befehlsblock.
+**Kontrolle:** Du findest einen Projekttitel, mehrere Abschnitte mit Überschriften, Listen und einen Abschnitt für weiterführende Informationen. Die Vorlage enthält absichtlich noch keinen Projektlink, weil die Ziel-Datei im eigenen Lern-Repository liegen muss.
 
 ## Markdown-Bausteine
 
@@ -73,7 +73,7 @@ Kurze Dateinamen oder Befehle im Fließtext setzt du zwischen einzelne Backticks
 
 ````markdown
 ```bash
-printf '%s\\n' "Hallo"
+printf '%s\n' "Hallo"
 ```
 ````
 
@@ -108,6 +108,8 @@ Nicht jedes Projekt braucht alle Abschnitte. Lass Unbekanntes weg oder kennzeich
 
 **Lernziel:** Du erstellst eine README, die dein Lern-Repository verständlich vorstellt und den Einstieg in die Kursdateien erleichtert.
 
+**Voraussetzung:** Richte zuerst dein Lern-Repository nach Teil 1 ein und lege dort `.github/workflows/01-hallo-linux.yml` an. So enthält dein Repository eine vorhandene Datei, auf die du in der README verlinken kannst.
+
 **Datei anlegen oder ändern:** `README.md` im eigenen Lern-Repository. Ändere nicht die README des Kurs-Repositorys für diese Übung.
 
 ### Aufgabe
@@ -125,7 +127,9 @@ Nutze die Vorlage `README-Projektvorlage.md` als Orientierung. Passe sie an und 
 
 ### Ausführung
 
-Öffne dein Lern-Repository auf GitHub und bearbeite dessen `README.md` im Browser. Schreibe die Inhalte mit Markdown-Syntax. Nutze **Preview**, um die formatierte Darstellung vor dem Speichern anzusehen. Speichere die Datei entsprechend den Anweisungen in [Git-Grundlagen](Git-Grundlagen.md).
+Öffne dein Lern-Repository auf GitHub und bearbeite dessen `README.md` im Browser. Schreibe die Inhalte mit Markdown-Syntax. Nutze **Preview**, um die formatierte Darstellung vor dem Speichern anzusehen. Da du Git-Grundlagen bereits gelesen hast, wähle den dort angelegten Arbeitsbranch, falls vorhanden. Andernfalls kannst du diese erste README-Änderung auf dem Standardbranch speichern.
+
+Gib eine kurze Commit-Nachricht ein, die die Änderung beschreibt, und bestätige **Commit changes**. Falls GitHub anbietet, die Änderung auf einem neuen Branch zu speichern, kannst du diese Möglichkeit wählen; prüfe dabei, dass die Branch-Auswahl und der Commit-Schritt angezeigt werden. Der Ablauf ist derselbe wie im Abschnitt „Änderungen und Commits“ in [Git-Grundlagen](Git-Grundlagen.md).
 
 ### Ergebniskontrolle
 

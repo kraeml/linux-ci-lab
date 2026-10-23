@@ -16,9 +16,9 @@ In diesem Kurs arbeitest du in deinem eigenen Lern-Repository. Das Kurs-Reposito
 
 Ein **Repository** (kurz: Repo) enthält Projektdateien und deren Git-Verlauf. In der GitHub-Weboberfläche kannst du Dateien anzeigen, neue Dateien anlegen und vorhandene Dateien bearbeiten. Die Kursvorbereitung in [Teil 1](Linux%20%2B%20GitHub%20Actions,%20Teil%201.md) zeigt, wie du dein Lern-Repository einrichtest und Dateien im Browser speicherst.
 
-**Aufgabe:** Öffne dein Lern-Repository auf GitHub und finde den Standardbranch sowie eine Workflow-Datei.
+**Aufgabe:** Öffne dein Lern-Repository auf GitHub und finde den Standardbranch sowie die vorhandene `README.md`.
 
-**Ausführung:** Öffne den Tab **Code**. Nutze die Branch-Auswahl, um den aktuellen Branch zu sehen. Navigiere zu `.github/workflows/`.
+**Ausführung:** Öffne den Tab **Code**. Nutze die Branch-Auswahl, um den aktuellen Branch zu sehen, und öffne anschließend `README.md`.
 
 **Kontrolle:** Du siehst die Dateien des ausgewählten Branches. Der Standardbranch ist der Branch, den GitHub als Hauptversion des Repositorys verwendet; häufig heißt er `main`.
 
@@ -34,7 +34,7 @@ Ein **Remote** ist ein anderes Git-Repository, das als Ziel für den Austausch v
 
 Ein Pull Request ist etwas anderes als `git pull`: Ein Pull Request schlägt Änderungen aus einem Branch zur Prüfung und möglichen Übernahme in einen anderen Branch vor.
 
-Die praktische Übung zum Erstellen der `README.md` steht in [Markdown-Grundlagen](Markdown-Grundlagen.md). Verwende dort die GitHub-Oberfläche, um die README im eigenen Lern-Repository zu speichern. Die Commit-Schritte und die Kontrolle im Verlauf sind in dieser Lerneinheit beschrieben.
+Als Anwendung danach erstellst du die `README.md` in [Markdown-Grundlagen](Markdown-Grundlagen.md). Verwende dort die GitHub-Oberfläche, um die README im eigenen Lern-Repository zu speichern. Die Commit-Schritte und die Kontrolle im Verlauf sind in dieser Lerneinheit beschrieben.
 
 ## Branches: getrennte Arbeitslinien
 
@@ -76,7 +76,40 @@ Eine Workflow-Datei ist eine Datei im Repository. Ein Commit mit einer Workflow-
 
 Für einen manuellen Start mit `workflow_dispatch` muss die Workflow-Datei auf dem Standardbranch liegen. Danach kann beim manuellen Start ein Branch ausgewählt werden. Ein Commit auf einem Arbeitsbranch allein macht den Workflow daher nicht automatisch im Actions-Tab manuell startbar. Weitere Einzelheiten stehen in der Vorbereitung von Teil 1.
 
-In Teil 2, Lektion 8, sind `push`, `pull_request` und `schedule` ausdrücklich als zusätzliche Trigger behandelte Kursbeispiele dokumentiert. Die allgemeine Regel des Kurses bleibt, ausführbare Beispiele nur mit den dort beschriebenen Triggern zu verwenden; füge keine Trigger hinzu, nur um eine Übung auszulösen.
+In Teil 2, Lektion 8, sind `push`, `pull_request` und `schedule` ausdrücklich als Ausnahme von der Kursregel dokumentiert. Die folgende Übung ergänzt keinen Trigger; sie verwendet nur den bereits vorhandenen manuellen Start.
+
+### Brückenübung: Workflow-Änderung mit Git sichern und prüfen
+
+**Lernziel:** Du änderst einen ungefährlichen YAML-Wert auf einem Arbeitsbranch, prüfst den Datei-Diff und kontrollierst die Änderung anschließend im manuellen Workflow-Lauf.
+
+**Voraussetzung:** Die Datei `.github/workflows/01-hallo-linux.yml` liegt bereits auf dem Standardbranch deines Lern-Repositorys. Der Workflow enthält `workflow_dispatch`. Auf GitHub muss die Datei auf dem Standardbranch vorhanden sein, damit der manuelle Start angeboten wird. Im Dialog **Run workflow** kannst du über das Feld **Branch** den Arbeitsbranch auswählen. GitHub führt dabei den Workflow aus der gewählten Referenz aus. Siehe GitHubs aktuelle Anleitung zum [manuellen Starten eines Workflows](https://docs.github.com/en/actions/how-tos/manage-workflow-runs/manually-run-a-workflow) und zum [Ansehen von Workflow-Läufen](https://docs.github.com/en/actions/how-tos/monitor-workflows/viewing-workflow-run-history) (Prüfstand: 23.10.2026).
+
+**Datei ändern:** `.github/workflows/01-hallo-linux.yml` im eigenen Lern-Repository.
+
+**Aufgabe:** Ändere auf einem Arbeitsbranch den Namen eines vorhandenen Schritts, zum Beispiel `Begrüßung` in `Begrüßung aus meinem Arbeitsbranch`. Der Wert `name` ändert nur die Beschriftung des Schritts, nicht den ausgeführten Befehl.
+
+**Ausführung:**
+
+1. Erstelle über die GitHub-Oberfläche einen Arbeitsbranch vom Standardbranch und wechsle zu ihm.
+2. Öffne `.github/workflows/01-hallo-linux.yml` und bearbeite den Wert bei `name:` des Schritts `Begrüßung`. Belasse die Einrückung unverändert. Für den Beispielnamen sind keine Anführungszeichen erforderlich; wenn du Sonderzeichen wie `:` verwendest, setze den Wert in Anführungszeichen.
+3. Speichere die Änderung mit **Commit changes** auf dem Arbeitsbranch. Verwende eine kurze Commit-Nachricht, zum Beispiel `Benenne Begrüßungsschritt um`.
+4. Öffne den gespeicherten Commit und prüfe in der Diff-Ansicht zuerst, dass nur der beabsichtigte `name:`-Wert geändert wurde.
+5. Öffne **Actions**, wähle **01 - Hallo Linux** und klicke **Run workflow**. Wähle unter **Branch** deinen Arbeitsbranch und starte den Lauf.
+6. Öffne den Lauf und den Job `erkunden`. Prüfe in der Schrittliste, dass der neue Name erscheint. Der Schritt führt weiterhin `echo "Hallo aus dem Linux-Runner!"` aus.
+
+**Ergebniskontrolle – Stufe 1, Diff:** Im Commit-Diff ist nur der Anzeigename des Begrüßungsschritts geändert. Es gibt keine Änderungen an Trigger, Job oder `run`-Befehl.
+
+**Ergebniskontrolle – Stufe 2, Workflow-Lauf:** Der manuelle Lauf ist erfolgreich und der Job zeigt den geänderten Schritt-Namen. Damit hast du sowohl die gespeicherte Änderung als auch deren Verwendung im Lauf geprüft.
+
+**Typische Fehler:**
+
+- **Schrittname fehlt oder YAML kann nicht verarbeitet werden:** Vergleiche die Einrückung mit dem ursprünglichen Schritt und prüfe, dass `name:` samt Doppelpunkt erhalten blieb.
+- **Name enthält einen Doppelpunkt und wird falsch gelesen:** Setze den vollständigen Textwert in Anführungszeichen.
+- **Der Lauf zeigt den alten Namen:** Prüfe, ob der Commit wirklich auf dem Arbeitsbranch gespeichert wurde und ob du im Dialog **Run workflow** denselben Branch ausgewählt hast.
+- **Die Änderung taucht nicht im Commit-Diff auf:** Wahrscheinlich wurde die Bearbeitung nicht mit **Commit changes** gespeichert. Kehre zum Editor zurück und speichere sie auf dem Arbeitsbranch.
+- **Run workflow wird nicht angeboten:** Prüfe, ob die Workflow-Datei mit `workflow_dispatch` auf dem Standardbranch liegt.
+
+Du kannst danach optional einen Pull Request öffnen, um die Änderung zur Übernahme in den Standardbranch vorzuschlagen. Führe das Zusammenführen nur aus, wenn es die Kursaufgabe verlangt.
 
 ## Änderungen kontrollieren und sicher arbeiten
 

@@ -49,7 +49,7 @@ Hier heißen die Schlüssel `name` und `runs-on`. Ihre Werte sind `01 - Hallo Li
 
 ## Einrückung zeigt Zugehörigkeit
 
-Einrückung macht sichtbar, welche Angaben zu einem übergeordneten Schlüssel gehören. In diesem Kurs verwendest du min. zwei Leerzeichen zur Einrückung, **keine** Tabulatoren. Achte darauf, gleichrangige Einträge auf derselben Ebene auszurichten.
+Einrückung macht sichtbar, welche Angaben zu einem übergeordneten Schlüssel gehören. In diesem Kurs rücken wir jede Ebene um zwei Leerzeichen ein und verwenden **keine** Tabulatoren. Achte darauf, gleichrangige Einträge auf derselben Ebene auszurichten.
 
 ```yaml
 jobs:
