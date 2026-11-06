@@ -153,4 +153,6 @@ Bei einem Workflow mit `workflow_dispatch` muss die Workflow-Datei auf dem Stand
 
 ## Weiterlernen
 
-Die Beispiele in diesem Modul verwenden Ausschnitte aus den Workflow-Dateien des Kurses. Für die vollständige Syntax von GitHub Actions gelten die [offiziellen Workflow-Syntaxregeln](https://docs.github.com/en/actions/writing-workflows/workflow-syntax-for-github-actions). Die allgemeine YAML-Sprache ist in der [YAML-Spezifikation 1.2.2](https://yaml.org/spec/1.2.2/) beschrieben. GitHub-Actions-Workflows verwenden YAML, ergänzen aber eigene Schlüssel und Regeln; die allgemeine YAML-Spezifikation allein erklärt deshalb nicht die gesamte Workflow-Konfiguration.
+Die Beispiele in diesem Modul verwenden Ausschnitte aus den Workflow-Dateien des Kurses. Für die vollständige Syntax von GitHub Actions gelten die offiziellen Workflow-Syntaxregeln. Die allgemeine YAML-Sprache ist in der YAML-Spezifikation 1.2.2 beschrieben. GitHub-Actions-Workflows verwenden YAML, ergänzen aber eigene Schlüssel und Regeln; die allgemeine YAML-Spezifikation allein erklärt deshalb nicht die gesamte Workflow-Konfiguration.[^yaml-syntax]
+
+[^yaml-syntax]: GitHub-Workflow-Syntax, geprüft am 06.11.2026; YAML-Spezifikation 1.2.2 (Revision vom 01.10.2021): <https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax> und <https://yaml.org/spec/1.2.2/>

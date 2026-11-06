@@ -8,7 +8,7 @@ Für diesen Kurs brauchst du ein GitHub-Konto und ein eigenes Lern-Repository mi
 2. Erstelle Dateien im Browser über **Add file → Create new file**. Gibst du als Dateinamen einen Pfad wie `daten/einkauf.txt` ein, legt GitHub die Ordner automatisch an. Leere Ordner lassen sich im Browser nicht anlegen. Klicke zum Speichern auf **Commit changes**; dadurch wird direkt auf dem ausgewählten Branch committed.
 3. Committe die Workflow-Dateien auf den **Standardbranch** (meist `main`). Damit `workflow_dispatch` ausgelöst werden kann, muss die Workflow-Datei dort liegen. Beim manuellen Start kannst du anschließend einen Branch auswählen.
 
-**Einen Arbeitsbranch über die GitHub-Oberfläche erstellen:** Öffne die Hauptseite deines Repositorys und klicke in der Dateiansicht auf die Branch-Auswahl. Gib im Feld **Find or create a branch...** einen Namen ein, zum Beispiel `aufgabe-skript`, und wähle **Create branch: aufgabe-skript**. Falls nötig, wähle vorher den Standardbranch als Ausgangspunkt. Arbeite bei den Aufgaben, die einen Arbeitsbranch verlangen, in diesem Branch weiter. Siehe GitHubs Anleitung zum [Erstellen von Branches](https://docs.github.com/en/pull-requests/how-tos/commit-changes/managing-branches-within-your-repository). Wenn du die Dateien im GitHub-Browser bearbeitest, speichert **Commit changes** direkt auf dem ausgewählten Branch. Das ersetzt den in den Aufgaben genannten Push; bei Arbeit mit Git auf deinem Rechner musst du weiterhin pushen.
+**Einen Arbeitsbranch über die GitHub-Oberfläche erstellen:** Öffne die Hauptseite deines Repositorys und klicke in der Dateiansicht auf die Branch-Auswahl. Gib im Feld **Find or create a branch...** einen Namen ein, zum Beispiel `aufgabe-skript`, und wähle **Create branch: aufgabe-skript**. Falls nötig, wähle vorher den Standardbranch als Ausgangspunkt. Arbeite bei den Aufgaben, die einen Arbeitsbranch verlangen, in diesem Branch weiter.[^2] Wenn du die Dateien im GitHub-Browser bearbeitest, speichert **Commit changes** direkt auf dem ausgewählten Branch. Das ersetzt den in den Aufgaben genannten Push; bei Arbeit mit Git auf deinem Rechner musst du weiterhin pushen.
 
 Die Lizenzdateien bleiben im Kurs-Repository. Lizenzhinweise in den Code- und Beispieldatenblöcken verweisen auf diese Dateien; kopiere sie nicht in dein Lern-Repository.
 
@@ -52,7 +52,7 @@ jobs:
 
 Die Workflow-Dateien liegen unter `.github/workflows/` und enden auf `.yml`. Unser Beispiel oben startet ausschließlich manuell über `workflow_dispatch`. Damit GitHub **Run workflow** anbietet, muss die Workflow-Datei auf dem **Standardbranch deines Lern-Repositorys** liegen (meist `main`). Beim Start wählst du den Branch, dessen Dateien ausgeführt werden sollen.
 
-Diese Hinweise entsprechen der GitHub-Dokumentation zu [manuellen Workflow-Starts](https://docs.github.com/en/actions/how-tos/manage-workflow-runs/manually-run-a-workflow) und zum Ereignis [`workflow_dispatch`](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#workflow_dispatch) (Stand: 21.10.2026).
+Diese Hinweise entsprechen der GitHub-Dokumentation zu manuellen Workflow-Starts und zum Ereignis `workflow_dispatch`.[^3]
 
 **So startest und prüfst du einen Workflow:** Öffne den Tab **Actions**, wähle links den genannten Workflow und klicke **Run workflow** auf der rechten Seite. Wähle bei Bedarf den Branch aus und starte den Lauf. Öffne den Lauf und danach den Job; in den Schritten siehst du Befehle und Ausgaben. Prüfe das Ergebnis anhand der in der Lektion genannten Kontrollpunkte.
 
@@ -100,7 +100,7 @@ Die Workflows verwenden `ubuntu-latest`, einen von GitHub bereitgestellten Ubunt
 
 **Lernziele:** Du kannst Dateien im Runner-Verzeichnis auflisten und lesen, Dateien und Ordner anlegen, kopieren, umbenennen und löschen. Du verstehst, warum der Workflow `checkout` benötigt.
 
-In den Workflows 2 bis 4 lädt `actions/checkout@v7` die Dateien aus dem ausgeführten Branch in den Arbeitsbereich des Jobs. Version 7 verwendet Node.js 24; siehe die [offizielle Action-Dokumentation](https://github.com/actions/checkout) (Stand: 21.10.2026).
+In den Workflows 2 bis 4 lädt `actions/checkout@v7`[^1] die Dateien aus dem ausgeführten Branch in den Arbeitsbereich des Jobs.
 
 **Datei anlegen:** Lege `daten/einkauf.txt` in deinem Lern-Repository an. Die zwei Kommentarzeilen nennen Herkunft und Lizenz; die Einkaufsliste enthält fünf Einträge:
 
@@ -502,3 +502,7 @@ chmod +x         Ausführbar machen
 $VAR             Variable lesen
 env: in YAML     Eingaben an die Shell übergeben
 ```
+
+[^1]: `actions/checkout@v7` verwendet Node.js 24. Am 06.11.2026 ist v7.0.1 die aktuelle Patch-Version; das Major-Tag `@v7` folgt der jeweils neuesten Patch-Version und pinnt sie nicht exakt. Quelle: <https://github.com/actions/checkout/releases> (geprüft am 06.11.2026).
+[^2]: Quelle zum Erstellen von Branches: <https://docs.github.com/en/pull-requests/how-tos/commit-changes/managing-branches-within-your-repository> (geprüft am 06.11.2026).
+[^3]: GitHub dokumentiert, dass die Workflow-Datei für `workflow_dispatch` auf dem Standardbranch liegen muss. Quellen: <https://docs.github.com/en/actions/how-tos/manage-workflow-runs/manually-run-a-workflow> und <https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#workflow_dispatch> (geprüft am 06.11.2026).

@@ -42,7 +42,7 @@ Ein **Branch** ist eine benannte Entwicklungslinie im Repository. Auf einem Arbe
 
 **Aufgabe:** Erstelle in deinem Lern-Repository einen Arbeitsbranch für eine Kursänderung.
 
-**Ausführung:** Öffne die Branch-Auswahl auf dem Tab **Code**, gib einen neuen Namen ein und wähle die angezeigte Möglichkeit, den Branch vom Standardbranch aus zu erstellen. Die genaue Beschriftung der Oberfläche kann sich ändern. Wechsle anschließend in den neuen Branch.
+**Ausführung:** Öffne die Branch-Auswahl auf dem Tab **Code**, gib einen neuen Namen ein und wähle die angezeigte Möglichkeit, den Branch vom Standardbranch aus zu erstellen.[^github-branches] Die genaue Beschriftung der Oberfläche kann sich ändern. Wechsle anschließend in den neuen Branch.
 
 **Kontrolle:** Die Branch-Auswahl zeigt den neuen Namen als aktuell ausgewählten Branch. Prüfe vor dem Bearbeiten, dass du im richtigen Repository und Branch bist.
 
@@ -82,7 +82,7 @@ In Teil 2, Lektion 8, sind `push`, `pull_request` und `schedule` ausdrücklich a
 
 **Lernziel:** Du änderst einen ungefährlichen YAML-Wert auf einem Arbeitsbranch, prüfst den Datei-Diff und kontrollierst die Änderung anschließend im manuellen Workflow-Lauf.
 
-**Voraussetzung:** Die Datei `.github/workflows/01-hallo-linux.yml` wurde bereits auf dem Standardbranch deines Lern-Repositorys angelegt und committet. Der Workflow enthält `workflow_dispatch`. Erstelle für diese Übung einen neuen Arbeitsbranch vom aktuellen Standardbranch, damit der Branch die Workflow-Datei enthält. Prüfe in der Dateiansicht des neuen Branches, dass die Datei vorhanden ist, bevor du sie bearbeitest. Auf GitHub muss die Datei außerdem auf dem Standardbranch liegen, damit der manuelle Start angeboten wird. Im Dialog **Run workflow** kannst du über das Feld **Branch** den Arbeitsbranch auswählen. GitHub führt dabei den Workflow aus der gewählten Referenz aus. Siehe GitHubs aktuelle Anleitung zum [manuellen Starten eines Workflows](https://docs.github.com/en/actions/how-tos/manage-workflow-runs/manually-run-a-workflow) und zum [Ansehen von Workflow-Läufen](https://docs.github.com/en/actions/how-tos/monitor-workflows/viewing-workflow-run-history) (Prüfstand: 23.10.2026).
+**Voraussetzung:** Die Datei `.github/workflows/01-hallo-linux.yml` wurde bereits auf dem Standardbranch deines Lern-Repositorys angelegt und committet. Der Workflow enthält `workflow_dispatch`. Erstelle für diese Übung einen neuen Arbeitsbranch vom aktuellen Standardbranch, damit der Branch die Workflow-Datei enthält. Prüfe in der Dateiansicht des neuen Branches, dass die Datei vorhanden ist, bevor du sie bearbeitest. Auf GitHub muss die Datei außerdem auf dem Standardbranch liegen, damit der manuelle Start angeboten wird.[^workflow-dispatch] Im Dialog **Run workflow** kannst du über das Feld **Branch** den Arbeitsbranch auswählen. GitHub führt dabei den Workflow aus der gewählten Referenz aus.[^workflow-dispatch] Prüfe den Lauf anschließend in der Workflow-Laufhistorie.[^workflow-run-history]
 
 **Datei ändern:** `.github/workflows/01-hallo-linux.yml` im eigenen Lern-Repository.
 
@@ -125,4 +125,8 @@ Bevor du einen Commit oder Pull Request speicherst, prüfe:
 
 ## Weiterlernen
 
-Die Oberfläche von GitHub ändert sich gelegentlich. Für aktuelle Schritte siehe die offizielle GitHub-Dokumentation zu [Branches](https://docs.github.com/en/pull-requests/how-tos/commit-changes/managing-branches-within-your-repository) und [Pull Requests](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests). Für lokale Git-Grundlagen bietet *Pro Git* die Abschnitte zu [Git-Grundlagen](https://git-scm.com/book/en/v2/Git-Basics-Getting-a-Git-Repository) und [Branches](https://git-scm.com/book/en/v2/Git-Branching-Branches-in-a-Nutshell).
+Weiterführende Lektüre: die offizielle GitHub-Dokumentation zu [Branches](https://docs.github.com/en/pull-requests/how-tos/commit-changes/managing-branches-within-your-repository) und [Pull Requests](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests). Für lokale Git-Grundlagen bietet *Pro Git* die Abschnitte zu [Git-Grundlagen](https://git-scm.com/book/en/v2/Git-Basics-Getting-a-Git-Repository) und [Branches](https://git-scm.com/book/en/v2/Git-Branching-Branches-in-a-Nutshell).
+
+[^github-branches]: GitHub-Dokumentation zum Anlegen von Branches über die Weboberfläche, geprüft am 06.11.2026: <https://docs.github.com/en/pull-requests/how-tos/commit-changes/managing-branches-within-your-repository>
+[^workflow-dispatch]: GitHub-Dokumentation zum manuellen Starten: `workflow_dispatch` erfordert, dass die Workflow-Datei auf dem Standardbranch liegt; beim Start kann ein Branch als Referenz ausgewählt werden. Geprüft am 06.11.2026: <https://docs.github.com/en/actions/how-tos/manage-workflow-runs/manually-run-a-workflow>
+[^workflow-run-history]: GitHub-Dokumentation zum Ansehen der Workflow-Laufhistorie und Laufdetails, geprüft am 06.11.2026: <https://docs.github.com/en/actions/how-tos/monitor-workflows/viewing-workflow-run-history>

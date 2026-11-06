@@ -16,6 +16,7 @@ Dieses Repository enthält einen Einsteigerkurs zu Linux, Git, YAML, Markdown un
 - Kennzeichne Beispieldaten und erwartete Ausgaben.
 - Nutze Fehler, um zu zeigen, wie Lernende ihre Arbeit prüfen und verbessern können.
 - Prüfe interne Links in Markdown-Dateien auf vorhandene Dateien und gültige Abschnittsanker. Prüfe externe Links auf Erreichbarkeit, wenn sie neu erstellt oder geändert wurden.
+- Belege konkrete externe und veränderliche Sachangaben in Lerntexten mit Fußnoten. Das gilt besonders für Softwareversionen, Action-Laufzeiten, Trigger, Fristen, Berechtigungen und Aussagen zur Funktionsweise externer Dienste. Setze die Fußnotenmarke direkt an die belegte Aussage; führe die Quelle in einer Fußnote mit ausgeschriebener URL als Autolink (`<https://…>`) an. Nenne in derselben Fußnote den Versions- oder Prüfstand, wenn er für die Aussage relevant ist. Bündle mehrere Quellen für dieselbe Aussage in einer Fußnote. Reine Navigation, interne Verweise und unverbindliche Leseempfehlungen bleiben normale Links und brauchen keine Fußnote.
 
 ## Technische Sorgfalt
 

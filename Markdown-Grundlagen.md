@@ -152,4 +152,6 @@ Prüfe nach dem Speichern:
 
 ## Weiterlernen
 
-GitHub rendert Markdown-Dateien mit GitHub Flavored Markdown, das Markdown um weitere Funktionen ergänzt. Die [GitHub-Dokumentation zum Schreiben auf GitHub](https://docs.github.com/en/get-started/writing-on-github) erklärt die unterstützten Formatierungen. Grundlegende Markdown-Syntax beschreibt die [Markdown-Referenz](https://www.markdownguide.org/basic-syntax/).
+GitHub rendert Markdown-Dateien mit GitHub Flavored Markdown, das Markdown um weitere Funktionen ergänzt. Die GitHub-Dokumentation erklärt die unterstützten Formatierungen; eine Referenz beschreibt die grundlegende Markdown-Syntax.[^markdown-syntax]
+
+[^markdown-syntax]: GitHub-Dokumentation „Writing on GitHub“, GitHub Flavored Markdown-Spezifikation (Version 0.29-gfm, 2019-04-06) und Markdown Guide „Basic Syntax“, geprüft am 06.11.2026: <https://docs.github.com/en/get-started/writing-on-github>, <https://github.github.com/gfm/>, <https://www.markdownguide.org/basic-syntax/>

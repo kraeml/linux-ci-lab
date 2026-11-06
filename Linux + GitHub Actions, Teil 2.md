@@ -2,7 +2,7 @@
 
 Teil 2 baut auf Teil 1 auf. Du brauchst die Repository-Struktur aus Teil 1, insbesondere `daten/server.log`. Es gibt **4 Lektionen** und ein Abschlussprojekt.
 
-In GitHub Actions erscheinen Befehlsausgaben aus `run:`-Schritten in den Job-Protokollen; die Laufübersicht zeigt Zusammenfassungen und den Bereich **Artifacts** für hochgeladene Dateien. Für `workflow_dispatch` muss die Workflow-Datei im Standardbranch liegen, damit GitHub **Run workflow** anbietet. In der Actions-Oberfläche wählst du den Branch für den Lauf aus. Dafür brauchst du Schreibzugriff auf dein Lern-Repository. Stand 21.10.2026, siehe [GitHub-Dokumentation zu manuellen Workflow-Starts](https://docs.github.com/en/actions/how-tos/manage-workflow-runs/manually-run-a-workflow).
+In GitHub Actions erscheinen Befehlsausgaben aus `run:`-Schritten in den Job-Protokollen; die Laufübersicht zeigt Zusammenfassungen und den Bereich **Artifacts** für hochgeladene Dateien. Für `workflow_dispatch` muss die Workflow-Datei im Standardbranch liegen, damit GitHub **Run workflow** anbietet. In der Actions-Oberfläche wählst du den Branch für den Lauf aus. Dafür brauchst du Schreibzugriff auf dein Lern-Repository.[^1]
 
 ## Vorbereitung
 
@@ -94,12 +94,12 @@ jobs:
 
 **Ausprobieren und kontrollieren:** Stelle sicher, dass Workflow 05 und `daten/server.log` im Lern-Repository vorhanden und committed sind. Starte den Workflow unter **Actions**. Im Graphen können `zaehlen` und `parallel-a` parallel starten; `melden` wartet auf `zaehlen`. Prüfe im Protokoll: `Gefunden: 3` und `Der Job zaehlen meldet 3 Fehler`. `grep` sucht nach ` ERROR `, also nach dem Schweregrad zwischen Leerzeichen; Kommentarzeilen werden so nicht mitgezählt.
 
-`actions/checkout@v7` lädt auf dem Runner `ubuntu-latest` die Dateien ins Arbeitsverzeichnis. Die Hauptversion 7 verwendet Node.js 24. Stand 21.10.2026 ist [checkout v7.0.1 die neueste Veröffentlichung](https://github.com/actions/checkout/releases). Das Hauptversions-Tag `@v7` folgt der neuesten Patch-Version seiner Hauptversion; es fixiert keinen einzelnen Patch. Bei selbst gehosteten Runnern ist für Node.js-24-Actions mindestens Runner-Version 2.327.1 erforderlich.
+`actions/checkout@v7` lädt auf dem Runner `ubuntu-latest` die Dateien ins Arbeitsverzeichnis.[^2]
 
 **Wie das funktioniert**
 
 | Konzept | Bedeutung |
-|---------|-----------|
+| --------- | ----------- |
 | Jobs ohne `needs:` | Starten parallel |
 | `needs: zaehlen` | Wartet auf `zaehlen`. Standardmäßig läuft `melden` nur weiter, wenn `zaehlen` erfolgreich war. Schlägt `zaehlen` fehl, wird `melden` **übersprungen**. Mit besonderen Bedingungen lässt sich das ändern. |
 | Eigene Umgebung | Jeder Job hat einen eigenen Runner. Dateien aus `zaehlen` sind in `melden` **nicht** da. |
@@ -169,7 +169,7 @@ jobs:
         run: cat daten/bericht.txt
 ```
 
-**Runner:** Der Workflow läuft auf dem GitHub-gehosteten Runner `ubuntu-latest` und verwendet `actions/checkout@v7` mit Node.js 24. Stand 21.10.2026 ist [checkout v7.0.1 die neueste Veröffentlichung](https://github.com/actions/checkout/releases). Das Major-Tag `@v7` folgt der neuesten Patch-Version seiner Hauptversion; es fixiert keinen einzelnen Patch. Selbst gehostete Runner benötigen für Node.js 24 mindestens Runner-Version 2.327.1.
+**Runner:** Der Workflow läuft auf dem GitHub-gehosteten Runner `ubuntu-latest` und verwendet `actions/checkout@v7`.[^2]
 
 **Ausprobieren und kontrollieren:** Stelle sicher, dass Workflow 06, `daten/zugriffe.log` und `daten/bericht.txt` in deinem Lern-Repository vorhanden sind und committe sie auf dem Standardbranch. Starte den Workflow über **Actions → 06 - Auswerten → Run workflow**. Falls die Schaltfläche fehlt, prüfe, ob die Workflow-Datei im Standardbranch liegt. Erwartete Zählungen: `anna` vier Zugriffe, `ben` drei, `clara` drei; `/produkte` vier, `/start` drei und `/kontakt` drei. Die Top-1-Ausgabe ist `/produkte`. `find daten -type f` listet unter anderem `einkauf.txt`, `server.log`, `zugriffe.log` und `bericht.txt` auf. Anschließend zeigt der Job-Protokollschritt den Inhalt von `daten/bericht.txt`.
 
@@ -187,7 +187,7 @@ grep -v '^#' datei | cut -d' ' -f1 | sort | uniq -c | sort -nr
 **Kommandos erklärt**
 
 | Kommando | Zweck |
-|----------|-------|
+| ---------- | ------- |
 | `uniq -c` | Aufeinanderfolgende gleiche Zeilen zählen |
 | `sort -n` | Numerisch sortieren (sonst steht 10 vor 2) |
 | `sort -r` | Umgekehrte Reihenfolge |
@@ -262,7 +262,7 @@ jobs:
         run: cat weitergabe/bericht.txt
 ```
 
-**Runner und Actions:** Der Workflow läuft auf dem von GitHub gehosteten Runner `ubuntu-latest` und verwendet `actions/checkout@v7`, `actions/upload-artifact@v7` sowie `actions/download-artifact@v8`; alle drei Actions verwenden Node.js 24. Stand 21.10.2026 sind die neuesten Releases von [actions/checkout v7.0.1](https://github.com/actions/checkout/releases), [actions/upload-artifact v7.0.2](https://github.com/actions/upload-artifact/releases) und [actions/download-artifact v8.0.2](https://github.com/actions/download-artifact/releases). Die Hauptversions-Tags `@v7` und `@v8` folgen jeweils der neuesten Patch-Version ihrer Hauptversion. Sie fixieren keinen einzelnen Patch. Selbst gehostete Runner benötigen für Node.js 24 mindestens Runner-Version 2.327.1.
+**Runner und Actions:** Der Workflow läuft auf dem von GitHub gehosteten Runner `ubuntu-latest` und verwendet `actions/checkout@v7`, `actions/upload-artifact@v7` sowie `actions/download-artifact@v8`.[^3]
 
 **Zwei Wege, dasselbe Artefakt zu nutzen:**
 
@@ -281,28 +281,28 @@ Beliebteste Seite:
 
 Zwei Kommentarzeilen am Anfang der Datei `daten/zugriffe.log` kennzeichnen Herkunft und Lizenz; sie sind keine Zugriffsdatensätze. Der Bericht zählt daher nur Zeilen, die nicht mit `#` beginnen. `grep -vc '^#'` zählt diese Zugriffsdatensätze; `wc -l` würde auch die Kommentarzeilen mitzählen.
 
-> Nach Ablauf der Aufbewahrungsfrist werden Artefakte gelöscht. `retention-days` kann bei `upload-artifact@v7` 1 bis 90 Tage betragen. Richtlinien für Repository, Organisation oder Enterprise können die Höchstfrist verkürzen. Geänderte Werte gelten nur für neu erstellte Artefakte. Artefakte sind nicht für Geheimnisse oder echte Nutzerdaten gedacht.
+> Nach Ablauf der Aufbewahrungsfrist werden Artefakte gelöscht. `retention-days` kann bei `upload-artifact@v7` 1 bis 90 Tage betragen. Richtlinien für Repository, Organisation oder Enterprise können die Höchstfrist verkürzen. Geänderte Werte gelten nur für neu erstellte Artefakte. Artefakte sind nicht für Geheimnisse oder echte Nutzerdaten gedacht.[^7]
 >
 > `grep -c ... || true` erlaubt eine Null bei keinen Treffern, fängt aber auch echte `grep`-Fehler ab. Für eigene Workflows solltest du Fehler getrennt behandeln.
 
 **So funktioniert es**
 
 | Element | Bedeutung |
-|---------|-----------|
+| --------- | ----------- |
 | `tee datei` | Schreibt die Eingabe in eine Datei und zugleich ins Jobprotokoll |
 | `wc -l < datei` | Zeilen zählen ohne Dateinamen auszugeben |
 | `actions/upload-artifact@v7` | Hängt Dateien als Artefakt an den Workflow-Lauf an |
-| `actions/download-artifact@v8` | Lädt ein Artefakt im Arbeitsverzeichnis eines Jobs herunter |
+| `actions/download-artifact@v8` | Lädt ein Artefakt im Arbeitsverzeichnis eines Jobs herunter[^4] |
 | `needs: bericht` | Wartet auf den Job `bericht` |
 
-Beim Download des Artefakts aus demselben Workflow-Lauf ist kein zusätzliches Token nötig.
+Beim Download des Artefakts aus demselben Workflow-Lauf ist kein zusätzliches Token nötig.[^4]
 
 **Aufgaben**
 
 1. Starte den Workflow in deinem Lern-Repository. Unter **Artifacts** in der Laufübersicht kannst du das Artefakt `auswertung` als ZIP auf deinen Rechner herunterladen. Entpacke es und lies die Datei `bericht.txt`. Der erwartete Inhalt ist oben gezeigt. Falls **Run workflow** nicht angeboten wird, prüfe, ob die Workflow-Datei auf dem Standardbranch liegt.
 2. Öffne im Lern-Repository den Job `weiterverarbeiten` und prüfe, dass `bericht.txt` ausgegeben wird. Erkläre, warum der Job `needs: bericht` braucht.
 3. Ergänze im Workflow deines Lern-Repositorys eine Zeile mit der Anzahl der `WARNING`-Einträge. Committe und pushe die Änderung auf den Standardbranch, dann starte den Workflow erneut. Kontrolliere, dass die neue Zeile im Browser-Download und im Job `weiterverarbeiten` erscheint.
-4. Ergänze im `with:`-Block von `actions/upload-artifact@v7` den Wert `retention-days: 1`. Committe und pushe die Änderung auf den Standardbranch deines Lern-Repositorys und starte den Workflow erneut. Prüfe die Aufbewahrungsfrist, falls GitHub sie in der Laufübersicht anzeigt. Der Wert gilt nur für neu erstellte Artefakte und kann durch Richtlinien für Repository, Organisation oder Enterprise begrenzt sein.
+4. Ergänze im `with:`-Block von `actions/upload-artifact@v7` den Wert `retention-days: 1`. Committe und pushe die Änderung auf den Standardbranch deines Lern-Repositorys und starte den Workflow erneut. Prüfe die Aufbewahrungsfrist, falls GitHub sie in der Laufübersicht anzeigt. Der Wert gilt nur für neu erstellte Artefakte und kann durch Richtlinien für Repository, Organisation oder Enterprise begrenzt sein.[^7]
 5. Ändere im Workflow `path:` auf den mehrzeiligen Wert und lade zusätzlich `daten/server.log` hoch. Committe die Änderung auf deinem Lern-Branch. Prüfe, dass beide Dateien im ZIP-Download enthalten sind. Lade keine Geheimnisse oder persönlichen Daten hoch.
 
 **Mit `>` statt `tee`:** `>` schreibt die Ausgabe nur in die Datei und überschreibt einen vorhandenen Inhalt; `tee` schreibt in die Datei und zugleich ins Jobprotokoll.
@@ -361,7 +361,7 @@ jobs:
 **Trigger im Überblick**
 
 | Trigger | Wann läuft der Workflow? |
-|---------|--------------------------|
+| --------- | -------------------------- |
 | `workflow_dispatch` | Über **Run workflow** manuell starten; Workflow-Datei muss auf dem Standardbranch liegen, Branch für den Lauf auswählen |
 | `push` | Startet bei Push-Vorgängen mit Änderungen an Dateien unter `daten/` (`paths:`-Filter); die Workflow-Datei muss auf dem gepushten Branch liegen |
 | `pull_request` | Startet bei Pull Requests mit Änderungen an Dateien unter `daten/` (`paths:`-Filter); benötigt einen Pull Request von einem Arbeitsbranch zum Standardbranch |
@@ -381,7 +381,7 @@ jobs:
 `30 6 * * 1` bedeutet: Jeden Montag um 06:30 Uhr **UTC**.
 
 | Cron | Bedeutung |
-|------|-----------|
+| ------ | ----------- |
 | `0 * * * *` | Jede volle Stunde |
 | `*/15 * * * *` | Alle 15 Minuten |
 | `0 8 * * 1-5` | Werktags um 08:00 |
@@ -390,11 +390,11 @@ jobs:
 **Wichtig zu `schedule:`**
 
 - Dieser Workflow ist eine ausdrücklich beauftragte Ausnahme von der Kursregel: Er zeigt neben `workflow_dispatch` auch `push`, `pull_request` und `schedule`.
-- Ohne Zeitzonenangabe gelten die Zeiten in **UTC**, nicht in deiner lokalen Zeit. GitHub erlaubt auch eine IANA-Zeitzone, zum Beispiel `timezone: "America/New_York"`. In diesem Kurs verwenden wir UTC. Stand 21.10.2026, siehe [offizielle Workflow-Syntax](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#onschedule).
-- Geplante Workflows laufen nur, wenn die Workflow-Datei auf dem **Standardbranch** liegt. Sie verwenden den neuesten Commit dieses Branches. Ein manueller Lauf mit `workflow_dispatch` testet daher nicht den Zeitplan selbst.
-- Ein Zeitplan startet nicht garantiert genau zum angegebenen Zeitpunkt. Bei hoher Last können Läufe verzögert werden; bei sehr hoher Last können wartende Läufe verworfen werden. Besonders stark belastet ist oft der Beginn einer Stunde. Stand 21.10.2026, siehe [GitHub-Dokumentation zu `schedule`](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#schedule).
-- In öffentlichen Repositories deaktiviert GitHub geplante Workflows automatisch, wenn das Repository 60 Tage inaktiv war. Du kannst sie anschließend im Actions-Tab wieder aktivieren.
-- Der kürzeste Abstand laut GitHub-Dokumentation ist 5 Minuten.
+- Ohne Zeitzonenangabe gelten die Zeiten in **UTC**, nicht in deiner lokalen Zeit. GitHub erlaubt auch eine IANA-Zeitzone, zum Beispiel `timezone: "America/New_York"`. In diesem Kurs verwenden wir UTC.[^5]
+- Geplante Workflows laufen nur, wenn die Workflow-Datei auf dem **Standardbranch** liegt. Sie verwenden den neuesten Commit dieses Branches. Ein manueller Lauf mit `workflow_dispatch` testet daher nicht den Zeitplan selbst.[^5]
+- Ein Zeitplan startet nicht garantiert genau zum angegebenen Zeitpunkt. Bei hoher Last können Läufe verzögert werden; bei sehr hoher Last können wartende Läufe verworfen werden. Besonders stark belastet ist oft der Beginn einer Stunde.[^6]
+- In öffentlichen Repositories deaktiviert GitHub geplante Workflows automatisch, wenn das Repository 60 Tage inaktiv war. Du kannst sie anschließend im Actions-Tab wieder aktivieren.[^6]
+- Der kürzeste Abstand laut GitHub-Dokumentation ist 5 Minuten.[^5]
 
 **Aufgaben**
 
@@ -451,11 +451,9 @@ jobs:
 
 Lege auf diesem Arbeitsbranch `loesungen/aufgabe1.txt` mit der Beispielantwort `3` an und committe die Datei auf diesem Branch. Wenn du **Add file → Create new file** verwendest, entsteht der Ordner `loesungen/` über den Dateipfad. Pushe den Commit, damit der `push`-Trigger startet.
 
-Der Auto-Prüfer in Workflow 09 ist eine ausdrücklich beauftragte Ausnahme vom sonst manuellen Start: Er startet zusätzlich bei Änderungen unter `loesungen/`. Prüfe im Job-Protokoll des Schritts `Aufgabe 1 prüfen`, dass `Erwartet: 3, Antwort: 3` und `Richtig!` ausgegeben werden.
+Der Auto-Prüfer in Workflow 09 ist eine ausdrücklich beauftragte Ausnahme vom sonst manuellen Start: Er startet zusätzlich bei Änderungen unter `loesungen/`.[^8] Prüfe im Job-Protokoll des Schritts `Aufgabe 1 prüfen`, dass `Erwartet: 3, Antwort: 3` und `Richtig!` ausgegeben werden.
 
-> Siehe die [GitHub-Dokumentation zu manuellen Starts](https://docs.github.com/en/actions/how-tos/manage-workflow-runs/manually-run-a-workflow) und zum [`push`-Ereignis](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#push) (Stand: 21.10.2026).
-
-Der Workflow verwendet den GitHub-gehosteten Runner `ubuntu-latest` und `actions/checkout@v7` (Node.js 24; Stand 21.10.2026 ist `v7.0.1` die neueste Veröffentlichung). Das Major-Tag `@v7` folgt stets der neuesten Patch-Version seiner Hauptversion; es fixiert keinen einzelnen Patch. GitHub verwaltet den Runner für `ubuntu-latest`. Selbst gehostete Runner benötigen für Node.js-24-Actions mindestens Runner-Version 2.327.1.
+Der Workflow verwendet den GitHub-gehosteten Runner `ubuntu-latest` und `actions/checkout@v7` (Node.js 24). Das Major-Tag `@v7` folgt stets der neuesten Patch-Version seiner Hauptversion; es fixiert keinen einzelnen Patch. GitHub verwaltet den Runner für `ubuntu-latest`. Selbst gehostete Runner benötigen für Node.js-24-Actions mindestens Runner-Version 2.327.1.[^2]
 
 **Das Prinzip**
 
@@ -465,7 +463,7 @@ Der Workflow verwendet den GitHub-gehosteten Runner `ubuntu-latest` und `actions
 - `tr -d '[:space:]'` entfernt Leerzeichen, Tabs und Zeilenumbrüche, damit `3` und `3` mit abschließendem Zeilenumbruch gleich behandelt werden
 
 | Element | Bedeutung |
-|---------|-----------|
+| --------- | ----------- |
 | `[ "$A" = "$B" ]` | Texte vergleichen (Leerzeichen innerhalb der Klammern sind Pflicht) |
 | `if ... then ... else ... fi` | Bedingung |
 | `exit 1` | Mit Fehlerstatus beenden |
@@ -485,9 +483,9 @@ Der Workflow verwendet den GitHub-gehosteten Runner `ubuntu-latest` und `actions
 ## Häufige Fehler in Teil 2
 
 | Fehler | Ursache |
-|--------|---------|
+| -------- | --------- |
 | `needs`-Job startet nicht | Der vorherige Job ist fehlgeschlagen oder wurde übersprungen |
-| Output ist leer | `id:` am Schritt fehlt oder der Name in `outputs:` stimmt nicht. Fehlt die Datei, meldet `grep` den Fehler auf stderr; `|| true` lässt den Schritt trotzdem erfolgreich enden und `ANZAHL` bleibt leer. |
+| Output ist leer | `id:` am Schritt fehlt oder der Name in `outputs:` stimmt nicht. Fehlt die Datei, meldet `grep` den Fehler auf stderr; der Ausdruck `true` nach dem OR-Operator lässt den Schritt trotzdem erfolgreich enden und `ANZAHL` bleibt leer. |
 | Dateien fehlen im nächsten Job | Jeder Job hat eine eigene Arbeitsumgebung. Dateien zwischen Jobs mit Artefakten weitergeben. |
 | `uniq -c` zählt falsch | `sort` davor vergessen |
 | Artefakt nicht zu finden | `path:` zeigt auf keinen vorhandenen Datei- oder Ordnerpfad |
@@ -516,3 +514,12 @@ cron: "min std tag mon wtag"    Zeitplan (ohne Angabe: UTC)
 [ "$A" = "$B" ]                 Texte vergleichen
 exit 1                          Schritt bewusst fehlschlagen lassen
 ```
+
+[^1]: GitHub dokumentiert Voraussetzungen für `workflow_dispatch`, Branch-Auswahl und Berechtigungen für manuelle Starts. Quellen: <https://docs.github.com/en/actions/how-tos/manage-workflow-runs/manually-run-a-workflow> und <https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#workflow_dispatch> (geprüft am 06.11.2026).
+[^2]: `actions/checkout@v7` verwendet Node.js 24; die aktuelle Patch-Version ist v7.0.1. Das Major-Tag folgt den Patch-Versionen und pinnt keine davon exakt. Selbst gehostete Runner benötigen mindestens Version 2.327.1. Quellen: <https://github.com/actions/checkout/releases> und <https://github.com/actions/checkout/blob/v7/README.md> (geprüft am 06.11.2026).
+[^3]: Die Releases am Prüfdatum sind checkout v7.0.1, upload-artifact v7.0.2 und download-artifact v8.0.2; alle verwenden Node.js 24. Die Major-Tags pinnen keine exakte Patch-Version. Quellen: <https://github.com/actions/checkout/releases>, <https://github.com/actions/upload-artifact/releases>, <https://github.com/actions/download-artifact/releases> und <https://github.com/actions/runner/releases> (geprüft am 06.11.2026).
+[^4]: GitHub beschreibt den Austausch von Artefakten zwischen Jobs über Upload- und Download-Actions und erwähnt, dass für Download eines im selben Workflow-Lauf gespeicherten Artefakts kein Token erforderlich ist. Quelle: <https://docs.github.com/en/actions/how-tos/writing-workflows/choosing-what-your-workflow-does/storing-and-sharing-data-from-a-workflow> (geprüft am 06.11.2026).
+[^5]: Die Workflow-Syntax dokumentiert UTC als Standardzeitzone, optionale IANA-Zeitzonen, Ausführung auf dem Standardbranch und einen Mindestabstand von fünf Minuten. Quelle: <https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#onschedule> (geprüft am 06.11.2026).
+[^6]: GitHub weist auf mögliche Verzögerungen oder verworfene Läufe bei Last sowie die automatische Deaktivierung geplanter Workflows nach 60 Tagen Inaktivität öffentlicher Repositorys hin. Quelle: <https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#schedule> (geprüft am 06.11.2026).
+[^7]: GitHub dokumentiert, dass `retention-days` höchstens 90 Tage betragen darf, Änderungen für neu erstellte Artefakte gelten und Richtlinien für Repository, Organisation oder Enterprise das Maximum begrenzen können. Quellen: <https://github.com/actions/upload-artifact/blob/v7/README.md> und <https://docs.github.com/en/actions/how-tos/writing-workflows/choosing-what-your-workflow-does/storing-and-sharing-data-from-a-workflow> (geprüft am 06.11.2026).
+[^8]: GitHub dokumentiert manuelle Workflow-Starts, die Branch-Auswahl beim Start und den `push`-Trigger. Quellen: <https://docs.github.com/en/actions/how-tos/manage-workflow-runs/manually-run-a-workflow> und <https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#push> (geprüft am 06.11.2026).
