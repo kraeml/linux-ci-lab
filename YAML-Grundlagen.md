@@ -109,9 +109,9 @@ Der Bindestrich steht für den Beginn eines neuen Eintrags. Die Schlüssel danac
 
 ## Werte, die YAML eigenmächtig deutet
 
-YAML kann Werte als Text, Zahl, Wahrheitswert oder „kein Wert“ interpretieren. Welche Typen erkannt werden, hängt auch vom verwendeten Schema und Parser ab. In den hier gezeigten Beispielen werden `true` und `false` als Wahrheitswerte sowie `42` und `3.10` als Zahlen gelesen; `3.10` hat dabei den Zahlenwert 3,1. `null` und `~` stehen für „kein Wert“.
+YAML kann Werte als Text, Zahl, Wahrheitswert oder „kein Wert“ interpretieren. Welche Typen erkannt werden, hängt auch vom verwendeten Schema und Parser ab. Viele YAML-1.2-Parser mit Core-Schema interpretieren `true` und `false` als Wahrheitswerte, `42` als Zahl und `null` sowie `~` als „kein Wert“. Sie lesen `3.10` als Zahl 3,1.[^yaml-sources]
 
-Für Versionsangaben und ähnliche Werte ist das tückisch: `python-version: 3.10` wird in YAML 1.2 als Zahl 3,1 interpretiert. Schreibe den Wert deshalb als Text in Anführungszeichen:
+Für Versionsangaben und ähnliche Werte ist das tückisch. Schreibe Versionsangaben deshalb als Text in Anführungszeichen:
 
 ```yaml
 python-version: "3.10"
@@ -128,7 +128,7 @@ Einfache Anführungszeichen (`'…'`) nehmen den Text wörtlich. In doppelten An
 
 ## Mehrzeilige Werte mit `run: |`
 
-Ein senkrechter Strich (`|`) leitet einen mehrzeiligen Textblock ein. Die Zeilenumbrüche bleiben dabei erhalten. Für Shell-Befehle ist genau das nötig: Jede Zeile soll als eigener Befehl laufen.
+Ein senkrechter Strich (`|`) leitet einen mehrzeiligen Textblock ein und erhält die Zeilenumbrüche. Die Shell interpretiert anschließend den Text; in den folgenden Beispielen steht jeweils ein Befehl pro Zeile.
 
 ```yaml
 jobs:
@@ -182,7 +182,7 @@ Dass die Datei angezeigt wird, belegt noch nicht, dass der Workflow erfolgreich 
 - **Schritt fehlt oder liegt im falschen Job:** Der Bindestrich steht an der falschen Stelle oder auf der falschen Ebene unter `steps`.
 - **Schlüssel innerhalb eines Schritts rutscht heraus:** `name` und `run` stehen nicht auf gleicher Höhe.
 - **Tabulator statt Leerzeichen:** Viele Editoren fügen Tabulatoren ein. YAML lehnt sie als Einrückung ab.
-- **Version wird zur Zahl:** `3.10` ohne Anführungszeichen wird als `3.1` gelesen.
+- **Version wird als Zahl gelesen:** Viele YAML-1.2-Parser mit Core-Schema lesen `3.10` ohne Anführungszeichen als `3.1`.
 - **Wert mit `: ` oder ` #` zerfällt:** Der Wert gehört in Anführungszeichen.
 - **Shell-Zeile wird als YAML gelesen:** Die Zeile ist weniger eingerückt als der Rest des `run: |`-Blocks.
 

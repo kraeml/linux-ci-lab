@@ -104,13 +104,13 @@ Nicht jedes Projekt braucht jeden Abschnitt. Wenn eine Information noch fehlt, l
 
 ### Voraussetzung
 
-Richte zuerst dein Lern-Repository nach Teil 1 ein. Der Workflow liegt dort auf dem Standardbranch; durch die Einrichtung in Teil 1 ist diese Datei bereits vorhanden:
+Richte zuerst dein Lern-Repository nach Teil 1 ein. Prüfe im Standardbranch, ob die dort angelegte Workflow-Datei vorhanden ist:
 
 ```text
 .github/workflows/01-hallo-linux.yml
 ```
 
-Die Datei dient als vorhandenes Ziel für einen Link in deiner README. Übernimm keine Beispieldaten aus der Vorlage, wenn sie nicht auf dein Repository zutreffen.
+Falls sie fehlt, führe zuerst den entsprechenden Schritt aus Teil 1 aus. Verlinke in deiner README nur Dateien, die tatsächlich in deinem Lern-Repository vorhanden sind. Übernimm keine Beispieldaten aus der Vorlage, wenn sie nicht auf dein Repository zutreffen.
 
 ### Aufgabe
 

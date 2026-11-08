@@ -15,7 +15,7 @@ Git und GitHub verwenden Begriffe, die ähnlich klingen und Verschiedenes bedeut
 
 **Git** ist ein Versionsverwaltungssystem. Es speichert den Projektverlauf als Folge von Commits; du kannst Git lokal auf deinem Rechner verwenden. **GitHub** ist ein Webdienst, der Git-Repositories hostet und Zusammenarbeit darum herum organisiert: Pull Requests, Issues und GitHub Actions. Für die GitHub-Weboberfläche brauchst du kein lokal installiertes Git.
 
-In diesem Kurs arbeitest du in deinem eigenen Lern-Repository. Das Kurs-Repository enthält nur die Vorlagen.
+In diesem Kurs arbeitest du in deinem eigenen Lern-Repository. Das Kurs-Repository enthält die Kursmaterialien und Vorlagen.
 
 Ein **Repository** besteht aus den Projektdateien und dem vollständigen Verlauf ihrer Änderungen. Öffne dein Lern-Repository auf GitHub und wähle den Tab **Code**. Dort siehst du die Dateien, darunter die `README.md`. Die Branch-Auswahl zeigt, welcher Branch gerade angezeigt wird. Der **Standardbranch** ist der Hauptbranch des Repositorys, meist `main`.
 
@@ -53,7 +53,7 @@ Wenn du im Browser committest, arbeitest du direkt im Remote. Einen Push gibt es
 
 ## Pull Request: Änderung zur Prüfung vorschlagen
 
-Ein **Pull Request** (PR) ist ein Vorschlag, Änderungen aus einem Branch in einen anderen zu übernehmen. Er hat mit `git pull` nichts zu tun. Beteiligte sehen die Änderungen, kommentieren sie und geben sie frei. Erst der **Merge** übernimmt die Änderungen in den Zielbranch. GitHub bietet dafür mehrere Varianten an (Merge-Commit, Squash und Rebase).[^merges] Für diese Lektion genügt die Standardvariante.
+Ein **Pull Request** (PR) ist ein Vorschlag, Änderungen aus einem Branch in einen anderen zu übernehmen. Er hat mit `git pull` nichts zu tun. Beteiligte können die Änderungen ansehen, kommentieren und ein Review abgeben. Ob eine Freigabe Voraussetzung für den Merge ist, hängt von den Repository- oder Branch-Regeln ab. Erst der **Merge** übernimmt die Änderungen in den Zielbranch. GitHub bietet dafür mehrere Varianten an (Merge-Commit, Squash und Rebase).[^merges] Für diese Lektion genügt die Standardvariante.
 
 ### Übung: Pull Request erstellen
 
@@ -135,7 +135,7 @@ Optional kannst du anschließend einen Pull Request öffnen. Merge ihn nur, wenn
 - **Branch:** Benannter Zeiger auf einen Commit, der mit neuen Commits weiterwandert.
 - **Commit:** Gespeicherter Snapshot des Projekts.
 - **Diff:** Gegenüberstellung zweier Stände.
-- **Git:** Lokal laufendes Versionsverwaltungssystem.
+- **Git:** Verteiltes Versionsverwaltungssystem, das auch lokal verwendet werden kann.
 - **GitHub:** Webdienst zum Hosten von Git-Repositories und für die Zusammenarbeit.
 - **GitHub Actions:** GitHub-Dienst, der Workflows anhand ihrer Konfiguration ausführt.
 - **Merge:** Zusammenführen von Änderungen aus einem Branch in einen anderen.
