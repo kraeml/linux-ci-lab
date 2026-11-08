@@ -79,7 +79,7 @@ Dokumentiere nur Befehle, die du geprüft hast. Erkläre, wo sie ausgeführt wer
 
 Markdown-Tabellen verwenden Pipe-Zeichen (`|`) als Spaltentrenner. Ein Pipe-Zeichen als normaler Text in einer Tabellenzelle muss maskiert werden. Das kann je nach Darstellung fehleranfällig sein.
 
-Für eine kurze Gegenüberstellung ist eine Liste oft einfacher:
+Für eine kurze Gegenüberstellung ist eine Liste oft einfacher. Hier ein Beispiel:
 
 - **Pipe (`|`):** leitet die Ausgabe eines Befehls an den nächsten weiter.
 - **Umleitung (`>`):** schreibt Ausgabe in eine Datei und kann vorhandenen Inhalt überschreiben.
