@@ -1,16 +1,18 @@
-# YAML-Grundlagen
+# YAML-Grundlagen: Workflow-Dateien lesen und ändern
+
+In YAML ist Einrückung Syntax, keine Dekoration. Ein Leerzeichen zu wenig, ein vergessener Bindestrich, und GitHub Actions liest die Workflow-Datei anders als gedacht oder gar nicht. In dieser Lektion lernst du, wie Schlüssel, Einrückung, Listen und mehrzeilige Werte aufgebaut sind. Danach änderst du einen Workflow-Schritt und prüfst die Änderung in einem manuellen Lauf.
 
 > Lernmaterial: CC BY 4.0 (siehe `LICENSE-CONTENT.txt`).
 
-## Ziel
+## Lernziel
 
-Du kannst die Grundstruktur einer YAML-Datei lesen, einfache Änderungen an einem GitHub-Actions-Workflow vornehmen und typische Einrückungsfehler erkennen.
+Du kannst die Grundstruktur einer YAML-Workflow-Datei lesen, einen vorhandenen Schritt ändern und typische Einrückungs- und Wertfehler erkennen.
 
-## Wo begegnet dir YAML?
+## Was YAML in diesem Kurs macht
 
-YAML ist ein Textformat, mit dem Daten übersichtlich beschrieben werden. Programme lesen diese Daten und verwenden sie als Konfiguration. In diesem Kurs beschreiben die Dateien unter `.github/workflows/` damit, wann ein Workflow startet und welche Jobs und Schritte er ausführt.
+**YAML** ist eine Sprache zur Darstellung strukturierter Daten. Sie kann Schlüssel-Wert-Paare, Listen und Verschachtelungen beschreiben. Viele YAML-Dateien nutzen Einrückung, um die Struktur sichtbar zu machen; für Listen und Zuordnungen gibt es außerdem kompakte Schreibweisen mit Klammern.
 
-**Datei prüfen:** Öffne die Vorlage `.github/workflows/01-hallo-linux.yml` im Kurs-Repository oder später die gleichnamige Datei in deinem Lern-Repository. Der folgende Ausschnitt zeigt den Anfang des Workflows aus Teil 1:
+GitHub Actions liest Workflows aus YAML-Dateien (`.yml` oder `.yaml`) im Verzeichnis `.github/workflows/`. Die Dateien teilen GitHub mit, wann ein Workflow startet und welche Jobs und Schritte er ausführt. Der folgende Ausschnitt zeigt den Anfang des Workflows aus Teil 1 (`.github/workflows/01-hallo-linux.yml`):
 
 ```yaml
 name: 01 - Hallo Linux
@@ -28,28 +30,33 @@ jobs:
         run: whoami
 ```
 
-YAML legt hier die Struktur und Einstellungen fest. GitHub Actions deutet bestimmte Schlüssel wie `name`, `on`, `jobs` und `steps` als Workflow-Konfiguration. Der Inhalt von `run` ist dagegen ein Kommando, das später in der Shell des Runners ausgeführt wird.
+Zwei Ebenen sind hier zu trennen:
+
+- **YAML** legt die Struktur fest: Schlüssel, Werte, Listen, Einrückung.
+- **GitHub Actions** legt fest, welche Schlüssel (`on`, `jobs`, `steps`, `runs-on`, `run` …) gültig sind und was sie bedeuten.
+
+Der Wert von `run` ist ein Shell-Befehl, den der Runner ausführt. Welche Shell verwendet wird, hängt vom Betriebssystem des Runners ab; für Linux ist standardmäßig `bash` vorgesehen.[^yaml-sources]
+
+GitHub dokumentiert die Workflow-Schlüssel und ihre Bedeutung in der Workflow-Syntax.
 
 ## Schlüssel und Werte
 
-Ein **Schlüssel (key)** benennt eine Einstellung; der dazugehörige **Wert (value)** gibt ihren Inhalt an. Ein Doppelpunkt trennt Schlüssel und Wert:
+Ein **Schlüssel** benennt eine Einstellung, der **Wert** gibt an, was dort eingetragen ist. Ein Doppelpunkt mit folgendem Leerzeichen trennt beide:
 
 ```yaml
 name: 01 - Hallo Linux
 runs-on: ubuntu-latest
 ```
 
-Hier heißen die Schlüssel `name` und `runs-on`. Ihre Werte sind `01 - Hallo Linux` und `ubuntu-latest`. In GitHub-Actions-Dateien sind zulässige Schlüssel und ihre Bedeutung durch die Workflow-Syntax von GitHub Actions festgelegt.
-
-**Aufgabe:** Lies den Ausschnitt aus `01-hallo-linux.yml` und finde die Werte zu `name` und `runs-on`.
-
-**Ausführung:** Öffne die Datei im Browser oder in einem Texteditor und suche die beiden Schlüssel.
-
-**Kontrolle:** `name` bezeichnet den Workflow als „01 - Hallo Linux“. `runs-on` gibt die Runner-Umgebung `ubuntu-latest` an.
+Das Leerzeichen nach dem Doppelpunkt ist Pflicht. `name:01` wäre kein Schlüssel-Wert-Paar, sondern ein einzelner Textwert.
 
 ## Einrückung zeigt Zugehörigkeit
 
-Einrückung macht sichtbar, welche Angaben zu einem übergeordneten Schlüssel gehören. In diesem Kurs rücken wir jede Ebene um zwei Leerzeichen ein und verwenden **keine** Tabulatoren. Achte darauf, gleichrangige Einträge auf derselben Ebene auszurichten.
+Die Einrückung legt fest, was zu wem gehört. Dafür gelten drei Regeln:
+
+- Eingerückt wird ausschließlich mit **Leerzeichen**. Tabulatoren sind in YAML als Einrückung nicht erlaubt.
+- **Gleichrangige** Einträge stehen gleich weit eingerückt, **untergeordnete** weiter rechts.
+- Wie viele Leerzeichen eine Ebene hat, ist Konvention. In diesem Kurs sind es zwei pro Ebene.
 
 ```yaml
 jobs:
@@ -60,17 +67,31 @@ jobs:
         run: echo "Hallo aus dem Linux-Runner!"
 ```
 
-`erkunden` gehört zu `jobs`; `runs-on` und `steps` gehören zum Job `erkunden`. `name` und `run` gehören zum ersten Schritt.
+`erkunden` gehört zu `jobs`. `runs-on` und `steps` gehören zum Job `erkunden`. `name` und `run` gehören zum ersten Schritt. Die Hierarchie lautet also: `jobs → erkunden → steps → Schritt → name/run`.
 
-**Aufgabe:** Zeichne die Zugehörigkeit der Schlüssel im Ausschnitt als Baum oder markiere jede Einrückungsebene mit einer anderen Farbe.
+Um mehrere Jobs nebeneinander zu sehen, hilft ein Beispiel mit zwei Jobs:
 
-**Ausführung:** Gehe von links nach rechts: Ein weiter eingerückter Eintrag gehört zum passenden übergeordneten Eintrag.
+```yaml
+jobs:
+  vorbereiten:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Vorbereitung"
+  pruefen:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Prüfung"
+```
 
-**Kontrolle:** Der Baum lautet `jobs → erkunden → steps → Schritte`; `runs-on` gehört ebenfalls direkt zu `erkunden`.
+`vorbereiten` und `pruefen` stehen auf derselben Ebene unter `jobs`. Beide haben dieselbe Struktur darunter.
+
+**Aufgabe:** Öffne `.github/workflows/05-mehrere-jobs.yml` in deinem Lern-Repository und verfolge die Einrückung von `jobs` bis zu den einzelnen Schritten.
+
+**Kontrolle:** Unter `jobs` stehen mehrere Jobs auf einer Ebene, jeder mit eigenem `steps`. Das Grundmuster entspricht `01-hallo-linux.yml`, nur mit mehr Jobs.
 
 ## Listen
 
-Eine **Liste** enthält mehrere Einträge. In YAML beginnen Einträge einer eingerückten Liste mit einem Bindestrich und einem Leerzeichen. In einem Workflow sind die Schritte eines Jobs eine Liste:
+Eine **Liste** hat mehrere Einträge, jeder beginnt mit einem Bindestrich und einem Leerzeichen. Die Schritte eines Jobs sind eine Liste:
 
 ```yaml
 steps:
@@ -80,37 +101,39 @@ steps:
     run: whoami
 ```
 
-Jeder Bindestrich beginnt einen Schritt. `name` und `run` sind Einstellungen dieses Schritts.
+Der Bindestrich steht für den Beginn eines neuen Eintrags. Die Schlüssel danach (`name`, `run`) gehören zu diesem Eintrag und müssen untereinander auf gleicher Höhe stehen. Das ist die häufigste Fehlerquelle bei `steps`: Rückt `run` weiter ein oder weniger weit als `name`, ist die Struktur kaputt oder bedeutet etwas anderes.
 
-**Aufgabe:** Zähle die Schritte im Ausschnitt und nenne für jeden den Namen.
-
-**Ausführung:** Zähle die Einträge, die mit `- name:` beginnen.
+**Aufgabe:** Zähle im Beispiel die Schritte und benenne sie.
 
 **Kontrolle:** Es sind zwei Schritte: „Begrüßung“ und „Wer bin ich?“.
 
-## Verschachtelte Angaben
+## Werte, die YAML eigenmächtig deutet
 
-Eine **verschachtelte Struktur** enthält Daten innerhalb anderer Daten. Im Workflow gehören Schritte zu einem Job und Jobs zum Workflow. Ihre Einrückung zeigt diese Ebenen. Du kannst den Aufbau in Teil 2 bei `needs` und Job-Ausgaben sowie in Teil 3 bei Matrizen wiedererkennen.
+YAML kann Werte als Text, Zahl, Wahrheitswert oder „kein Wert“ interpretieren. Welche Typen erkannt werden, hängt auch vom verwendeten Schema und Parser ab. Viele YAML-1.2-Parser mit Core-Schema interpretieren `true` und `false` als Wahrheitswerte, `42` als Zahl und `null` sowie `~` als „kein Wert“. Sie lesen `3.10` als Zahl 3,1.[^yaml-sources]
 
-**Aufgabe:** Finde in `.github/workflows/05-mehrere-jobs.yml` den Schlüssel `jobs` und verfolge die Einrückung bis zu `steps`.
+Für Versionsangaben und ähnliche Werte ist das tückisch. Schreibe Versionsangaben deshalb als Text in Anführungszeichen:
 
-**Ausführung:** Öffne die Datei in deinem Lern-Repository und vergleiche sie mit dem Grundmuster aus `01-hallo-linux.yml`.
+```yaml
+python-version: "3.10"
+```
 
-**Kontrolle:** `steps` steht innerhalb eines Jobs unter `jobs`; die Schritte selbst sind Listeneinträge.
+Anführungszeichen sind außerdem nötig, wenn ein Text sonst falsch gelesen würde:
 
-## Textwerte und Anführungszeichen
+- Enthält ein einfacher Textwert Doppelpunkt plus Leerzeichen (`: `) oder Leerzeichen plus Raute (` #`), kann YAML ihn als Struktur oder Kommentar lesen. Anführungszeichen machen deutlich, dass der ganze Wert Text ist.
+- Ein Cron-Ausdruck wie `* * * * *` beginnt mit einem YAML-Sonderzeichen. Setze solche Werte in Anführungszeichen.
 
-Werte können als normaler Text geschrieben oder in einfache beziehungsweise doppelte Anführungszeichen gesetzt werden. Anführungszeichen sind nützlich, wenn ein Wert Zeichen enthält, die YAML oder GitHub Actions eine besondere Bedeutung geben könnten. Die genaue Interpretation kann außerdem vom verwendeten YAML-Parser und vom Kontext in GitHub Actions abhängen. Folge deshalb dem Stil des jeweiligen Beispiels und prüfe Workflow-Angaben anhand der GitHub-Dokumentation.
+Einfache Anführungszeichen (`'…'`) nehmen den Text wörtlich. In doppelten Anführungszeichen (`"…"`) gelten Escape-Sequenzen wie `\n`.
 
-In den Workflows dieses Kurses stehen Pfadmuster und Cron-Ausdrücke zum Beispiel in Anführungszeichen. Ändere solche Werte nicht, ohne die dazugehörige Erklärung in der Lektion zu lesen.
+Ändere vorhandene Werte mit Anführungszeichen nicht ohne Grund: Sie stehen meist dort, weil der Wert sonst falsch interpretiert würde.
 
-## Mehrzeilige Werte: `run: |`
+## Mehrzeilige Werte mit `run: |`
 
-Ein senkrechter Strich (`|`) beginnt in YAML einen mehrzeiligen Textblock. In einem Workflow steht darunter eingerückter Shell-Code, den GitHub Actions als Inhalt des `run`-Schritts ausführt:
+Ein senkrechter Strich (`|`) leitet einen mehrzeiligen Textblock ein und erhält die Zeilenumbrüche. Die Shell interpretiert anschließend den Text; in den folgenden Beispielen steht jeweils ein Befehl pro Zeile.
 
 ```yaml
 jobs:
   dateien:
+    runs-on: ubuntu-latest
     steps:
       - name: Ordner und Dateien anlegen
         run: |
@@ -120,39 +143,71 @@ jobs:
           ls -l arbeit
 ```
 
-Die Zeilen unter `run: |` sind keine YAML-Schlüssel. YAML grenzt den Textblock ab; die Shell verarbeitet anschließend die darin enthaltenen Befehle. Der Ausschnitt entspricht dem Schritt in `.github/workflows/02-dateien.yml`.
+Die eingerückten Zeilen unter `run: |` sind keine YAML-Schlüssel. YAML grenzt nur den Textblock ab, die Shell verarbeitet ihn anschließend. Der Block endet, sobald eine Zeile weniger eingerückt ist als sein erster Inhalt. Der Ausschnitt entspricht dem Schritt in `.github/workflows/02-dateien.yml`; dort steht der Job zusätzlich mit `runs-on: ubuntu-latest`.
 
-**Aufgabe:** Zähle in dem Ausschnitt die Shell-Befehle unter `run: |`.
+Daneben gibt es `>`. Dort werden Zeilenumbrüche zu Leerzeichen zusammengefasst. Für mehrzeilige Shell-Befehle ist `|` die passende Wahl.
 
-**Ausführung:** Öffne die Datei und unterscheide den Schlüssel `run` vom eingerückten Inhalt.
+**Aufgabe:** Im gezeigten Block ist `touch arbeit/notizen.txt` korrekt als Shell-Befehl eingerückt. Vergleiche seine Einrückung mit der Zeile `mkdir -p arbeit`. Was würde sich ändern, wenn du `touch` ganz links bündig schreibst?
 
-**Kontrolle:** Der mehrzeilige Inhalt gehört zu einem einzelnen `run`-Schritt und enthält vier Shell-Befehle.
+**Kontrolle:** Ganz links beginnt die Zeile außerhalb des `run`-Textblocks. Sie ist dann kein Befehl dieses Schritts mehr; ob der Workflow noch gültig ist, hängt davon ab, wie YAML die übrige Datei danach einordnet. Ändere die Einrückung im echten Workflow nicht.
 
 ## Kommentare
 
-Ein YAML-Kommentar beginnt mit `#` außerhalb eines Textwerts und reicht bis zum Zeilenende. Kommentare dienen Menschen als Hinweis; sie sind keine Workflow-Einstellungen und werden nicht als Workflow-Schritt ausgeführt.
+Ein `#` beginnt einen Kommentar, wenn es am Zeilenanfang steht oder davor ein Leerzeichen steht. Der Kommentar reicht bis zum Zeilenende. In `farbe: a#b` ist `#` dagegen Teil des Werts. Kommentare sind Hinweise für Menschen und haben keine Wirkung auf den Workflow.
 
-## Fehler finden und prüfen
+## Syntax prüfen und Änderungen kontrollieren
 
-Ein YAML-Fehler kann verhindern, dass GitHub Actions eine Workflow-Datei korrekt verarbeitet. Fehlerhafte Einrückung, ein fehlender Doppelpunkt oder falsch platzierte Listeneinträge sind typische Ursachen. Eine Workflow-Ausführung ist kein allgemeiner YAML-Prüfer: Wenn eine Datei nicht eingelesen werden kann, kann der Lauf bereits vor dem Start der Jobs scheitern.
+Syntaxfehler (falsche Einrückung, fehlender Doppelpunkt, falsch platzierter Bindestrich) und inhaltliche Fehler (unbekannter Schlüssel, falscher Befehl) sind zweierlei:
 
-**Aufgabe:** Prüfe eine Änderung an einer Workflow-Datei vor dem Start des Workflows. Ändere für diese Übung nur einen vorhandenen Schritt, zum Beispiel seinen `name`-Wert.
+- Bei Syntaxfehlern kann GitHub die Workflow-Datei nicht auswerten; der Workflow startet nicht. Die genaue Meldung kann sich je nach Oberfläche ändern.
+- Ein inhaltlicher Fehler kann erst beim Lauf sichtbar werden: Der Workflow startet, aber ein Schritt schlägt fehl.
 
-**Ausführung:** Bearbeite die Datei im Lern-Repository, achte auf Einrückung und vergleiche die Struktur mit dem unveränderten Nachbarbeispiel. Committe die Änderung nach den Schritten in [Git-Grundlagen](Git-Grundlagen.md). Starte den Workflow über **Actions → Run workflow**.
+**Übung:** Ändere nur den `name:`-Wert eines vorhandenen Schritts in `.github/workflows/01-hallo-linux.yml`.
 
-**Kontrolle:** Prüfe, ob GitHub den Workflow anzeigt, ob der Lauf startet und ob der Schritt im Protokoll den geänderten Namen trägt. Diese Kontrollen prüfen unterschiedliche Dinge: Eine angezeigte Datei allein beweist nicht, dass der Workflow erfolgreich ausgeführt wurde.
+1. Bearbeite die Datei in deinem Lern-Repository und achte auf die Einrückung.
+2. Vergleiche den geänderten Abschnitt mit einem unveränderten Beispiel.
+3. Committe die Änderung auf einem Arbeitsbranch (Ablauf siehe [Git-Grundlagen](Git-Grundlagen.md)).
+4. Öffne **Actions**, wähle **01 - Hallo Linux**, klicke **Run workflow**, wähle deinen Arbeitsbranch und starte den Lauf.
 
-Bei einem Workflow mit `workflow_dispatch` muss die Workflow-Datei auf dem Standardbranch liegen, damit GitHub den manuellen Start anbietet. Beim Start kannst du den Branch auswählen, dessen Dateien ausgeführt werden sollen. Weitere Hinweise dazu stehen in Teil 1.
+**Kontrolle:** Prüfe drei Dinge getrennt:
+
+- GitHub zeigt den Workflow an.
+- Der Lauf startet.
+- Der Schritt trägt im Protokoll den neuen Namen.
+
+Dass die Datei angezeigt wird, belegt noch nicht, dass der Workflow erfolgreich läuft. Für den manuellen Start gelten dieselben Regeln wie in der Git-Lektion: `workflow_dispatch` muss in der Datei stehen, und die Datei muss auf dem Standardbranch liegen.
 
 ## Typische Fehler
 
-- **GitHub verarbeitet die Workflow-Datei nicht:** Prüfe Einrückung, Doppelpunkte und Position der Listeneinträge.
-- **Ein Schritt fehlt oder steht an der falschen Stelle:** Prüfe, ob Bindestrich und Einrückung den Schritt unter `steps` des gewünschten Jobs einordnen.
-- **Shell-Befehl erscheint als YAML-Einstellung:** Lies `run` als Workflow-Schlüssel und die eingerückten Zeilen darunter als Shell-Code im mehrzeiligen Textblock.
-- **Run workflow wird nicht angeboten:** Prüfe, ob die Workflow-Datei auf dem Standardbranch liegt und einen manuellen Trigger enthält.
+- **Schritt fehlt oder liegt im falschen Job:** Der Bindestrich steht an der falschen Stelle oder auf der falschen Ebene unter `steps`.
+- **Schlüssel innerhalb eines Schritts rutscht heraus:** `name` und `run` stehen nicht auf gleicher Höhe.
+- **Tabulator statt Leerzeichen:** Viele Editoren fügen Tabulatoren ein. YAML lehnt sie als Einrückung ab.
+- **Version wird als Zahl gelesen:** Viele YAML-1.2-Parser mit Core-Schema lesen `3.10` ohne Anführungszeichen als `3.1`.
+- **Wert mit `: ` oder ` #` zerfällt:** Der Wert gehört in Anführungszeichen.
+- **Shell-Zeile wird als YAML gelesen:** Die Zeile ist weniger eingerückt als der Rest des `run: |`-Blocks.
 
 ## Weiterlernen
 
-Die Beispiele in diesem Modul verwenden Ausschnitte aus den Workflow-Dateien des Kurses. Für die vollständige Syntax von GitHub Actions gelten die offiziellen Workflow-Syntaxregeln. Die allgemeine YAML-Sprache ist in der YAML-Spezifikation 1.2.2 beschrieben. GitHub-Actions-Workflows verwenden YAML, ergänzen aber eigene Schlüssel und Regeln; die allgemeine YAML-Spezifikation allein erklärt deshalb nicht die gesamte Workflow-Konfiguration.[^yaml-syntax]
+GitHub dokumentiert die unterstützten Schlüssel und Regeln der Workflow-Dateien. Die YAML-Spezifikation beschreibt die Sprache und ihre Datentypen; sie trägt die Versionsangabe 1.2.2 (Revision vom 1. Oktober 2021).[^yaml-sources] GitHub verwendet für den Runner `ubuntu-latest` standardmäßig Bash für `run`-Schritte.[^runner-shell]
 
-[^yaml-syntax]: GitHub-Workflow-Syntax, geprüft am 06.11.2026; YAML-Spezifikation 1.2.2 (Revision vom 01.10.2021): <https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax> und <https://yaml.org/spec/1.2.2/>
+[^yaml-sources]: GitHub Actions Workflow-Syntax und YAML-Spezifikation 1.2.2, geprüft am 7. November 2026: <https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax> und <https://yaml.org/spec/1.2.2/>
+[^runner-shell]: GitHub Actions Workflow-Syntax, Abschnitt „Default shell and working directory“, geprüft am 7. November 2026: <https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#default-shell-and-working-directory>
+
+## Glossar
+
+- **Einrückung:** Leerzeichen am Zeilenanfang, die in YAML die Zugehörigkeit zeigen.
+- **Job:** Zusammengehörige Schritte, die auf einem Runner laufen.
+- **Liste:** Folge von Einträgen, jeder mit `- ` eingeleitet.
+- **Schlüssel (key):** Name einer Einstellung.
+- **Shell:** Programm, das Befehle entgegennimmt und ausführt.
+- **Textblock:** Mehrzeiliger Textwert, eingeleitet mit `|` oder `>`.
+- **Wert (value):** Inhalt, der einem Schlüssel zugeordnet ist.
+- **Workflow:** Automatisierter Ablauf in GitHub Actions aus Jobs und Schritten.
+- **Workflow-Datei:** YAML-Datei in `.github/workflows/` mit der Konfiguration eines Workflows.
+- **YAML:** Textformat für strukturierte Daten, das Struktur über Einrückung abbildet.
+
+Begriffe wie Trigger, `workflow_dispatch` und GitHub Actions stehen im Glossar der Git-Lektion.
+
+## Schlagworte
+
+`YAML` `GitHub Actions` `Workflow` `Workflow-Datei` `Einrückung` `Shell` `Konfiguration`

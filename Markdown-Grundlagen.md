@@ -2,33 +2,29 @@
 
 > Lernmaterial: CC BY 4.0 (siehe `LICENSE-CONTENT.txt`).
 
-## Ziel
+## Lernziel
 
 Du kannst eine README-Datei mit Markdown strukturieren und so anpassen, dass andere den Zweck eines Projekts, seine Voraussetzungen und den Einstieg verstehen.
 
 ## Was ist Markdown?
 
-Markdown ist eine einfache Auszeichnungssprache für formatierten Text. Du schreibst Überschriften, Listen, Links und Codeblöcke mit gewöhnlichen Textzeichen. GitHub zeigt eine Markdown-Datei wie `README.md` als formatierte Seite an.
+Markdown ist eine einfache Auszeichnungssprache für strukturierten Text. Du schreibst Überschriften, Listen, Links und Codeblöcke mit gewöhnlichen Textzeichen. GitHub stellt eine Markdown-Datei wie `README.md` als formatierte Seite dar.
 
-Eine README ist eine Einstiegsseite zu einem Projekt. Sie soll Fragen beantworten, die neue Leserinnen und Leser wahrscheinlich haben: Worum geht es? Was wird benötigt? Wie kann ich beginnen? Welche Dateien oder Bereiche sind wichtig?
+Eine README ist die Einstiegsseite eines Projekts. Sie soll Fragen beantworten, die neue Leserinnen und Leser wahrscheinlich haben: Worum geht es? Was wird benötigt? Wie kann ich beginnen? Welche Dateien oder Bereiche sind wichtig?
 
-## Die Vorlage öffnen
+## Die Vorlage ansehen
 
-**Datei prüfen:** `README-Projektvorlage.md` im Kurs-Repository.
+Öffne im Kurs-Repository die Datei `README-Projektvorlage.md`. Sie beschreibt ein fiktives Projekt. Behandle die Angaben deshalb als Beispieldaten, nicht als Tatsachen über dein eigenes Repository.
 
-Die Vorlage ist ein Beispiel für ein fiktives Projekt. Die Angaben darin sind Beispieldaten und müssen durch Informationen zum eigenen Projekt ersetzt werden. Übernimm keine erfundenen Voraussetzungen oder Befehle in eine echte Projektdokumentation.
+Markiere in der Vorlage den Titel, die Abschnitte, die Listen und die Stelle für einen eigenen Link. Öffne die Datei einmal als Text und einmal in der gerenderten GitHub-Ansicht. So siehst du, welche Markdown-Zeichen welche Darstellung erzeugen.
 
-**Aufgabe:** Lies die Vorlage und markiere Titel, Abschnitte, Listen und die Stelle, an der du später einen eigenen Link ergänzt.
-
-**Ausführung:** Öffne die Datei im Kurs-Repository als Text oder auf GitHub. Vergleiche die Markdown-Schreibweise mit der formatierten Ansicht.
-
-**Kontrolle:** Du findest einen Projekttitel, mehrere Abschnitte mit Überschriften, Listen und einen Abschnitt für weiterführende Informationen. Die Vorlage enthält absichtlich noch keinen Projektlink, weil die Ziel-Datei im eigenen Lern-Repository liegen muss.
+Die Vorlage hat absichtlich noch keinen Projektlink: Der passende Link muss auf eine Datei oder einen Ordner in deinem eigenen Lern-Repository zeigen.
 
 ## Markdown-Bausteine
 
 ### Überschriften
 
-Eine oder mehrere Rauten am Zeilenanfang kennzeichnen eine Überschrift. Eine einzelne Raute ist die oberste Ebene; mehr Rauten ergeben untergeordnete Ebenen. Beginne mit einer Hauptüberschrift und ordne Unterabschnitte sinnvoll darunter ein.
+Eine oder mehrere Rauten am Zeilenanfang kennzeichnen eine Überschrift. Eine Raute steht für die oberste Ebene; weitere Rauten bilden untergeordnete Ebenen. Beginne mit einem Projekttitel und ordne die Abschnitte darunter ein.
 
 ```markdown
 # Projektname
@@ -38,11 +34,11 @@ Eine oder mehrere Rauten am Zeilenanfang kennzeichnen eine Überschrift. Eine ei
 ### Einzelheit
 ```
 
-Lasse eine Leerzeile zwischen Abschnitten. Wähle Überschriften nach ihrer Bedeutung und nicht nur nach dem gewünschten Schriftbild.
+Lass zwischen Abschnitten eine Leerzeile. Wähle Überschriften nach ihrer Bedeutung – nicht bloß danach, wie groß sie auf dem Bildschirm wirken. GitHub rendert Markdown mit GitHub Flavored Markdown (GFM), einer Variante mit zusätzlichen Funktionen wie Tabellen.[^markdown-gfm]
 
 ### Absätze und Listen
 
-Ein normaler Textblock wird als Absatz dargestellt. Eine Leerzeile trennt Absätze. Für ungeordnete Listen setzt du einen Bindestrich und ein Leerzeichen vor jeden Punkt:
+Eine Leerzeile trennt Absätze. Für eine ungeordnete Liste setzt du einen Bindestrich und ein Leerzeichen vor jeden Punkt:
 
 ```markdown
 - Ein erster Punkt
@@ -52,24 +48,24 @@ Ein normaler Textblock wird als Absatz dargestellt. Eine Leerzeile trennt Absät
 Für eine nummerierte Schrittfolge verwendest du Zahlen mit Punkt:
 
 ```markdown
-1. Voraussetzung prüfen
+1. Voraussetzungen prüfen
 2. Projektdateien öffnen
 3. Ergebnis kontrollieren
 ```
 
 ### Links
 
-Ein Link besteht aus einem sichtbaren Linktext in eckigen Klammern und der Zieladresse in runden Klammern:
+Ein Link besteht aus einem beschreibenden Linktext in eckigen Klammern und einer Zieladresse in runden Klammern:
 
 ```markdown
 [Projektübersicht](README.md)
 ```
 
-Verwende einen beschreibenden Linktext, damit auch ohne das Ziel zu öffnen klar ist, wohin der Link führt. Prüfe bei relativen Links, dass die Zieldatei im Projekt tatsächlich vorhanden ist.
+Der Linktext sollte auch ohne Anklicken verraten, wohin der Link führt. Bei relativen Links gilt die einfache Regel: Prüfe, dass die Zieldatei tatsächlich im Repository liegt.
 
 ### Code und Codeblöcke
 
-Kurze Dateinamen oder Befehle im Fließtext setzt du zwischen einzelne Backticks, zum Beispiel `README.md`. Mehrzeilige Befehle oder Quellcode setzt du zwischen drei Backticks. Eine Sprachangabe direkt nach den öffnenden Backticks kann die Darstellung einfärben:
+Kurze Dateinamen oder Befehle im Fließtext setzt du zwischen einzelne Backticks, zum Beispiel `README.md`. Mehrzeilige Befehle und Quellcode kommen zwischen drei Backticks. Eine Sprachangabe wie `bash` direkt nach den öffnenden Backticks kann die Darstellung hervorheben:
 
 ````markdown
 ```bash
@@ -77,81 +73,104 @@ printf '%s\n' "Hallo"
 ```
 ````
 
-Dokumentiere nur Befehle, deren Wirkung du geprüft hast. Erkläre, wo sie ausgeführt werden und was sie bewirken. Weise auf mögliche Folgen hin, wenn sie Dateien verändern oder löschen.
+Dokumentiere nur Befehle, die du geprüft hast. Erkläre, wo sie ausgeführt werden und was sie bewirken. Wenn ein Befehl Dateien verändert oder löscht, sag das ausdrücklich dazu.
 
 ### Tabellen und Sonderzeichen
 
-Markdown-Tabellen verwenden Pipes (`|`) als Spaltentrenner. Ein Pipe-Zeichen, das als normaler Text in einer Tabellenzelle steht, muss je nach Darstellung mit einem Backslash maskiert werden. Das ist fehleranfällig und kann zwischen Editoren unterschiedlich aussehen.
+Markdown-Tabellen verwenden Pipe-Zeichen (`|`) als Spaltentrenner. Ein Pipe-Zeichen als normaler Text in einer Tabellenzelle muss maskiert werden. Das kann je nach Darstellung fehleranfällig sein.
 
-Verwende für eine kurze Gegenüberstellung lieber eine Liste mit Begriff und Erklärung:
+Für eine kurze Gegenüberstellung ist eine Liste oft einfacher:
 
 - **Pipe (`|`):** leitet die Ausgabe eines Befehls an den nächsten weiter.
-- **Umleitung (`>`):** schreibt die Ausgabe in eine Datei und kann vorhandenen Inhalt überschreiben.
+- **Umleitung (`>`):** schreibt Ausgabe in eine Datei und kann vorhandenen Inhalt überschreiben.
 
-Tabellen sind sinnvoll, wenn viele Einträge gleichartige Spalten haben und keine Zelle selbst Pipes enthält. Bei README-Dateien sind Überschriften und Listen oft einfacher zu lesen und zu bearbeiten.
+Tabellen lohnen sich, wenn viele Einträge in denselben Spalten stehen und die Zellen keine Pipe-Zeichen enthalten. Für die meisten README-Dateien reichen Überschriften und Listen.
 
-## Eine Projekt-README planen
+## Eine README planen
 
-Eine README muss nicht jede Einzelheit eines Projekts erklären. Wähle Abschnitte, die zur Zielgruppe und zum Projekt passen. Mögliche Bestandteile sind:
+Welche Abschnitte sinnvoll sind, hängt vom Projekt und seiner Zielgruppe ab. Mögliche Bausteine:
 
-- **Projektname und Kurzbeschreibung:** Was ist das Projekt und welchen Zweck hat es?
-- **Voraussetzungen:** Welche Programme, Konten oder Daten werden tatsächlich benötigt?
+- **Projektname und Kurzbeschreibung:** Was ist das Projekt, und wozu dient es?
+- **Voraussetzungen:** Welche Programme, Konten oder Daten werden wirklich benötigt?
 - **Einstieg oder Installation:** Welche geprüften Schritte führen zum ersten Ergebnis?
-- **Nutzung:** Wie wird das Projekt verwendet? Zeige nur Befehle, die es wirklich gibt.
-- **Dateien und Ordner:** Wo liegen zentrale Dateien?
-- **Prüfen und Fehlerhilfe:** Woran erkennt man ein korrektes Ergebnis und wo beginnt die Fehlersuche?
-- **Lizenz oder Mitwirkung:** Nur aufführen, wenn die Angaben für das Projekt bekannt und zutreffend sind.
+- **Nutzung:** Wie wird das Projekt verwendet? Nenne nur Befehle, die es tatsächlich gibt.
+- **Dateien und Ordner:** Wo liegen wichtige Bestandteile?
+- **Prüfen und Fehlerhilfe:** Woran erkennst du ein korrektes Ergebnis, und wo beginnt die Fehlersuche?
+- **Lizenz oder Mitwirkung:** Führe diese Punkte nur auf, wenn die Angaben bekannt und zutreffend sind.
 
-Nicht jedes Projekt braucht alle Abschnitte. Lass Unbekanntes weg oder kennzeichne es ausdrücklich als noch festzulegen, statt Fakten zu erfinden.
+Nicht jedes Projekt braucht jeden Abschnitt. Wenn eine Information noch fehlt, lass sie weg oder kennzeichne sie als offen. Erfinde keine Voraussetzungen oder Befehle.
 
 ## Übung: README für dein Lern-Repository
 
-**Lernziel:** Du erstellst eine README, die dein Lern-Repository verständlich vorstellt und den Einstieg in die Kursdateien erleichtert.
+### Voraussetzung
 
-**Voraussetzung:** Richte zuerst dein Lern-Repository nach Teil 1 ein und lege dort `.github/workflows/01-hallo-linux.yml` an. So enthält dein Repository eine vorhandene Datei, auf die du in der README verlinken kannst.
+Richte zuerst dein Lern-Repository nach Teil 1 ein. Prüfe im Standardbranch, ob die dort angelegte Workflow-Datei vorhanden ist:
 
-**Datei anlegen oder ändern:** `README.md` im eigenen Lern-Repository. Ändere nicht die README des Kurs-Repositorys für diese Übung.
+```text
+.github/workflows/01-hallo-linux.yml
+```
+
+Falls sie fehlt, führe zuerst den entsprechenden Schritt aus Teil 1 aus. Verlinke in deiner README nur Dateien, die tatsächlich in deinem Lern-Repository vorhanden sind. Übernimm keine Beispieldaten aus der Vorlage, wenn sie nicht auf dein Repository zutreffen.
 
 ### Aufgabe
 
-Erstelle eine README mit:
+Erstelle oder ändere die Datei `README.md` in deinem **eigenen Lern-Repository**. Bearbeite für diese Übung nicht die README des Kurs-Repositorys.
 
-1. einem aussagekräftigen Titel,
-2. einem kurzen Absatz zum Zweck deines Lern-Repositorys,
-3. einer Liste mit mindestens drei Bereichen oder Dateien, die im Kurs vorkommen,
-4. einem Abschnitt zu Voraussetzungen, die für dein Repository tatsächlich gelten,
-5. einem Abschnitt „Erste Schritte“ mit den nächsten Kursaktionen,
-6. mindestens einem funktionierenden Link zu einer Datei oder einem Ordner, der in deinem Repository vorhanden ist.
+Deine README braucht:
 
-Nutze die Vorlage `README-Projektvorlage.md` als Orientierung. Passe sie an und entferne alle Beispieldaten, die nicht auf dein Projekt zutreffen. Schreibe keine erfundenen Installationsbefehle oder Testergebnisse hinein.
+1. einen aussagekräftigen Titel,
+2. einen kurzen Absatz zum Zweck des Lern-Repositorys,
+3. mindestens drei Bereiche oder Dateien aus dem Kurs,
+4. Voraussetzungen, die für dein Repository tatsächlich gelten,
+5. einen Abschnitt **„Erste Schritte“** mit den nächsten Kursaktionen,
+6. mindestens einen funktionierenden Link auf eine Datei oder einen Ordner in deinem Repository.
+
+Nutze `README-Projektvorlage.md` als Orientierung, passe sie an und entferne unzutreffende Beispieldaten. Schreibe keine Installationsbefehle oder Testergebnisse hinein, die du nicht geprüft hast.
 
 ### Ausführung
 
-Öffne dein Lern-Repository auf GitHub und bearbeite dessen `README.md` im Browser. Schreibe die Inhalte mit Markdown-Syntax. Nutze **Preview**, um die formatierte Darstellung vor dem Speichern anzusehen. Da du Git-Grundlagen bereits gelesen hast, wähle den dort angelegten Arbeitsbranch, falls vorhanden. Andernfalls kannst du diese erste README-Änderung auf dem Standardbranch speichern.
+Öffne dein Lern-Repository auf GitHub und bearbeite dort `README.md` im Browser. Schreibe den Inhalt mit Markdown-Syntax und nutze **Preview**, bevor du speicherst. Vergleiche die Vorschau mit dem Quelltext – besonders Überschriften, Listen und Links.
 
-Gib eine kurze Commit-Nachricht ein, die die Änderung beschreibt, und bestätige **Commit changes**. Falls GitHub anbietet, die Änderung auf einem neuen Branch zu speichern, kannst du diese Möglichkeit wählen; prüfe dabei, dass die Branch-Auswahl und der Commit-Schritt angezeigt werden. Der Ablauf ist derselbe wie im Abschnitt „Änderungen und Commits“ in [Git-Grundlagen](Git-Grundlagen.md#änderungen-und-commits).
+Falls du bereits einen Arbeitsbranch angelegt hast, wähle ihn aus. Andernfalls kannst du diese erste README-Änderung auf dem Standardbranch speichern. Gib eine kurze Commit-Nachricht ein, die die Änderung beschreibt, und bestätige **Commit changes**. Wenn GitHub anbietet, die Änderung auf einem neuen Branch zu speichern, prüfe die Branch-Auswahl.
+
+Der Ablauf entspricht dem Abschnitt [„Commits und Branches“ in den Git-Grundlagen](Git-Grundlagen.md#commits-und-branches).
 
 ### Ergebniskontrolle
 
 Prüfe nach dem Speichern:
 
-- Der Titel wird als Hauptüberschrift dargestellt.
-- Abschnitte erscheinen in der richtigen Reihenfolge und Hierarchie.
-- Listenpunkte sind getrennt und lesbar.
+- Der Titel erscheint als Hauptüberschrift.
+- Abschnitte stehen in der richtigen Reihenfolge und Hierarchie.
+- Listenpunkte sind gut lesbar.
 - Der Link führt zu einer vorhandenen Datei oder einem vorhandenen Ordner.
 - Die README enthält keine unzutreffenden Beispieldaten oder ungeprüften Befehle.
 - Auf der Startseite deines Repositorys zeigt GitHub die formatierte README an.
 
-## Typische Fehler
+### Typische Fehler
 
-- **Markdown erscheint als Rohtext:** Prüfe, ob die Datei `README.md` heißt und die Markdown-Zeichen richtig gesetzt sind.
-- **Ein Link führt ins Leere:** Vergleiche den Linkpfad mit dem tatsächlichen Dateinamen und der Ordnerstruktur.
-- **Ein Codeblock bleibt offen:** Prüfe, ob auf den öffnenden drei Backticks ein passender schließender Backtick-Block folgt.
-- **Eine Tabelle ist schwer zu lesen:** Ersetze sie durch Überschriften und Listen, besonders wenn Inhalte selbst Pipe-Zeichen enthalten.
-- **Die README verspricht etwas, das nicht funktioniert:** Entferne oder korrigiere nicht überprüfte Schritte, Links und Aussagen.
+- **Markdown erscheint als Rohtext:** Prüfe, ob die Datei `README.md` heißt und die Markdown-Zeichen korrekt gesetzt sind.
+- **Ein Link führt ins Leere:** Vergleiche den Pfad im Link mit Dateiname und Ordnerstruktur.
+- **Ein Codeblock bleibt offen:** Prüfe, ob auf drei öffnende Backticks auch drei schließende folgen.
+- **Eine Tabelle ist schwer zu lesen:** Ersetze sie durch Überschriften und Listen, besonders wenn Inhalte Pipe-Zeichen enthalten.
+- **Die README verspricht etwas, das nicht funktioniert:** Entferne oder korrigiere ungeprüfte Schritte, Links und Aussagen.
 
 ## Weiterlernen
 
-GitHub rendert Markdown-Dateien mit GitHub Flavored Markdown, das Markdown um weitere Funktionen ergänzt. Die GitHub-Dokumentation erklärt die unterstützten Formatierungen; eine Referenz beschreibt die grundlegende Markdown-Syntax.[^markdown-syntax]
+Die GitHub-Dokumentation erklärt die Formatierungsmöglichkeiten. Die GFM-Spezifikation und der Markdown Guide bieten weiterführende Referenzen.[^markdown-gfm]
 
-[^markdown-syntax]: GitHub-Dokumentation „Writing on GitHub“, GitHub Flavored Markdown-Spezifikation (Version 0.29-gfm, 2019-04-06) und Markdown Guide „Basic Syntax“, geprüft am 06.11.2026: <https://docs.github.com/en/get-started/writing-on-github>, <https://github.github.com/gfm/>, <https://www.markdownguide.org/basic-syntax/>
+[^markdown-gfm]: GitHub-Dokumentation „Writing on GitHub“, GFM-Spezifikation 0.29-gfm (2019-04-06) und Markdown Guide „Basic Syntax“. Geprüft am 7. November 2026: <https://docs.github.com/en/get-started/writing-on-github>, <https://github.github.com/gfm/>, <https://www.markdownguide.org/basic-syntax/>
+
+## Glossar
+
+- **Backtick:** Zeichen `` ` ``. Begrenzt kurze Code- oder Dateinamen im Fließtext.
+- **Commit:** gespeicherter Änderungssatz in einem Git-Repository.
+- **GitHub Flavored Markdown (GFM):** Markdown-Variante, die GitHub für Inhalte auf seiner Plattform unterstützt.
+- **Markdown:** einfache Auszeichnungssprache für strukturierten Text.
+- **Pipe:** senkrechter Strich (`|`); trennt beispielsweise Spalten in Markdown-Tabellen.
+- **README:** Einstiegs- und Informationsdatei eines Projekts, häufig `README.md`.
+- **Relativer Link:** Link, dessen Zielpfad relativ zur aktuellen Datei angegeben wird.
+- **Repository:** Projektbereich mit Dateien und – bei Git – einer Versionsgeschichte.
+
+## Schlagworte
+
+`Markdown` `README` `GitHub` `Git` `Dokumentation` `Lern-Repository`
